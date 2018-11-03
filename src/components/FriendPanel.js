@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 // components
 import FriendInfo from './FriendInfo'
@@ -10,47 +11,25 @@ class FriendPanel extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
-      friends: [{
-          name: 'Ajitesh',
-          id: 'adejhq876',
-          lastMessage: 'When are you going there ? ?? ',
-          dateInfo: '4:32 PM',
-          senderId: 'adejhq876'
-        },
-        {
-          name: 'Bideshini Pakhira',
-          id: 'adejhq87276',
-          lastMessage: 'I enjoyed the barbeque Yesterday',
-          dateInfo: 'Yesterday',
-          senderId: 'anijit123'
-        },
-        {
-          name: 'Jeet',
-          id: 'adejhq876m2',
-          lastMessage: 'I am joing the party soon',
-          dateInfo: 'Thursday',
-          senderId: 'anijit123'
-        },
-        {
-          name: 'Sumitabha Sir',
-          id: 'adejhq87xfr',
-          lastMessage: 'Today is master class for node js',
-          dateInfo: 'Wednesday',
-          senderId: 'adejhq87xfr'
-        },
-        {
-          name: 'Priyanka Majhi',
-          id: 'padejhq876',
-          lastMessage: 'I got the latest notes for Git ... ',
-          dateInfo: '12/09/2018',
-          senderId: 'padejhq876'
-        },
-      ]
+      friends: []
     }
   }
 
+  loadFriends() {
+    axios({
+        method: 'GET',
+        url: 'http:localhost:3000/friends/:anijit123',
+        header: { 'Content-Type': 'application/json' }
+      })
+      .then((res) => {
+        // fill the friends array from the response
+        console.log('data', res.data)
+        this.setState({ friends: res.data })
+      })
+  }
+
+  this.loadFriends()
   render() {
     return (
       <div className="friends-panel">

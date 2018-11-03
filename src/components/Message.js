@@ -1,8 +1,8 @@
 import React from 'react';
 
-const Message = ({ msgBody, timeSent }) => {
+const Message = ({ msgBody, timeSent, senderId }) => {
   return (
-    <div className="msg friend-msg">{msgBody}
+    <div className={(senderId == 'anijit123') ? "msg my-msg": "msg friend-msg"}>{msgBody}
       <span className="time-sent">{timeSent}</span>
     </div>
   );

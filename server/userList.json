@@ -1,0 +1,20 @@
+{
+
+  "anijit":
+  {
+    "username": "anijit",
+    "name": "Anijit",
+    "fullName": "Anijit Sau",
+    "password": "anijit123",
+    "userId": "anijit123"
+  },
+
+  "sam":
+  {
+    "username": "samr",
+    "name": "Sam",
+    "fullName": "Sam Martin",
+    "password": "sam432",
+    "userId": "sam432"
+  }
+}

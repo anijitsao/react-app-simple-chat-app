@@ -40,7 +40,7 @@ html {
 
 .content {
   display: grid;
-  grid-template-columns: 400px auto;
+  grid-template-columns: 1fr 2fr;
   height: calc(100vh - 70px);
 }
 
@@ -53,6 +53,57 @@ html {
 
 .bold-title {
   font-weight: 700;
+}
+
+
+/* Login related */
+.login {
+  height: calc(100vh - 70px);
+  display: grid;
+}
+
+.login-title {
+  margin-bottom: 2px;
+  
+  color: #ab14ab;
+}
+
+.login-form {
+  border: solid 1px #ddd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  justify-self: center;
+  padding: 4em;
+  margin: 2em;  
+}
+
+
+input[type=password],
+input[type=text] {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  border-bottom: solid 1px #ab14ab;
+  padding: 0.9em;
+  font-size: 0.7em;
+  letter-spacing: 1px;
+}
+
+input[type=password]:hover,
+input[type=text]:hover,
+input[type=password]:focus,
+input[type=text]:focus {
+  border-bottom: solid 2px #ab14ab;
+}
+
+/* Error message in the Login screen */
+.error-message {
+  font-size: 0.7em;
+  background-color: rgba(255, 0, 0, 0.1);
+  padding: 1em;
+  color: #bf5555;
+  max-height: 33px;
+  border-left: solid 2px;
+  border-radius: 2px;
 }
 
 /* user logo related */

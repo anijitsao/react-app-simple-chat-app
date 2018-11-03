@@ -5,12 +5,11 @@ import Title from './Title'
 import UserGreeting from './UserGreeting'
 
 
-const Header = () => {
-  let username = 'Anijit'
+const Header = ({ userInfo }) => {
   return (
     <div className="header">
       <Title />
-      <UserGreeting username={username}/>
+      { (userInfo)? <UserGreeting username={userInfo.name}/>: '' }
     </div>
   );
 };
