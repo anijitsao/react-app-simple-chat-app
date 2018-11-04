@@ -11,7 +11,8 @@ const bodyParser = require('body-parser')
 // static JSON files 
 const userList = require('./userList.json')
 const friends = require('./friends.json')
-console.log('friends', friends)
+const messages = require('./messages.json')
+console.log('friends', messages)
 
 
 // middlewares
@@ -40,10 +41,22 @@ app.post('/login', (req, res) => {
 })
 
 
-app.get('http:localhost:3000/friends/:anijit123', (req, res)=>{
-	console.log('params', req.params)
+app.get('/friends/:id', (req, res) => {
+  console.log('params', req.params)
 
-	res.json(friends['anijit'])
+  res.json(friends['anijit'])
+})
+
+
+// conversation api
+app.get('/conversation/:id', (req, res) => {
+  console.log('params for conversation', req.params)
+
+  let reverseId = req.params.id.split('-').reverse().join('-')
+  console.log('reverseId', reverseId)
+
+  let output = messages[req.params.id] || messages[reverseId] || []
+  res.json(output)
 })
 
 // socket related events

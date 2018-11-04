@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 
 // components 
-import Header from './components/Header';
+import Header from './components/layout/Header';
 import Content from './components/Content';
-import Footer from './components/Footer';
-import Login from './components/Login';
+import Footer from './components/layout/Footer';
+import Login from './components/login/Login';
 
 // css
 import './css/style.css'
@@ -37,7 +37,7 @@ class App extends Component {
       <div className="container">
       { /* including the Title and other components */ }
       <Header userInfo={userInfo}/>
-      { (showContent == false) ? <Login onSuccessLogin={this.onSuccessLogin}/>: <Content /> }
+      { (showContent == false) ? <Login onSuccessLogin={this.onSuccessLogin}/>: <Content userInfo={userInfo}/> }
       <Footer />
     </div>
     );

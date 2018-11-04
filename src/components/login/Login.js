@@ -4,6 +4,9 @@ import axios from 'axios'
 // components
 import ErrorMessage from './ErrorMessage'
 
+// Constants
+import Constants from '../Constants'
+
 class Login extends Component {
   // static propTypes = {
   //     className: PropTypes.string,
@@ -18,6 +21,9 @@ class Login extends Component {
       password: '',
       errorMessage: 'Username / Password cannot be empty'
     }
+
+    // instantiate the Constants
+    this.allConstants = new Constants()
   }
 
   // handle when the username / password field is updated
@@ -70,11 +76,12 @@ class Login extends Component {
     // reset the username / password field
     this.setState({ password: '', username: '' })
 
+    let allConstants = this.allConstants
 
     axios({
-        method: 'POST',
-        url: 'http:/localhost:3000/login',
-        header: { 'Content-Type': 'application/json' },
+        method: allConstants.method.POST,
+        url: allConstants.login,
+        header: allConstants.header,
         data: {
           username,
           password
