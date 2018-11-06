@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 // components
-import FriendPanel from './friends/FriendPanel'
+import RoomPanel from './rooms/RoomPanel'
 import MessagesPanel from './conversation/MessagesPanel'
 
 class Content extends Component {
@@ -14,31 +14,52 @@ class Content extends Component {
 
     this.state = {
       showMessagePanel: true,
-      // selectedFriendId: '1234'
+      // selectedRoomId: '1234'
     }
 
-    this.setSelectedFriendId = this.setSelectedFriendId.bind(this)
+    this.setSelectedRoomId = this.setSelectedRoomId.bind(this)
+
+    // fill room info from Socket
+    this.fillRoomInfoFromSocket = this.fillRoomInfoFromSocket.bind(this)
+
   }
 
-  setSelectedFriendId(id) {
+  setSelectedRoomId(id) {
     console.log('id here in Content', id)
 
     // set in the corresponding variable
-    this.setState({ selectedFriendId: id, showMessagePanel: true }, () => {
+    this.setState({ selectedRoomId: id, showMessagePanel: true }, () => {
       console.log('state is now', this.state)
     })
+  }
+
+  fillRoomInfoFromSocket(message) {
+    console.log('The new message from Socket arrived', message)
+
+    this.setState({ newMessageFromSocket: message })
   }
 
   render() {
 
     let { userInfo } = this.props
-    let { showMessagePanel, selectedFriendId } = this.state
+    let { showMessagePanel, selectedRoomId, newMessageFromSocket } = this.state
 
     return (
       <div className="content">
-      <FriendPanel userInfo={userInfo} setSelectedFriendId={this.setSelectedFriendId}/>
+      <RoomPanel 
+      userInfo={userInfo} 
+      newMessageFromSocket={newMessageFromSocket}
+      setSelectedRoomId={this.setSelectedRoomId}/>
       
-      {(showMessagePanel) ? <MessagesPanel selectedFriendId={this.state.selectedFriendId}/>: ''}
+      { (showMessagePanel) ? 
+        
+        <MessagesPanel 
+        selectedRoomId={this.state.selectedRoomId} 
+        fillRoomInfoFromSocket={this.fillRoomInfoFromSocket}
+        userInfo={userInfo}/>
+        : 
+        ''
+      }
       
     </div>
     );

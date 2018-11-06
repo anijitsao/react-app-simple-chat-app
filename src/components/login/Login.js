@@ -102,7 +102,7 @@ class Login extends Component {
           // reload the page
           setTimeout(() => {
             location.reload()
-          }, 4000)
+          }, 2000)
         }
       })
   }

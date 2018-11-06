@@ -47,13 +47,18 @@ class WriteMessage extends Component {
       let data = {
         timeSent: new Date().toISOString(),
         msgBody: this.state.message,
-        senderId: 'anijit123',
+        senderId: this.props.userInfo.userId,
+        roomId: this.props.selectedRoomId,
         id: uuidv4()
       }
 
       console.log('the message', data)
+
+
       // emit the message
-      this.socket.emit('message', data)
+      if (data.msgBody !== '\n') {
+        this.socket.emit('message', data)
+      }
 
       // reset the textarea value 
       this.setState({
@@ -62,6 +67,11 @@ class WriteMessage extends Component {
 
       let { onNewMessageArrival } = this.props
       onNewMessageArrival(data)
+    } else if ((event.keyCode == 13 || event.which == 13) && event.ctrlKey) {
+      console.log('CTRL pressed')
+      this.setState({
+        message: event.target.value + "\n"
+      })
     }
   }
 

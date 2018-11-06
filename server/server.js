@@ -1,6 +1,7 @@
 const http = require('http')
 const express = require('express')
 const cors = require('cors')
+const morgan = require('morgan')
 
 const app = express()
 const server = http.createServer(app)
@@ -10,21 +11,23 @@ const bodyParser = require('body-parser')
 
 // static JSON files 
 const userList = require('./userList.json')
-const friends = require('./friends.json')
+const rooms = require('./rooms.json')
 const messages = require('./messages.json')
-console.log('friends', messages)
+console.log('rooms', messages)
 
 
 // middlewares
 app.use(cors())
 app.use(bodyParser.json({ type: 'application/json' }))
+app.use(morgan('dev'))
 
+
+// routes
 app.get('/', (req, res) => {
   res.send('Welcome')
 })
 
 
-// routes
 app.post('/login', (req, res) => {
   console.log('req ', req.body)
   let output = {}
@@ -41,21 +44,19 @@ app.post('/login', (req, res) => {
 })
 
 
-app.get('/friends/:id', (req, res) => {
+app.get('/getrooms/:id', (req, res) => {
   console.log('params', req.params)
 
-  res.json(friends['anijit'])
+  res.json(rooms['anijit'])
 })
 
 
 // conversation api
-app.get('/conversation/:id', (req, res) => {
+app.get('/getconversation/:id', (req, res) => {
   console.log('params for conversation', req.params)
 
-  let reverseId = req.params.id.split('-').reverse().join('-')
-  console.log('reverseId', reverseId)
 
-  let output = messages[req.params.id] || messages[reverseId] || []
+  let output = messages[req.params.id] || []
   res.json(output)
 })
 

@@ -29,7 +29,9 @@ html {
   background-color: #ab14ab;
   color: #fff;
 
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: 5fr 1fr
+    /* repeat(6, 1fr) */
+  ;
   padding: 1em;
 }
 
@@ -47,7 +49,7 @@ html {
 /* title of the application related */
 .title {
   font-weight: 300;
-  grid-column: 1/5;
+  /*grid-column: 1/5;*/
   text-transform: uppercase;
 }
 
@@ -64,7 +66,7 @@ html {
 
 .login-title {
   margin-bottom: 2px;
-  
+
   color: #ab14ab;
 }
 
@@ -73,7 +75,7 @@ html {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   justify-self: center;
   padding: 4em;
-  margin: 2em;  
+  margin: 2em;
 }
 
 
@@ -108,7 +110,7 @@ input[type=text]:focus {
 
 /* user logo related */
 .user-info {
-  grid-column: 6;
+  /*grid-column: 6;*/
   position: relative;
   justify-self: end;
 }
@@ -141,39 +143,79 @@ input[type=text]:focus {
   position: absolute;
 }
 
+/* Log out div */
+.logout {
+  font-size: 0.7em;
+  padding: 1em;
+  position: absolute;
+  right: 0;
+  top: 23px;
+  color: #ab14ab;
+  background-color: #f2f2f2;
+  z-index: 1;
+  border-radius: 2px;
+}
+
+.logout-link:hover,
+.logout-link:focus {
+  background-color: #ddd;
+}
+
+.logout::after {
+  content: '';
+  border-right: solid 5px transparent;
+  border-bottom: solid 5px #f2f2f2;
+  border-left: solid 5px transparent;
+  position: absolute;
+  top: -5px;
+  right: 8px;
+  width: 0;
+  height: 0;
+}
+
+.logout-link {
+  text-decoration: none;
+  color: #ab14ab;
+  padding-left: 0.5em;
+  text-align: left;
+  padding-right: 0.5em;
+}
 
 
-
-/* Friends panel related styles */
-.friends-panel {
+/* Rooms panel related styles */
+.rooms-panel {
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-.friend-info {
+.room-info {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 5fr 1fr;
   margin-bottom: 10px;
 }
 
-.friend-info:hover,
-.friend-info:focus {
-  background-color: #eee;
+.active-room {
+  background-color: #f8bcf8;
 }
 
-.friend-icon-div {
+.room-info:hover,
+.room-info:focus {
+  background-color: #f8bcf8;
+}
+
+.room-icon-div {
   justify-self: end;
 }
 
-.friend-icon {
+.room-icon {
   height: 50px;
   width: 50px;
   border-radius: 50px;
   padding: 4px;
 }
 
-.friend-name {
+.room-name {
   font-size: 0.9em;
   padding: 0.6em;
   color: #282828;
@@ -181,13 +223,13 @@ input[type=text]:focus {
 
 .last-message {
   font-size: 0.75em;
-  color: #9f9f9f;
+  color: #969494;
 }
 
 .date-info {
   font-size: 0.65em;
   padding: 0.9em;
-  color: #ccc;
+  color: #aba9a9;
   text-align: right;
 }
 
@@ -196,20 +238,19 @@ input[type=text]:focus {
 .message-panel {
   background-color: #f9f9f9;
   display: grid;
-  grid-template-rows: auto 280px;
-  overflow-y: auto;
+  grid-template-rows: auto 80px;
+  overflow-y: hidden;
   overflow-x: hidden;
 }
 
 .show-messages {
-  height: 70%;
   position: relative;
   display: grid;
+  overflow-y: auto;
 }
 
 .msg {
   font-size: 0.7em;
-  width: 200px;
   text-align: left;
   border: 1px solid #f9f9f9;
   border-radius: 5px;
@@ -217,14 +258,17 @@ input[type=text]:focus {
   margin: 1em;
 
   position: relative;
+  word-wrap: break-word;
+  max-height: 100px;
+  white-space: pre-wrap;
 }
 
-.friend-msg {
+.room-msg {
   background-color: #efeded;
 }
 
 
-.friend-msg::before {
+.room-msg::before {
   content: '';
   border-top: solid -4px transparent;
   border-right: solid 20px #efeded;
@@ -273,6 +317,7 @@ input[type=text]:focus {
   border-radius: 2px;
 
   overflow-y: hidden;
+  height: 77px;
 }
 
 .msg-write-div:hover,

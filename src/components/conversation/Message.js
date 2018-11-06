@@ -1,9 +1,15 @@
 import React from 'react';
 
-const Message = ({ msgBody, timeSent, senderId }) => {
+// Constants
+import Constants from '../Constants'
+
+
+const Message = ({ msgBody, timeSent, senderId, userInfo }) => {
+
+  const allConstants = new Constants()
   return (
-    <div className={(senderId == 'anijit123') ? "msg my-msg": "msg friend-msg"}>{msgBody}
-      <span className="time-sent">{timeSent}</span>
+    <div className={(senderId == userInfo.userId) ? "msg my-msg": "msg room-msg"}>{msgBody}
+      <span className="time-sent">{allConstants.formatDates(timeSent)}</span>
     </div>
   );
 };
