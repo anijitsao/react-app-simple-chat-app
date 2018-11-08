@@ -9,7 +9,7 @@ let connectDbAndRunQueries = async (apiName, req, res) => {
 	try {
 		let client = await MongoClient.connect(URI_TO_CONNECT_MONGODB, { useNewUrlParser: true })
 		// perform actions on the collection object
-		const collection = client.db(DB_NAME).collection("users")
+		const collection = client.db(DB_NAME).collection("musics")
 
 		// perform several db actions based on API names
 		chooseApiAndSendResponse(apiName, collection, req, res, client)
@@ -21,8 +21,8 @@ let connectDbAndRunQueries = async (apiName, req, res) => {
 // choose the particular function for an API and process it
 let chooseApiAndSendResponse = (apiName, collection, req, res, client) => {
 	switch (apiName) {
-		case 'welcome':
-			makeWelcome(collection, req, res, client)
+		case 'getSongs':
+			makeGetSongs(collection, req, res, client)
 			break;
 		case 'login':
 			makeLogin(collection, req, res, client)
@@ -34,13 +34,13 @@ let chooseApiAndSendResponse = (apiName, collection, req, res, client) => {
 }
 
 // handle request for welcome API
-let makeWelcome = async (collection, req, res, client) => {
+let makeGetSongs = async (collection, req, res, client) => {
 
 	let output = { "message": "Welcome" }
 	try {
-		let data = await collection.countDocuments()
+		let data = await collection.find({}).toArray()
 		console.log('Hurrah !!! we have used async/ await', data)
-		output['totalRecords'] = data
+		output = [...data]
 		sendOutputAndCloseConnection(client, output, res)
 
 	} catch (err) {
@@ -80,8 +80,8 @@ let makeLogin = async (collection, req, res, client) => {
 let makeGetRooms = async (collection, req, res, client) => {
 
 	console.log('params are', req.params)
-	let output = {"message": "success"}
-	sendOutputAndCloseConnection(client,output, res)
+	let output = { "message": "success" }
+	sendOutputAndCloseConnection(client, output, res)
 
 }
 

@@ -25,5 +25,9 @@ router.post('/login', (req, res) => {
 })
 
 
+router.get('/getrooms/:id', (req, res) => {
+	dbOps.connectDbAndRunQueries('getRooms', req, res)
+})
+
 
 module.exports = router
