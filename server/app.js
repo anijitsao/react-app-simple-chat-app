@@ -1,11 +1,12 @@
 const express = require('express')
 
 const app = express()
+const PORT = 3000
 
 let route = require('./routes')
 app.use('/', route);
 
 
-app.listen(3000, (req, res)=> {
-	console.log('Server is listenning on ', 3000)
+app.listen(PORT, () => {
+	console.log('Server is listenning on ', PORT)
 })

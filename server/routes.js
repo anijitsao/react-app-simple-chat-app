@@ -25,7 +25,7 @@ router.post('/login', (req, res) => {
 })
 
 
-router.get('/getrooms/:id', (req, res) => {
+router.post('/getrooms/:id', (req, res) => {
 	dbOps.connectDbAndRunQueries('getRooms', req, res)
 })
 
