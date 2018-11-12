@@ -12,59 +12,43 @@ const COLLECTION_ROOMS = "rooms"
 let connectDbAndRunQueries = async (apiName, req, res) => {
 	try {
 		let client = await MongoClient.connect(URI_TO_CONNECT_MONGODB, { useNewUrlParser: true })
-		// perform actions on the db object
-		// const db = client.db(DB_NAME).db("users")
-
+		// select the db, Collections are selected based on needs
 		const db = client.db(DB_NAME)
 
+		// default output
+		const output = { "message": "FAILED" }
+
 		// perform several db actions based on API names
-		chooseApiAndSendResponse(apiName, db, req, res, client)
+		chooseApiAndSendResponse(apiName, db, req, res, client, output)
 	} catch (err) {
 		console.log('Some Error occurred ...', err)
 	}
 }
 
 // choose the particular function for an API and process it
-let chooseApiAndSendResponse = (apiName, db, req, res, client) => {
+let chooseApiAndSendResponse = (apiName, db, req, res, client, output) => {
+
+	// perform db specific ops based on API names
 	switch (apiName) {
-		case 'welcome':
-			makeWelcome(db, req, res, client)
-			break;
 		case 'login':
-			makeLogin(db, req, res, client)
+			makeLogin(db, req, res, client, output)
 			break;
 		case 'getRooms':
-			makeGetRooms(db, req, res, client)
+			makeGetRooms(db, req, res, client, output)
 			break;
-	}
-}
-
-// handle request for welcome API
-let makeWelcome = async (db, req, res, client) => {
-
-	let output = { "message": "Welcome" }
-	try {
-		let data = await db
-			.collection(COLLECTION_USERS)
-			.countDocuments()
-
-		console.log('Hurrah !!! we have used async/ await', data)
-		output['totalRecords'] = data
-		sendOutputAndCloseConnection(client, output, res)
-
-	} catch (err) {
-		console.log("ERror occurred .. ", err)
-		sendOutputAndCloseConnection(client)
+		case 'getConversation':
+			makeGetConversation(db, req, res, client, output)
+			break;
 	}
 }
 
 // handle request for /login API
-let makeLogin = async (db, req, res, client) => {
+let makeLogin = async (db, req, res, client, output) => {
 	try {
 		let { username, password } = req.body
 
 		// default output when Login fails
-		let output = { message: 'Failed to find the user' }
+		// let output = { message: 'Failed to find the user' }
 
 		let docs = await db
 			.collection(COLLECTION_USERS)
@@ -89,48 +73,74 @@ let makeLogin = async (db, req, res, client) => {
 
 
 // /getrooms API
-let makeGetRooms = async (db, req, res, client) => {
+let makeGetRooms = async (db, req, res, client, output) => {
 
-	let output = { "message": "success" }
 	let { rooms } = req.body
-
-
 	roomIds = rooms.map((ele) => {
 		return ObjectId(ele.roomId)
 	})
 
-	let messages = await db
-		.collection(COLLECTION_ROOMS)
-		.find({ _id: { $in: roomIds } }, { projection: { "lastMessage": 1 } })
-		.toArray()
+	try {
+		// db call
+		let messages = await db
+			.collection(COLLECTION_ROOMS)
+			.find({ _id: { $in: roomIds } }, { projection: { "lastMessage": 1 } })
+			.toArray()
 
-	// if we get the data from the back end
-	// console.log('Messages are', JSON.stringify(messages, null, '\t'))
-	if (messages.length > 0) {
-		output = []
+		// if we get the data from the back end
+		// console.log('Messages are', JSON.stringify(messages, null, '\t'))
+		if (messages.length > 0) {
+			output = []
 
-		messages.forEach((ele, index) => {
-			output.push({
-				"roomname": rooms[index].roomName,
-				"roomId": ele._id,
-				"lastMessage": (ele.lastMessage) ? ele.lastMessage.msgBody : [],
-				"dateInfo": (ele.lastMessage) ? ele.lastMessage.timeSent : 'NA',
-				"senderId": (ele.lastMessage) ? ele.lastMessage.senderId : 'NA'
-			})
-		});
+			messages.forEach((ele, index) => {
+				output.push({
+					"roomname": rooms[index].roomName,
+					"roomId": ele._id,
+					"lastMessage": (ele.lastMessage) ? ele.lastMessage.msgBody : [],
+					"dateInfo": (ele.lastMessage) ? ele.lastMessage.timeSent : 'NA',
+					"senderId": (ele.lastMessage) ? ele.lastMessage.senderId : 'NA'
+				})
+			});
 
+		}
+		sendOutputAndCloseConnection(client, output, res)
+	} catch (err) {
+		console.log('unable to get last message for a room', err)
+		sendOutputAndCloseConnection(client, output, res)
 	}
-	console.log('output before sending\n', output)
-
-
-	sendOutputAndCloseConnection(client, output, res)
-
 }
 
+// /getconversation API
+let makeGetConversation = async (db, req, res, client, output) => {
+	let { id } = req.params
+
+	try {
+		// db call
+		let data = await db
+			.collection(COLLECTION_ROOMS)
+			.find({ _id: ObjectId(id) }, { projection: { "messages": 1 } })
+			.toArray()
+
+		// copy the messages to the resulting output
+		output = [...data[0].messages]
+
+		// add the id field to each message
+		output = output.map((ele, index) => {
+			ele = { ...ele, ...{ "id": `${id}${index}` } }
+			return ele
+		})
+
+		sendOutputAndCloseConnection(client, output, res)
+	} catch (error) {
+		console.log('Unable to get conversation for that room', error)
+		sendOutputAndCloseConnection(client, output, res)
+	}
+}
 
 
 function sendOutputAndCloseConnection(client, output, res) {
 	if (output && res) {
+		console.log('output before sending\n', output)
 		res.json(output)
 	}
 
