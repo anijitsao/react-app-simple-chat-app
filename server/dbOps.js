@@ -16,7 +16,7 @@ let connectDbAndRunQueries = async (apiName, req, res) => {
 		const db = client.db(DB_NAME)
 
 		// default output
-		const output = { "message": "FAILED" }
+		const output = { "message": "SUCCESS" }
 
 		// perform several db actions based on API names
 		chooseApiAndSendResponse(apiName, db, req, res, client, output)
@@ -39,6 +39,9 @@ let chooseApiAndSendResponse = (apiName, db, req, res, client, output) => {
 		case 'getConversation':
 			makeGetConversation(db, req, res, client, output)
 			break;
+		case 'updateRoom':
+			makeUpdateRoom(db, req, res, client, output)
+			break;
 	}
 }
 
@@ -46,9 +49,6 @@ let chooseApiAndSendResponse = (apiName, db, req, res, client, output) => {
 let makeLogin = async (db, req, res, client, output) => {
 	try {
 		let { username, password } = req.body
-
-		// default output when Login fails
-		// let output = { message: 'Failed to find the user' }
 
 		let docs = await db
 			.collection(COLLECTION_USERS)
@@ -63,8 +63,8 @@ let makeLogin = async (db, req, res, client, output) => {
 			delete doc.fullName
 		})
 
-		// if the user exists
-		output = (docs.length > 0) ? { ...docs[0] } : output
+		// if the user exists or sends FAILED message
+		output = (docs.length > 0) ? { ...docs[0] } : { "message": "FAILED" }
 		sendOutputAndCloseConnection(client, output, res)
 	} catch (err) {
 		sendOutputAndCloseConnection(client)
@@ -138,9 +138,51 @@ let makeGetConversation = async (db, req, res, client, output) => {
 }
 
 
+let makeUpdateRoom = async (db, req, res, client, output) => {
+	console.log('params received', req.params)
+	console.log('body of the req', req.body)
+	let allMessages = sortMessagesFromSocket(req.body)
+
+	let { roomId } = req.body
+	let message = { ...req.body }
+	console.log('This is for Room', roomId)
+
+	// How TO USE PUSH WITHIN UPDATE DEMO QUERY
+	// let data = await db
+	// 	.collection(COLLECTION_ROOMS)
+	// 	.updateOne({ _id: ObjectId(roomId) }, { $set: { "lastMessage": message }, $push: { "messages": message } })
+
+	try {
+
+		// initialize the bulk
+		let bulk = await db
+			.collection(COLLECTION_ROOMS)
+			.initializeOrderedBulkOp()
+
+		let ops = []
+
+		// put them all in ops Promises
+		for (let i = 0; i < allMessages.length; i++) {
+			ops.push(
+				await bulk
+					.find({ _id: ObjectId(allMessages[i].roomId) })
+					.updateOne({ $set: { "lastMessage": allMessages[i] }, $push: { "messages": allMessages[i] } })
+			)
+		}
+
+		// execute all of them in bulk
+		let result = await bulk.execute()
+
+		console.log('Modified docs: ', result.nModified)
+		sendOutputAndCloseConnection(client, output, res)
+	} catch (error) {
+		console.log('Unable to update rooms with messages', error)
+	}
+}
+
 function sendOutputAndCloseConnection(client, output, res) {
 	if (output && res) {
-		console.log('output before sending\n', output)
+		console.log(`========================\nOUTPUT AS RECEIVED AND BEFORE SENDING\n==================\n`, output)
 		res.json(output)
 	}
 
@@ -148,6 +190,34 @@ function sendOutputAndCloseConnection(client, output, res) {
 	client.close()
 }
 
+let sortMessagesFromSocket = (body) => {
+
+	let allMessages = [
+		{
+			"msgBody": "test message for Ajitesh",
+			"timeSent": "2018-09-13T15:24:43.657Z",
+			"senderId": "adejhq87276",
+			"roomId": "5be2d2031c9d4400004e51f2",
+			"id": "6518xatei0"
+		},
+		{
+			"msgBody": "Bulk test for JEET",
+			"timeSent": "2018-10-23T05:24:43.657Z",
+			"senderId": "adejhq876",
+			"roomId": "5be2d3fc1c9d4400004e51f3",
+			"id": "6518xatei0"
+		}
+	]
+
+	// push the message comes from the socket
+	if (body) {
+		allMessages = [...allMessages, { ...body }]
+	}
+
+	allMessages = allMessages.sort((a, b) => { return new Date(a.timeSent) - new Date(b.timeSent) })
+	console.log('All messages to be inserted in the DB', allMessages)
+	return allMessages
+}
 // exports
 module.exports = {
 	connectDbAndRunQueries

@@ -15,7 +15,8 @@ router.use(cors())
 router.use(bodyParser.json({ type: 'application/json' }))
 router.use(morgan('dev'))
 
-
+// most important to serve static pages don't forget
+router.use(express.static('../dist'))
 
 router.post('/login', (req, res) => {
 	dbOps.connectDbAndRunQueries('login', req, res)
@@ -28,6 +29,11 @@ router.post('/getrooms/:id', (req, res) => {
 
 router.get('/getconversation/:id', (req, res) => {
 	dbOps.connectDbAndRunQueries('getConversation', req, res)
+})
+
+
+router.put('/updateroom', (req, res) => {
+	dbOps.connectDbAndRunQueries('updateRoom', req, res)
 })
 
 module.exports = router
