@@ -94,7 +94,7 @@ let makeGetRooms = async (db, req, res, client, output) => {
 
 			messages.forEach((ele, index) => {
 				output.push({
-					"roomname": rooms[index].roomName,
+					"roomName": rooms[index].roomName,
 					"roomId": ele._id,
 					"lastMessage": (ele.lastMessage) ? ele.lastMessage.msgBody : [],
 					"dateInfo": (ele.lastMessage) ? ele.lastMessage.timeSent : 'NA',
@@ -192,26 +192,11 @@ function sendOutputAndCloseConnection(client, output, res) {
 
 let sortMessagesFromSocket = (body) => {
 
-	let allMessages = [
-		{
-			"msgBody": "test message for Ajitesh",
-			"timeSent": "2018-09-13T15:24:43.657Z",
-			"senderId": "adejhq87276",
-			"roomId": "5be2d2031c9d4400004e51f2",
-			"id": "6518xatei0"
-		},
-		{
-			"msgBody": "Bulk test for JEET",
-			"timeSent": "2018-10-23T05:24:43.657Z",
-			"senderId": "adejhq876",
-			"roomId": "5be2d3fc1c9d4400004e51f3",
-			"id": "6518xatei0"
-		}
-	]
+	let allMessages = []
 
 	// push the message comes from the socket
 	if (body) {
-		allMessages = [...allMessages, { ...body }]
+		allMessages = [...body]
 	}
 
 	allMessages = allMessages.sort((a, b) => { return new Date(a.timeSent) - new Date(b.timeSent) })

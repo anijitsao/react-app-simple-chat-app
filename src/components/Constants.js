@@ -7,7 +7,7 @@ class Constants {
     // list of all the constants
 
     // all the URLs
-    this.url = 'http://localhost:3000'
+    this.url = 'http://localhost:3000/services'
     this.login = `${this.url}/login`
 
     this.getConversation = `${this.url}/getconversation/{id}`

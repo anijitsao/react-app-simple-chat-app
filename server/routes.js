@@ -16,7 +16,7 @@ router.use(bodyParser.json({ type: 'application/json' }))
 router.use(morgan('dev'))
 
 // most important to serve static pages don't forget
-router.use(express.static('../dist'))
+// router.use(express.static('../dist'))
 
 router.post('/login', (req, res) => {
 	dbOps.connectDbAndRunQueries('login', req, res)

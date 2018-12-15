@@ -55,9 +55,10 @@ class RoomPanel extends Component {
 
     // call the back end to get rooms
     axios({
-        method: allConstants.method.GET,
+        method: allConstants.method.POST,
         url: allConstants.getRooms.replace('{id}', this.props.userInfo.userId),
-        header: allConstants.header
+        header: allConstants.header,
+        data: { rooms: this.props.userInfo.rooms }
       })
       .then((res) => {
         // fill the rooms array from the response
@@ -87,7 +88,7 @@ class RoomPanel extends Component {
   render() {
     let { userInfo } = this.props
     let { activeRoomId } = this.state
-    
+
     return (
       <div className="rooms-panel">
       {

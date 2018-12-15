@@ -224,6 +224,9 @@ input[type=text]:focus {
 .last-message {
   font-size: 0.75em;
   color: #969494;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100px;
 }
 
 .date-info {

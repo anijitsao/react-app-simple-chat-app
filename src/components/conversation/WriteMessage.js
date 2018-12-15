@@ -43,21 +43,24 @@ class WriteMessage extends Component {
     // if the ENTER key is pressed emit the message
     if ((event.keyCode == 13 || event.which == 13) && !event.ctrlKey) {
 
+
       // define the chat message
       let data = {
         timeSent: new Date().toISOString(),
-        msgBody: this.state.message,
+        msgBody: this.state.message.replace(this.state.message.charAt(this.state.message.length - 1), ""),
         senderId: this.props.userInfo.userId,
         roomId: this.props.selectedRoomId,
         id: uuidv4()
       }
 
       console.log('the message', data)
-
+      console.log('length of the message', data.msgBody.length)
 
       // emit the message
-      if (data.msgBody !== '\n') {
+      if (data.msgBody.length > 0) {
         this.socket.emit('message', data)
+        let { onNewMessageArrival } = this.props
+        onNewMessageArrival(data)
       }
 
       // reset the textarea value 
@@ -65,8 +68,6 @@ class WriteMessage extends Component {
         message: ''
       })
 
-      let { onNewMessageArrival } = this.props
-      onNewMessageArrival(data)
     } else if ((event.keyCode == 13 || event.which == 13) && event.ctrlKey) {
       console.log('CTRL pressed')
       this.setState({
@@ -89,9 +90,7 @@ class WriteMessage extends Component {
       <textarea rows="3" className="msg-write-div" 
       onChange={this.handleChange.bind(this)}
       onKeyPress={this.sendMessage.bind(this)}
-      value={this.state.message}>
-      </textarea>
-
+      value={this.state.message} />
     );
   }
 }
