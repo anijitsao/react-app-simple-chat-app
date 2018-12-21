@@ -35,11 +35,19 @@ html {
   padding: 1em;
 }
 
+/* Footer realted */
 .footer {
   background-color: #ab14ab;
   z-index: 1;
 }
 
+.left-arrow {
+   color: #fff; 
+   padding-left: 5px;
+   cursor: pointer;
+}
+
+/* Content related */
 .content {
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -65,8 +73,7 @@ html {
 }
 
 .login-title {
-  margin-bottom: 2px;
-
+  margin-bottom: 20px;
   color: #ab14ab;
 }
 
@@ -257,7 +264,7 @@ input[type=text]:focus {
   text-align: left;
   border: 1px solid #f9f9f9;
   border-radius: 5px;
-  padding: 1em;
+  padding: 1.5em;
   margin: 1em;
 
   position: relative;
@@ -345,4 +352,49 @@ textarea {
 
 .loading-gif {
   width: 100px;
+}
+
+/* Hide a div */
+.hide-div {
+  display: none;
+}
+
+/* media queries */
+@media screen and (max-width: 500px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .my-msg::after {
+    content: '';
+    border-top: solid 0px transparent;
+    border-left: solid 19px #fed2ff;
+    border-bottom: solid 10px transparent;
+    position: absolute;
+    right: -8px;
+    width: 0;
+    height: 0;
+    top: 8px;
+  }
+
+  .room-msg::before {
+    content: '';
+    border-top: solid 0px transparent;
+    border-right: solid 17px #efeded;
+    border-bottom: solid 13px transparent;
+    position: absolute;
+    left: -7px;
+    width: 0;
+    height: 0;
+    top: 8px;
+  }
+
+  .time-sent {
+    position: absolute;
+    bottom: -4px;
+    right: 0;
+    padding: 1em;
+    font-size: 0.7em;
+    color: #797676;
+  }
 }

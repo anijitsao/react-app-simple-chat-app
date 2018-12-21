@@ -21,9 +21,17 @@ class App extends Component {
     this.state = {
       showContent: false
     }
+
+    // define not to create the functions every time
     this.onSuccessLogin = this.onSuccessLogin.bind(this)
+    this.toggleMessagePanel = this.toggleMessagePanel.bind(this)
   }
 
+  // toggle the message panel 
+  toggleMessagePanel() {
+    console.log('back button is clicked')
+  }
+  
   onSuccessLogin(userInfo) {
     this.setState({ userInfo, showContent: true }, () => {
       console.log('State is now', this.state)
@@ -41,7 +49,7 @@ class App extends Component {
         { /* including the Title and other components */}
         <Header userInfo={userInfo} />
         {(showContent == false) ? <Login onSuccessLogin={this.onSuccessLogin} /> : <Content userInfo={userInfo} />}
-        <Footer />
+        <Footer toggleMessagePanel={this.toggleMessagePanel} />
       </div>
     );
   }

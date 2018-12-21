@@ -14,21 +14,33 @@ class Content extends Component {
 
     this.state = {
       showMessagePanel: true,
-      // selectedRoomId: '1234'
+      showRoomPanel: true
     }
 
     this.setSelectedRoomId = this.setSelectedRoomId.bind(this)
 
     // fill room info from Socket
     this.fillRoomInfoFromSocket = this.fillRoomInfoFromSocket.bind(this)
+  }
 
+  componentDidMount() {
+    this.toggleMessagePanel(false, true)
+  }
+
+  toggleMessagePanel(showMessagePanel, showRoomPanel) {
+    console.log('Control comes here', window.innerWidth)
+    if (window.innerWidth < 500) {
+      this.setState({ showMessagePanel, showRoomPanel }, () => {
+        console.log('State is now ', this.state)
+      })
+    }
   }
 
   setSelectedRoomId(id) {
     console.log('id here in Content', id)
-
+    this.toggleMessagePanel(true, false)
     // set in the corresponding variable
-    this.setState({ selectedRoomId: id, showMessagePanel: true }, () => {
+    this.setState({ selectedRoomId: id }, () => {
       console.log('state is now', this.state)
     })
   }
@@ -42,26 +54,23 @@ class Content extends Component {
   render() {
 
     let { userInfo } = this.props
-    let { showMessagePanel, selectedRoomId, newMessageFromSocket } = this.state
+    let { showMessagePanel, showRoomPanel, selectedRoomId, newMessageFromSocket } = this.state
 
+    console.log('In render function of content', this.state)
     return (
       <div className="content">
-      <RoomPanel 
-      userInfo={userInfo} 
-      newMessageFromSocket={newMessageFromSocket}
-      setSelectedRoomId={this.setSelectedRoomId}/>
-      
-      { (showMessagePanel) ? 
-        
-        <MessagesPanel 
-        selectedRoomId={this.state.selectedRoomId} 
-        fillRoomInfoFromSocket={this.fillRoomInfoFromSocket}
-        userInfo={userInfo}/>
-        : 
-        ''
-      }
-      
-    </div>
+        <RoomPanel
+          showRoomPanel={showRoomPanel}
+          userInfo={userInfo}
+          newMessageFromSocket={newMessageFromSocket}
+          setSelectedRoomId={this.setSelectedRoomId} />
+
+        <MessagesPanel
+          showMessagePanel={showMessagePanel}
+          selectedRoomId={selectedRoomId}
+          fillRoomInfoFromSocket={this.fillRoomInfoFromSocket}
+          userInfo={userInfo} />
+      </div>
     );
   }
 };

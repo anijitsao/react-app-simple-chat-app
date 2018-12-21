@@ -74,7 +74,7 @@ class RoomPanel extends Component {
         // set necessary state variables 
         this.setState({ rooms: res.data, activeRoomId: selectRoomIdFromResponse, showLoading: false })
 
-        this.setSelectedRoomId(selectRoomIdFromResponse)
+        // this.setSelectedRoomId(selectRoomIdFromResponse)
       })
   }
 
@@ -88,11 +88,12 @@ class RoomPanel extends Component {
   }
 
   render() {
-    let { userInfo } = this.props
+    let { userInfo, showRoomPanel } = this.props
     let { activeRoomId, showLoading } = this.state
 
+    let roomStyle = (showRoomPanel == false) ? "rooms-panel hide-div" : "rooms-panel"
     return (
-      <div className="rooms-panel">
+      <div className={roomStyle}>
         {(showLoading == true) ? <Loading />
           :
           this.state.rooms.map((room) => {

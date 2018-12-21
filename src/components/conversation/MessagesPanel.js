@@ -20,7 +20,7 @@ class MessagesPanel extends Component {
 
     this.state = {
       messages: [],
-      showLoading: true
+      showLoading: false
     }
 
     // instantiate the Constants
@@ -29,14 +29,11 @@ class MessagesPanel extends Component {
 
   // when the component is mounted 
   componentDidMount() {
-    console.log('did mount control comes here.. after new message enters')
-
     this.scrollToBottom()
   }
 
   // when the component is updated
   componentDidUpdate() {
-    console.log('DID updated control comes here.. after new message enters')
     this.scrollToBottom()
   }
 
@@ -52,6 +49,7 @@ class MessagesPanel extends Component {
 
   // load the conversation of the selected friend
   loadConversation(id) {
+    this.setState({ showLoading: true })
     let allConstants = this.allConstants
     let selectedRoomId = (id) ? id : 'anijit123-sam432' // this.props.selectedRoomId ||
 
@@ -88,11 +86,12 @@ class MessagesPanel extends Component {
 
   render() {
     let { messages, showLoading } = this.state
-    let { userInfo, selectedRoomId } = this.props
+    let { userInfo, selectedRoomId, showMessagePanel } = this.props
 
+    let messageStyle = (showMessagePanel == true) ? "message-panel" : "message-panel hide-div"
     return (
 
-      <div className="message-panel">
+      <div className={messageStyle}>
         <div className="show-messages">
           {(showLoading == true) ? <Loading />
             :
