@@ -19,19 +19,20 @@ class App extends Component {
     super(props);
 
     this.state = {
-      showContent: false
+      showContent: false,
+      showBackButton: false
     }
 
     // define not to create the functions every time
     this.onSuccessLogin = this.onSuccessLogin.bind(this)
-    this.toggleMessagePanel = this.toggleMessagePanel.bind(this)
   }
 
   // toggle the message panel 
-  toggleMessagePanel() {
-    console.log('back button is clicked')
+  toggleBackButton(showBackButton) {
+    console.log('Status of back button', showBackButton)
+    this.setState({ showBackButton })
   }
-  
+
   onSuccessLogin(userInfo) {
     this.setState({ userInfo, showContent: true }, () => {
       console.log('State is now', this.state)
@@ -43,13 +44,15 @@ class App extends Component {
     alert('Some Error occurred...!!')
   }
   render() {
-    let { showContent, userInfo } = this.state
+    let { showContent, userInfo, showBackButton } = this.state
     return (
       <div className="container">
         { /* including the Title and other components */}
         <Header userInfo={userInfo} />
-        {(showContent == false) ? <Login onSuccessLogin={this.onSuccessLogin} /> : <Content userInfo={userInfo} />}
-        <Footer toggleMessagePanel={this.toggleMessagePanel} />
+        {(showContent == false) ? <Login onSuccessLogin={this.onSuccessLogin} /> : <Content userInfo={userInfo} toggleBackButton={this.toggleBackButton.bind(this)} showBackButton={showBackButton} />}
+        <Footer
+          showBackButton={showBackButton}
+          toggleBackButton={this.toggleBackButton.bind(this, false)} />
       </div>
     );
   }

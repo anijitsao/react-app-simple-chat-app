@@ -1,10 +1,15 @@
 import React from 'react';
 
 const Footer = (props) => {
-  let { toggleMessagePanel } = props
+  let { toggleBackButton, showBackButton } = props
   return (
     <div className="footer">
-      <i className="fa fa-arrow-left left-arrow" onClick={toggleMessagePanel}></i>
+      {
+        (showBackButton == true) ?
+          <i className="fa fa-arrow-left left-arrow" onClick={toggleBackButton}></i>
+          :
+          null
+      }
     </div>
   );
 };

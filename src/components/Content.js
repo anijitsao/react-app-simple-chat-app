@@ -24,7 +24,16 @@ class Content extends Component {
   }
 
   componentDidMount() {
+    console.log('after press of backbutton')
     this.toggleMessagePanel(false, true)
+  }
+
+  componentDidUpdate() {
+    console.log('did update', this.props)
+    if (this.props.showBackButton == false) {
+      console.log('Room panel sholud be shown')
+      // this.setState({ showMessagePanel: false, showRoomPanel: true })
+    }
   }
 
   toggleMessagePanel(showMessagePanel, showRoomPanel) {
@@ -32,7 +41,13 @@ class Content extends Component {
     if (window.innerWidth < 500) {
       this.setState({ showMessagePanel, showRoomPanel }, () => {
         console.log('State is now ', this.state)
+        if (this.state.showMessagePanel == true) {
+          console.log('code reached')
+          this.props.toggleBackButton(true)
+        }
       })
+
+
     }
   }
 

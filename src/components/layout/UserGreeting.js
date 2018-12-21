@@ -29,7 +29,6 @@ class UserGreeting extends Component {
 
     return (
 		  <div className="user-info" onClick={this.showHideLogout}>
-		    <img src="images/user_123.jpg" alt="logo of logged in user" className="user-icon" />
 		    <span className="user-greeting">Hi {username}</span>
       { 
       	(showLogout == true)? <Logout />: '' 

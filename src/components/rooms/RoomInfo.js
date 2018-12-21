@@ -10,11 +10,11 @@ const RoomInfo = ({ roomName, lastMessage, dateInfo, senderId, userInfo, onClick
   return (
     <div className={(activeRoomId == roomId) ? "room-info active-room" : "room-info"} onClick={onClick}>
       <div className="room-icon-div">
-        <img src="images/user_123.jpg" alt="logo of a room"  className="room-icon"/>
+        <div className="room-initials">{roomName.substr(0, 2)}</div>
       </div>
       <div className="room-name">
         {roomName}
-        <div className="last-message">{(userInfo == senderId) ? `You: ${lastMessage.substr(0, 96)}`: lastMessage.substr(0, 100)}</div>
+        <div className="last-message">{(userInfo == senderId) ? `You: ${lastMessage.substr(0, 96)}` : lastMessage.substr(0, 100)}</div>
       </div>
       <div className="date-info">{allConstants.formatDates(dateInfo)}</div>
     </div>

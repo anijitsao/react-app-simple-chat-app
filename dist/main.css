@@ -130,6 +130,10 @@ input[type=text]:focus {
   position: absolute;
   top: -6px;
   left: -35px;
+  border: solid 1px #ccc;
+  text-transform: uppercase;
+  padding: 0.2em;
+  font-size: 1em;
 }
 
 .user-greeting {
@@ -202,6 +206,15 @@ input[type=text]:focus {
   margin-bottom: 10px;
 }
 
+.room-initials {
+  border-radius: 50px;
+  border: solid 1px #ccc;
+  align-self: center;
+  justify-self: center;
+  padding: 0.5em;
+  text-transform: uppercase;
+}
+
 .active-room {
   background-color: #f8bcf8;
 }
@@ -212,7 +225,8 @@ input[type=text]:focus {
 }
 
 .room-icon-div {
-  justify-self: end;
+  justify-self: center;
+  display: grid;
 }
 
 .room-icon {
