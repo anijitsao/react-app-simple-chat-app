@@ -1,5 +1,5 @@
 {
-  "name": "simple-chat",
+  "name": "react-app-simple-chat-app",
   "version": "1.0.0",
   "description": "This is a simple calculator Application",
   "main": "index.js",
@@ -8,9 +8,17 @@
     "build": "webpack --mode production",
     "dev": "webpack --mode development"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anijitsahu/react-app-simple-chat-app.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anijitsahu/react-app-simple-chat-app/issues"
+  },
+  "homepage": "https://github.com/anijitsahu/react-app-simple-chat-app#readme",
   "devDependencies": {
     "@babel/core": "^7.1.2",
     "@babel/preset-env": "^7.1.0",
@@ -18,8 +26,7 @@
     "axios": "^0.18.0",
     "babel-loader": "^8.0.4",
     "css-loader": "^1.0.0",
-    "file-loader": "^2.0.0",
-    "mathjs": "^5.2.1",
+    "file-loader": "^2.0.0",    
     "mini-css-extract-plugin": "^0.4.4",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
