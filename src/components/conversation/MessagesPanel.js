@@ -93,8 +93,9 @@ class MessagesPanel extends Component {
 
       <div className={messageStyle}>
         <div className="show-messages">
+          <div><i className="fa fa-arrow-left left-arrow"></i></div>
           {(showLoading == true) ? <Loading />
-            :
+            :            
             messages.map((message) => {
               return <Message key={message.id} {...message} userInfo={userInfo} />
             })
