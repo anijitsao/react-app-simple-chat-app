@@ -38,8 +38,8 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
 
 ## Installation
 
-1. Clone the repository using `git clone https://github.com/anijitsahu/react-app-simple-music-app.git` from `Git Bash / Command Prompt`
-2. Navigate inside the directory by `cd react-app-simple-music-app`
+1. Clone the repository using `git clone https://github.com/anijitsahu/react-app-simple-chat-app.git` from `Git Bash / Command Prompt`
+2. Navigate inside the directory by `cd react-app-simple-chat-app`
 3. Install all the necessary dependecies by using `npm install` 
 4. Navigate to the directory `cd server`
 5. Run the server by `node server.js`
