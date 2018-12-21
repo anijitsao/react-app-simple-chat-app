@@ -3,6 +3,7 @@ import axios from 'axios';
 
 // components
 import RoomInfo from './RoomInfo'
+import Loading from '../Loading'
 
 // Constants
 import Constants from '../Constants'
@@ -15,7 +16,8 @@ class RoomPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rooms: []
+      rooms: [],
+      showLoading: true
     }
 
     // instantiate the Constants
@@ -55,11 +57,11 @@ class RoomPanel extends Component {
 
     // call the back end to get rooms
     axios({
-        method: allConstants.method.POST,
-        url: allConstants.getRooms.replace('{id}', this.props.userInfo.userId),
-        header: allConstants.header,
-        data: { rooms: this.props.userInfo.rooms }
-      })
+      method: allConstants.method.POST,
+      url: allConstants.getRooms.replace('{id}', this.props.userInfo.userId),
+      header: allConstants.header,
+      data: { rooms: this.props.userInfo.rooms }
+    })
       .then((res) => {
         // fill the rooms array from the response
         // console.log('data', res.data)
@@ -70,7 +72,7 @@ class RoomPanel extends Component {
         let selectRoomIdFromResponse = res.data[0]['roomId']
 
         // set necessary state variables 
-        this.setState({ rooms: res.data, activeRoomId: selectRoomIdFromResponse })
+        this.setState({ rooms: res.data, activeRoomId: selectRoomIdFromResponse, showLoading: false })
 
         this.setSelectedRoomId(selectRoomIdFromResponse)
       })
@@ -87,18 +89,19 @@ class RoomPanel extends Component {
 
   render() {
     let { userInfo } = this.props
-    let { activeRoomId } = this.state
+    let { activeRoomId, showLoading } = this.state
 
     return (
       <div className="rooms-panel">
-      {
-        this.state.rooms.map((room)=> {
-          return <RoomInfo key={room.roomId} {...room} 
-          userInfo={userInfo.userId}
-          activeRoomId={activeRoomId}
-          onClick={this.setSelectedRoomId.bind(this, room.roomId)}/>
-        })
-      }
+        {(showLoading == true) ? <Loading />
+          :
+          this.state.rooms.map((room) => {
+            return <RoomInfo key={room.roomId} {...room}
+              userInfo={userInfo.userId}
+              activeRoomId={activeRoomId}
+              onClick={this.setSelectedRoomId.bind(this, room.roomId)} />
+          })
+        }
       </div>
     );
   }

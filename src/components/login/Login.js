@@ -3,6 +3,7 @@ import axios from 'axios'
 
 // components
 import ErrorMessage from './ErrorMessage'
+import Loading from '../Loading'
 
 // Constants
 import Constants from '../Constants'
@@ -19,7 +20,8 @@ class Login extends Component {
       showError: false,
       username: '',
       password: '',
-      errorMessage: 'Username / Password cannot be empty'
+      errorMessage: 'Username / Password cannot be empty',
+      showLoading: false
     }
 
     // instantiate the Constants
@@ -71,32 +73,32 @@ class Login extends Component {
 
   // verify the logged in user
   verifyUser() {
-    let { username, password } = this.state
+    let { username, password, showLoading } = this.state
 
     // reset the username / password field
-    this.setState({ password: '', username: '' })
+    this.setState({ password: '', username: '', showLoading: true })
 
     let allConstants = this.allConstants
 
     axios({
-        method: allConstants.method.POST,
-        url: allConstants.login,
-        header: allConstants.header,
-        data: {
-          username,
-          password
-        }
-      })
+      method: allConstants.method.POST,
+      url: allConstants.login,
+      header: allConstants.header,
+      data: {
+        username,
+        password
+      }
+    })
       .then((res) => {
 
         if (res.data.userId) {
           console.log('user authentication successful', res.data)
-
+          this.setState({ showLoading: false })
           // send the logged in user's data to parent
           this.props.onSuccessLogin(res.data)
         } else {
           // show the error message
-          this.setState({ 'errorMessage': 'Authentication faliure ! Auto reload the page' })
+          this.setState({ 'errorMessage': 'Authentication faliure ! Auto reload the page', showLoading: false })
           this.showErrorComponent()
 
           // reload the page
@@ -123,25 +125,27 @@ class Login extends Component {
   }
 
   render() {
-    let { showError, showPasswordInput, errorMessage, username, password } = this.state
+    let { showError, showPasswordInput, showLoading, errorMessage, username, password } = this.state
     return (
       <div className="login">
         <div className="login-form">
-        <div className="login-title">Login</div>
-          { (showError == true) ? <ErrorMessage message={errorMessage}/> : '' }
-          
-          { (showPasswordInput == false) ? 
-          <input type="text" 
-          placeholder="Enter username" 
-          onChange={this.handleOnChange.bind(this, 'username')}
-          onKeyPress={this.handleKeyPress.bind(this, 'username')}
-          value={username}/>
-          :
-          <input type="password" 
-          placeholder="Enter password"
-          onChange={this.handleOnChange.bind(this, 'password')}
-          onKeyPress={this.handleKeyPress.bind(this, 'password')}
-          value={password}/>
+          <div className="login-title">Login</div>
+          {(showError == true) ? <ErrorMessage message={errorMessage} /> : ''}
+
+          {(showLoading == true) ? <Loading />
+            :
+            (showPasswordInput == false) ?
+              <input type="text"
+                placeholder="Enter username"
+                onChange={this.handleOnChange.bind(this, 'username')}
+                onKeyPress={this.handleKeyPress.bind(this, 'username')}
+                value={username} />
+              :
+              <input type="password"
+                placeholder="Enter password"
+                onChange={this.handleOnChange.bind(this, 'password')}
+                onKeyPress={this.handleKeyPress.bind(this, 'password')}
+                value={password} />
           }
         </div>
       </div>

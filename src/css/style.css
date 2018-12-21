@@ -303,7 +303,7 @@ input[type=text]:focus {
 
 .time-sent {
   position: absolute;
-  bottom: 0;
+  bottom: -7px;
   right: 0;
   padding: 1em;
   font-size: 0.7em;
@@ -335,4 +335,15 @@ textarea {
   resize: none;
   border: 0;
   outline: 0;
+}
+
+/* Loading image related */
+.loading-div {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+
+.loading-gif {
+  width: 100px;
 }

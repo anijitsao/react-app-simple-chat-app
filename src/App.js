@@ -30,16 +30,19 @@ class App extends Component {
     })
   }
 
-
+  // when error occurred in some lower components
+  componentDidCatch() {
+    alert('Some Error occurred...!!')
+  }
   render() {
     let { showContent, userInfo } = this.state
     return (
       <div className="container">
-      { /* including the Title and other components */ }
-      <Header userInfo={userInfo}/>
-      { (showContent == false) ? <Login onSuccessLogin={this.onSuccessLogin}/>: <Content userInfo={userInfo}/> }
-      <Footer />
-    </div>
+        { /* including the Title and other components */}
+        <Header userInfo={userInfo} />
+        {(showContent == false) ? <Login onSuccessLogin={this.onSuccessLogin} /> : <Content userInfo={userInfo} />}
+        <Footer />
+      </div>
     );
   }
 }

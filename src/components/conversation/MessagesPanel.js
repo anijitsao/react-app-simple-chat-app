@@ -5,6 +5,7 @@ import uuidv4 from 'uuid/v4'
 // component
 import Message from './Message'
 import WriteMessage from './WriteMessage'
+import Loading from '../Loading'
 
 // Constants
 import Constants from '../Constants'
@@ -18,13 +19,30 @@ class MessagesPanel extends Component {
     super(props);
 
     this.state = {
-      messages: []
+      messages: [],
+      showLoading: true
     }
 
     // instantiate the Constants
     this.allConstants = new Constants()
   }
 
+  // when the component is mounted 
+  componentDidMount() {
+    console.log('did mount control comes here.. after new message enters')
+
+    this.scrollToBottom()
+  }
+
+  // when the component is updated
+  componentDidUpdate() {
+    console.log('DID updated control comes here.. after new message enters')
+    this.scrollToBottom()
+  }
+
+  scrollToBottom() {
+    this.messageEnd.scrollIntoView({ behavior: 'smooth' });
+  }
   // load the messages when the nextProps is different from the present one
   // most important don't forget it 
   componentWillReceiveProps(nextProps) {
@@ -40,20 +58,17 @@ class MessagesPanel extends Component {
     console.log('IN MESSAGE PANEL : selected friend id in ', selectedRoomId)
 
     axios({
-        method: allConstants.method.GET,
-        url: allConstants.getConversation.replace('{id}', selectedRoomId),
-        header: allConstants.header
-      })
+      method: allConstants.method.GET,
+      url: allConstants.getConversation.replace('{id}', selectedRoomId),
+      header: allConstants.header
+    })
       .then((res) => {
         console.log('conversation is now: ', res.data)
 
         // set the messages field of the state with the data
-        this.setState({ messages: res.data })
+        this.setState({ messages: res.data, showLoading: false })
       })
   }
-
-
-
 
   onNewMessageArrival(data) {
 
@@ -67,31 +82,34 @@ class MessagesPanel extends Component {
       }))
     }
 
-
     // fill the Room info from Socket data
     this.props.fillRoomInfoFromSocket(data)
   }
 
   render() {
-    let { messages } = this.state
+    let { messages, showLoading } = this.state
     let { userInfo, selectedRoomId } = this.props
 
     return (
+
       <div className="message-panel">
         <div className="show-messages">
-          {
-            messages.map((message) =>{
-              return <Message key={message.id} {...message} userInfo={userInfo}/>
+          {(showLoading == true) ? <Loading />
+            :
+            messages.map((message) => {
+              return <Message key={message.id} {...message} userInfo={userInfo} />
             })
           }
-          
+          <div style={{ float: "left", clear: "both" }} ref={(el) => { this.messageEnd = el; }}></div>
         </div>
-        <WriteMessage 
-        userInfo={userInfo}
-        selectedRoomId={selectedRoomId}
-        onNewMessageArrival={this.onNewMessageArrival.bind(this)}/>
-          
+        <WriteMessage
+          isDisabled={showLoading}
+          userInfo={userInfo}
+          selectedRoomId={selectedRoomId}
+          onNewMessageArrival={this.onNewMessageArrival.bind(this)} />
+
       </div>
+
     );
   }
 }

@@ -87,10 +87,11 @@ class WriteMessage extends Component {
   render() {
 
     return (
-      <textarea rows="3" className="msg-write-div" 
-      onChange={this.handleChange.bind(this)}
-      onKeyPress={this.sendMessage.bind(this)}
-      value={this.state.message} />
+      <textarea rows="3" className="msg-write-div"
+        disabled={this.props.isDisabled}
+        onChange={this.handleChange.bind(this)}
+        onKeyPress={this.sendMessage.bind(this)}
+        value={this.state.message} />
     );
   }
 }
