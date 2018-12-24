@@ -29,7 +29,7 @@ class RoomPanel extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('nextProps from RoomPanel', nextProps, ' and old props', this.props)
+    // console.log('nextProps from RoomPanel', nextProps, ' and old props', this.props)
 
     if (nextProps.newMessageFromSocket && (!this.props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== this.props.newMessageFromSocket.id)) {
 
@@ -42,7 +42,12 @@ class RoomPanel extends Component {
           room.lastMessage = nextProps.newMessageFromSocket.msgBody
           room.dateInfo = nextProps.newMessageFromSocket.timeSent
           room.senderId = nextProps.newMessageFromSocket.senderId
-          room.read = false
+          
+          // if the message is from other non active room
+          if(room.read == true) {
+            room.read = false
+            this.saveReadStatusToDb(room, false)
+          }
         }
       })
 
@@ -64,15 +69,15 @@ class RoomPanel extends Component {
     })
       .then((res) => {
         // fill the rooms array from the response
-        // console.log('data', res.data)
+        console.log('data', res.data)
 
         // sort the data
         res.data = res.data.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
 
-        let selectRoomIdFromResponse = res.data[0]['roomId']
+        // let selectRoomIdFromResponse = res.data[0]['roomId']
 
         // set necessary state variables 
-        this.setState({ rooms: res.data, activeRoomId: selectRoomIdFromResponse, showLoading: false })
+        this.setState({ rooms: res.data, showLoading: false })
 
         // this.setSelectedRoomId(selectRoomIdFromResponse)
       })
@@ -85,6 +90,41 @@ class RoomPanel extends Component {
 
     // set active room id for highlighting purpose
     this.setState({ activeRoomId: id })
+    this.changeReadStatus(id)
+  }
+
+  // function to change the room status from read / unread
+  changeReadStatus(id) {
+    let allRooms = [...this.state.rooms]
+    console.log('change status reached')
+    
+    allRooms.forEach((room, index, roomArray) => {
+      if (room.roomId == id && room.read == false) {
+        roomArray[index].read = true      
+        this.saveReadStatusToDb(room, true)
+      }
+    })
+
+    console.log('All rooms are now', allRooms)
+    this.setState({ rooms: allRooms })
+  }
+
+  saveReadStatusToDb(room, status) {
+    axios({
+      method: this.allConstants.method.PUT,
+      url: this.allConstants.saveReadStatus,
+      data: {
+        userId: this.props.userInfo.userId,
+        roomName: room.roomName,
+        read: status
+      }
+    })
+    .then((response)=> {
+      console.log('room status saved')
+    })
+    .catch((err)=>{
+      console.log('unable to save room status', err)
+    })
   }
 
   render() {

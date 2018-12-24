@@ -262,6 +262,10 @@ input[type=text]:focus {
   width: 100px;
 }
 
+.unread-msg {
+  font-weight: bold;
+}
+
 .date-info {
   font-size: 0.65em;
   padding: 0.9em;

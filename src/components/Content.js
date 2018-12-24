@@ -55,7 +55,6 @@ class Content extends Component {
   }
 
   notifyOnlineRooms(rooms) {
-    console.log('List of online rooms', rooms)
     this.setState({onlineRooms: rooms})
   }
   render() {
@@ -67,7 +66,7 @@ class Content extends Component {
       showMessagePanel = false
       showRoomPanel = true
     }
-    console.log('In render function of content', this.state)
+
     return (
       <div className="content">
         <RoomPanel

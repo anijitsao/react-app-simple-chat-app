@@ -36,4 +36,8 @@ router.put('/updateroom', (req, res) => {
 	dbOps.connectDbAndRunQueries('updateRoom', req, res)
 })
 
+router.put('/updateroomreadstatus', (req, res) => {
+	dbOps.connectDbAndRunQueries('updateRoomReadStatus', req, res)
+})
+
 module.exports = router

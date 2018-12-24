@@ -12,6 +12,7 @@ class Constants {
 
     this.getConversation = `${this.url}/getconversation/{id}`
     this.getRooms = `${this.url}/getrooms/{id}`
+    this.saveReadStatus = `${this.url}/updateroomreadstatus`
 
     // the Content-Type
     this.header = { 'Content-Type': 'application/json' }
@@ -19,7 +20,8 @@ class Constants {
     // HTTP verbs
     this.method = {
       "POST": "POST",
-      "GET": "GET"
+      "GET": "GET",
+      "PUT": "PUT"
     }
 
 

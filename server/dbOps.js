@@ -42,6 +42,9 @@ let chooseApiAndSendResponse = (apiName, db, req, res, client, output) => {
 		case 'updateRoom':
 			makeUpdateRoom(db, req, res, client, output)
 			break;
+		case 'updateRoomReadStatus':
+			makeUpdateRoomReadStatus(db, req, res, client, output)
+			break;
 	}
 }
 
@@ -99,7 +102,8 @@ let makeGetRooms = async (db, req, res, client, output) => {
 					"lastMessage": (ele.lastMessage) ? ele.lastMessage.msgBody : [],
 					"dateInfo": (ele.lastMessage) ? ele.lastMessage.timeSent : 'NA',
 					"senderId": (ele.lastMessage) ? ele.lastMessage.senderId : 'NA',
-					"partnerId": rooms[index].partnerId || 'NA'
+					"partnerId": rooms[index].partnerId || 'NA',
+					"read": rooms[index].read 
 				})
 			});
 
@@ -180,6 +184,26 @@ let makeUpdateRoom = async (db, req, res, client, output) => {
 		console.log('Unable to update rooms with messages', error)
 	}
 }
+
+let makeUpdateRoomReadStatus = async (db, req, res, client, output) => {
+	console.log('body of the req', req.body)
+
+	let { userId, roomName, read } = req.body
+	try {
+		let docs = await db
+			.collection(COLLECTION_USERS)
+			.updateOne({ _id: ObjectId(userId), "rooms.roomName": roomName }, { "$set": { "rooms.$.read": read } })
+
+		console.log('read status is changed here, number of modified docs', docs.result.nModified)
+		sendOutputAndCloseConnection(client, output, res)
+
+	} catch (error) {
+		console.log('Unable to change the read status', error)
+		sendOutputAndCloseConnection(client, output, res)
+
+	}
+}
+
 
 function sendOutputAndCloseConnection(client, output, res) {
 	if (output && res) {
