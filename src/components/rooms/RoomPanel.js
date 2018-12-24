@@ -42,7 +42,7 @@ class RoomPanel extends Component {
           room.lastMessage = nextProps.newMessageFromSocket.msgBody
           room.dateInfo = nextProps.newMessageFromSocket.timeSent
           room.senderId = nextProps.newMessageFromSocket.senderId
-
+          room.read = false
         }
       })
 
@@ -88,7 +88,7 @@ class RoomPanel extends Component {
   }
 
   render() {
-    let { userInfo, showRoomPanel } = this.props
+    let { userInfo, showRoomPanel, onlineRooms } = this.props
     let { activeRoomId, showLoading } = this.state
 
     let roomStyle = (showRoomPanel == false) ? "rooms-panel hide-div" : "rooms-panel"
@@ -100,7 +100,8 @@ class RoomPanel extends Component {
             return <RoomInfo key={room.roomId} {...room}
               userInfo={userInfo.userId}
               activeRoomId={activeRoomId}
-              onClick={this.setSelectedRoomId.bind(this, room.roomId)} />
+              onlineRooms={onlineRooms}
+              setSelectedRoomId={this.setSelectedRoomId.bind(this, room.roomId)} />
           })
         }
       </div>

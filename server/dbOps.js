@@ -98,7 +98,8 @@ let makeGetRooms = async (db, req, res, client, output) => {
 					"roomId": ele._id,
 					"lastMessage": (ele.lastMessage) ? ele.lastMessage.msgBody : [],
 					"dateInfo": (ele.lastMessage) ? ele.lastMessage.timeSent : 'NA',
-					"senderId": (ele.lastMessage) ? ele.lastMessage.senderId : 'NA'
+					"senderId": (ele.lastMessage) ? ele.lastMessage.senderId : 'NA',
+					"partnerId": rooms[index].partnerId || 'NA'
 				})
 			});
 

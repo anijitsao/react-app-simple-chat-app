@@ -7,9 +7,10 @@ const allSocketOps = (io) => {
 
   let messagesToStoreInDb = []
 
-  io.on('connection', (socket) => {
-    console.log('socket connection done successfully...')
-
+  let activeUsers = []
+  let users = {}
+  io.sockets.on('connection', (socket) => {
+    console.log('socket connection done successfully...', socket.id)
 
     socket.on('message', (data) => {
       console.log('data is inside socketOps', data)
@@ -34,8 +35,29 @@ const allSocketOps = (io) => {
 
 
     socket.on('disconnect', () => {
-      console.log('socket disconnected...')
+      console.log('socket disconnected...', socket.id)
+      activeUsers = activeUsers.filter((activeUser)=> { return activeUser != users[socket.id]['userId']})
+      socket.broadcast.emit('onlineUser', activeUsers)
+
     });
+
+    socket.on('onlineUser', (data) => {
+      console.log('data is', data)
+      if (data) {
+        users[socket.id] = { "userId": data }
+
+        if (activeUsers.indexOf(data) == -1) {
+          activeUsers.push(data)
+        }
+      }
+      socket.broadcast.emit('onlineUser', activeUsers)
+    })
+
+    // broadcast the socket after certain interval
+    setInterval(()=> {
+      socket.broadcast.emit('onlineUser', activeUsers)
+    }, 10000)
+    
   });
 
 }

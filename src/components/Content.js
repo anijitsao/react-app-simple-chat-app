@@ -14,40 +14,28 @@ class Content extends Component {
 
     this.state = {
       showMessagePanel: true,
-      showRoomPanel: true
+      showRoomPanel: true,
+      onlineRooms: []
     }
 
     this.setSelectedRoomId = this.setSelectedRoomId.bind(this)
 
     // fill room info from Socket
     this.fillRoomInfoFromSocket = this.fillRoomInfoFromSocket.bind(this)
+    this.notifyOnlineRooms = this.notifyOnlineRooms.bind(this)
   }
 
   componentDidMount() {
-    console.log('after press of backbutton')
     this.toggleMessagePanel(false, true)
-  }
-
-  componentDidUpdate() {
-    console.log('did update', this.props)
-    if (this.props.showBackButton == false) {
-      console.log('Room panel sholud be shown')
-      // this.setState({ showMessagePanel: false, showRoomPanel: true })
-    }
-  }
+  }  
 
   toggleMessagePanel(showMessagePanel, showRoomPanel) {
-    console.log('Control comes here', window.innerWidth)
     if (window.innerWidth < 500) {
       this.setState({ showMessagePanel, showRoomPanel }, () => {
-        console.log('State is now ', this.state)
         if (this.state.showMessagePanel == true) {
-          console.log('code reached')
           this.props.toggleBackButton(true)
         }
       })
-
-
     }
   }
 
@@ -66,17 +54,26 @@ class Content extends Component {
     this.setState({ newMessageFromSocket: message })
   }
 
+  notifyOnlineRooms(rooms) {
+    console.log('List of online rooms', rooms)
+    this.setState({onlineRooms: rooms})
+  }
   render() {
 
     let { userInfo } = this.props
-    let { showMessagePanel, showRoomPanel, selectedRoomId, newMessageFromSocket } = this.state
+    let { showMessagePanel, showRoomPanel, selectedRoomId, newMessageFromSocket, onlineRooms } = this.state
 
+    if (window.innerWidth < 500 && this.props.showBackButton == false) {
+      showMessagePanel = false
+      showRoomPanel = true
+    }
     console.log('In render function of content', this.state)
     return (
       <div className="content">
         <RoomPanel
           showRoomPanel={showRoomPanel}
           userInfo={userInfo}
+          onlineRooms={onlineRooms}
           newMessageFromSocket={newMessageFromSocket}
           setSelectedRoomId={this.setSelectedRoomId} />
 
@@ -84,6 +81,7 @@ class Content extends Component {
           showMessagePanel={showMessagePanel}
           selectedRoomId={selectedRoomId}
           fillRoomInfoFromSocket={this.fillRoomInfoFromSocket}
+          notifyOnlineRooms={this.notifyOnlineRooms}
           userInfo={userInfo} />
       </div>
     );

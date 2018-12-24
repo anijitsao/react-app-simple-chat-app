@@ -18,11 +18,26 @@ class WriteMessage extends Component {
 
 
   componentDidMount() {
-    let { onNewMessageArrival } = this.props
+    let { onNewMessageArrival, onLineRoom } = this.props
+    let toAlertRoomIds
+
     this.socket.on('connect', () => {
       console.log('Socket connected FROM React...')
+
+      toAlertRoomIds = this.props.userInfo.userId
+
+      // emit all the room ids where the user belongs to see him / her as active
+      this.socket.emit('onlineUser', toAlertRoomIds)      
     });
 
+    // when a user is online
+    this.socket.on('onlineUser', (data) => {
+      console.log('these rooms should be shown as online', data)
+      onLineRoom(data)
+    })
+
+
+    // when a new message arrives
     this.socket.on('message', (data) => {
       console.log('data value ', data)
 

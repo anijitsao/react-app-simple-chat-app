@@ -25,6 +25,8 @@ class MessagesPanel extends Component {
 
     // instantiate the Constants
     this.allConstants = new Constants()
+
+    this.onLineRoom = this.onLineRoom.bind(this)
   }
 
   // when the component is mounted 
@@ -84,6 +86,11 @@ class MessagesPanel extends Component {
     this.props.fillRoomInfoFromSocket(data)
   }
 
+  onLineRoom(roomsOnline) {
+    console.log('Online rooms are', roomsOnline)
+    this.props.notifyOnlineRooms(roomsOnline)
+  }
+
   render() {
     let { messages, showLoading } = this.state
     let { userInfo, selectedRoomId, showMessagePanel } = this.props
@@ -93,7 +100,6 @@ class MessagesPanel extends Component {
 
       <div className={messageStyle}>
         <div className="show-messages">
-          <div><i className="fa fa-arrow-left left-arrow"></i></div>
           {(showLoading == true) ? <Loading />
             :            
             messages.map((message) => {
@@ -106,6 +112,7 @@ class MessagesPanel extends Component {
           isDisabled={showLoading}
           userInfo={userInfo}
           selectedRoomId={selectedRoomId}
+          onLineRoom={this.onLineRoom}
           onNewMessageArrival={this.onNewMessageArrival.bind(this)} />
 
       </div>
