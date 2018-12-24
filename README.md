@@ -7,12 +7,10 @@ combined to get a single build for production purpose using [Webpack 4](https://
 
 ES6 `module` creation along with `import /export` is used. [Babel](https://babeljs.io/docs/en/babel-preset-react) is used to *transpile* all [JSX](https://reactjs.org/docs/jsx-in-depth.html) code to vanilla JavaScript code. To install all the dependecies `npm` is used.
 
+Back end is implemented using [Node JS](https://nodejs.org/docs/latest-v8.x/api/), [Express JS](https://expressjs.com/en/api.html) and [MongoDB](https://docs.mongodb.com/). [Atlas](https://www.mongodb.com/cloud/atlas), the *Cloud* version of [MongoDB](https://docs.mongodb.com/) is used. Real time communication is done using [Socket.io](https://www.npmjs.com/package/socket.io)
+
+
 For UI creation [HTML5](https://www.w3schools.com/html/html5_intro.asp) and [CSS3](https://www.w3schools.com/css/) are used. [Grid](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Grid_Layout), the new feature of [CSS3](https://www.w3schools.com/css/) is used for layout creation purpose.
-
-Back end is implemented using [Node JS](https://nodejs.org/docs/latest-v8.x/api/), [Express JS](https://expressjs.com/en/api.html) and [MongoDB](https://docs.mongodb.com/). [Atlas](https://www.mongodb.com/cloud/atlas), the *Cloud* version of [MongoDB](https://docs.mongodb.com/)
-is used.
-
-Real time communication is done using [Socket.io](https://www.npmjs.com/package/socket.io)
 
 This is a *responsive web application* for viewing in both Mobile and Desktop.
 
@@ -124,7 +122,7 @@ Desktop as well as Mobile version of the screenshots are given side by side.
 
 <p> Logout functionality <br/> 
  <img src="screenshots/desktop 11.png" width="590px" title="Logout functionality screen"/>
- <img src="screenshots/mobile 11.png" width="190px" title="Logout functionality screen"/> 
+ <img src="screenshots/mobile 11.png" width="250px" title="Logout functionality screen"/> 
 </p>
 
 
