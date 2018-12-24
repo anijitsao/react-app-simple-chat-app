@@ -17,24 +17,31 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
 
 ## Features
 <ul>
- <li> This is Simple Music Application </li>
+ <li> This is Simple Chat Application </li>
  <li> It is a Full Stack Application </li>
 </ul>
 
-- All the song details are stored in the [MongoDB Atlas](https://www.mongodb.com/cloud/atlas). This is a *free/ shared* account on [Atlas](https://www.mongodb.com/cloud/atlas). **So Please use it wisely** 
-
+- All the user details, rooms and conversations are stored in the [MongoDB Atlas](https://www.mongodb.com/cloud/atlas). This is a *free/ shared* account on [Atlas](https://www.mongodb.com/cloud/atlas). **So Please use it wisely** 
 
 <ul>
- <li> Application is loaded with the songs </li>
- <li> Listening of the songs is supported </li>
- <li> Searching from the list of songs is possible </li>
+ <li>Login as well as Logout feature is added in v2.0 </li>
+ <li>Error will be shown if the credentials are not correct</li>
 </ul>
+ *for simplicity passwords are not encrypted*
 
-- Information about the song (Movie, Album, Artist) is available on click of the `i` icon
-- Changing the rating is supported
-- All the ratings are saved in the database i.e. *persistant* 
-- Listing of Top 5 songs *based on their rating* is available
+<ul>
+ <li> Real time communication is supported using <a href="https://www.npmjs.com/package/socket.io">Socket.io</a>
+ <li> Rooms with users are supported </li>
+ <li> Conversation of a specific rooms will be shown on clicking the corresponding room</li> 
+</ul>
+*for mobile screen user can go to the rooms page by clicking the `<-` icon at the end of the screen*
 
+<ul>
+ <li> Online / Offline status are shown by the <i>violet dot</i> </li>
+ <li> Read / Unread status of conversation is supported
+ <li> All the conversation are stored in the database i.e. <i>persistant</i>
+ <li> All the timestamps are shown in <i>UTC</i> format to taken into cross browser differences
+</ul>
 
 ## Installation
 
@@ -43,7 +50,10 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
 3. Install all the necessary dependecies by using `npm install` 
 4. Navigate to the directory `cd server`
 5. Run the server by `node server.js`
-5. Open the web browser and type`http://localhost:3000` in the address bar to load the application 
+6. Open the `2` web browser and type`http://localhost:3000` in the address bar to load the application in each of them
+7. In one browser login with username `anijit` and password `anijit123`
+8. In another one login with username `jeetm` and password `jeetm76` and enjoy chatting
+
  
 *tested with <img src="screenshots/chrome.png" width="20px" title="Google Chrome">Google Chrome v70 and <img src="screenshots/firefox.png" width="25px" title="Firefox Developer edition">Mozilla Firefox Developer Editon*  
 
@@ -58,24 +68,55 @@ Desktop as well as Mobile version of the screenshots are given side by side.
  <img src="screenshots/mobile 1.png" width="190px" title="initial screen"/> 
 </p>
  
- <p> After loading the songs <br/> 
- <img src="screenshots/desktop 2.png" width="590px" title="After loading the songs screen"/>
- <img src="screenshots/mobile 2.png" width="190px" title="After loading the songs screen"/> 
+ <p> Login Screen <br/> 
+ <img src="screenshots/desktop 2.png" width="590px" title="Login screen"/>
+ <img src="screenshots/mobile 2.png" width="190px" title="Login screen"/> 
 </p>
 
-<p> Top 5 Songs <br/> 
- <img src="screenshots/desktop 3.png" width="590px" title="Top 5 Songs screen"/>
- <img src="screenshots/mobile 3.png" width="190px" title="Top 5 Songs screen"/> 
+<p> Entering credentials <br/> 
+ <img src="screenshots/desktop 3.png" width="590px" title="Entering credentials screen"/>
+ <img src="screenshots/mobile 3.png" width="190px" title="Entering credentials screen"/> 
 </p>
 
-<p> Showing information of a song <br/> 
- <img src="screenshots/desktop 4.png" width="590px" title="Showing information of a song screen"/>
- <img src="screenshots/mobile 4.png" width="190px" title="Showing information of a song screen"/> 
+<p> After submitting credentials <br/> 
+ <img src="screenshots/desktop 4.png" width="590px" title="After submitting credentials screen"/>
+ <img src="screenshots/mobile 4.png" width="190px" title="After submitting credentials screen"/> 
 </p>
 
-<p> Searching and showing searched songs <br/> 
- <img src="screenshots/desktop 5.png" width="590px" title="Searching and showing searched songs screen"/>
- <img src="screenshots/mobile 5.png" width="190px" title="Searching and showing searched songs screen"/> 
+<p> If credentials are not correct <br/> 
+ <img src="screenshots/desktop 5.png" width="590px" title="If credentials are not correct screen"/>
+ <img src="screenshots/mobile 5.png" width="190px" title="If credentials are not correct screen"/> 
 </p>
+
+<p> After a successful login <br/> 
+ <img src="screenshots/desktop 6.png" width="590px" title="After a successful login screen"/>
+ <img src="screenshots/mobile 6.png" width="190px" title="After a successful login screen"/> 
+</p>
+
+<p> If credentials are not correct <br/> 
+ <img src="screenshots/desktop 7.png" width="590px" title="If credentials are not correct screen"/>
+ <img src="screenshots/mobile 7.png" width="190px" title="If credentials are not correct screen"/> 
+</p>
+
+<p> If credentials are not correct <br/> 
+ <img src="screenshots/desktop 8.png" width="590px" title="If credentials are not correct screen"/>
+ <img src="screenshots/mobile 8.png" width="190px" title="If credentials are not correct screen"/> 
+</p>
+
+<p> If credentials are not correct <br/> 
+ <img src="screenshots/desktop 9.png" width="590px" title="If credentials are not correct screen"/>
+ <img src="screenshots/mobile 9.png" width="190px" title="If credentials are not correct screen"/> 
+</p>
+
+<p> If credentials are not correct <br/> 
+ <img src="screenshots/desktop 10.png" width="590px" title="If credentials are not correct screen"/>
+ <img src="screenshots/mobile 10.png" width="190px" title="If credentials are not correct screen"/> 
+</p>
+
+<p> Logout functionality <br/> 
+ <img src="screenshots/desktop 11.png" width="590px" title="Logout functionality screen"/>
+ <img src="screenshots/mobile 11.png" width="190px" title="Logout functionality screen"/> 
+</p>
+
 
 
