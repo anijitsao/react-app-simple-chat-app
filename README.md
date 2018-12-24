@@ -30,7 +30,7 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
  <li>Error will be shown if the credentials are not correct</li>
 </ul>
 
- *for simplicity passwords are not encrypted*
+   &nbsp;  *for simplicity passwords are not encrypted*
 
 <ul>
  <li> Real time communication is supported using <a href="https://www.npmjs.com/package/socket.io">Socket.io</a>
@@ -38,7 +38,7 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
  <li> Conversation of a specific rooms will be shown on clicking the corresponding room</li> 
 </ul>
 
-*for mobile screen user can go to the rooms page by clicking the `<-` icon at the end of the screen*
+  &nbsp;  *for mobile screen user can go to the rooms page by clicking the `<-` icon at the end of the screen*
 
 <ul>
  <li> Online / Offline status are shown by the <i>violet dot</i> </li>
@@ -59,12 +59,13 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
 8. In another one login with username `jeetm` and password `jeetm76` and enjoy chatting
 
 **Test users**
+
+
 Username | Password
---    | --
-anijit | anijit123
---  | --
-jeetm | jeetm76
---   | --
+---    | ---
+`anijit | anijit123
+jeetm | jeetm76`
+
  
 *tested with <img src="screenshots/chrome.png" width="20px" title="Google Chrome">Google Chrome v70 and <img src="screenshots/firefox.png" width="25px" title="Firefox Developer edition">Mozilla Firefox Developer Editon*  
 
@@ -89,19 +90,19 @@ Desktop as well as Mobile version of the screenshots are given side by side.
  <img src="screenshots/mobile 3.png" width="190px" title="After submitting credentials screen"/> 
 </p>
 
-<p>  <br/> 
- <img src="screenshots/desktop 4.png" width="590px" title="After submitting credentials screen"/>
- <img src="screenshots/mobile 4.png" width="190px" title="After submitting credentials screen"/> 
-</p>
-
 <p> If credentials are not correct <br/> 
- <img src="screenshots/desktop 5.png" width="590px" title="If credentials are not correct screen"/>
- <img src="screenshots/mobile 5.png" width="190px" title="If credentials are not correct screen"/> 
+ <img src="screenshots/desktop 4.png" width="590px" title="If credentials are not correct screen"/>
+ <img src="screenshots/mobile 4.png" width="190px" title="If credentials are not correct screen"/> 
 </p>
 
-<p> After a successful login <br/> 
- <img src="screenshots/desktop 6.png" width="590px" title="After a successful login screen"/>
- <img src="screenshots/mobile 6.png" width="190px" title="After a successful login screen"/> 
+<p> After a successful login  <br/> 
+ <img src="screenshots/desktop 5.png" width="590px" title="After a successful login screen"/>
+ <img src="screenshots/mobile 5.png" width="190px" title="After a successful login screen"/> 
+</p>
+
+<p> When a new user joins <br/> 
+ <img src="screenshots/desktop 6.png" width="590px" title="When a new user joins screen"/>
+ <img src="screenshots/mobile 6.png" width="190px" title="When a new user joins screen"/> 
 </p>
 
 <p> If credentials are not correct <br/> 
