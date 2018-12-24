@@ -30,15 +30,17 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
  <li>Error will be shown if the credentials are not correct</li>
 </ul>
 
-   &nbsp;  *for simplicity passwords are not encrypted*
+  - *for simplicity passwords are not encrypted*
 
 <ul>
  <li> Real time communication is supported using <a href="https://www.npmjs.com/package/socket.io">Socket.io</a>
  <li> Rooms with users are supported </li>
- <li> Conversation of a specific rooms will be shown on clicking the corresponding room</li> 
+ <li> Conversation of a specific rooms will be shown on clicking the corresponding room</li>  
 </ul>
 
-  &nbsp;  *for mobile screen user can go to the rooms page by clicking the `<-` icon at the end of the screen*
+  - *for mobile screen user can go to the rooms page by clicking the `<-` icon at the end of the screen*
+  - Multiline message can be send by hitting `Ctrl + ENTER`
+  - To send a message hit `ENTER` key
 
 <ul>
  <li> Online / Offline status are shown by the <i>violet dot</i> </li>
@@ -63,8 +65,8 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
 
 Username | Password
 ---    | ---
-`anijit | anijit123
-jeetm | jeetm76`
+` anijit ` | ` anijit123`
+`jeetm` | `jeetm76 `
 
  
 *tested with <img src="screenshots/chrome.png" width="20px" title="Google Chrome">Google Chrome v70 and <img src="screenshots/firefox.png" width="25px" title="Firefox Developer edition">Mozilla Firefox Developer Editon*  
@@ -105,24 +107,19 @@ Desktop as well as Mobile version of the screenshots are given side by side.
  <img src="screenshots/mobile 6.png" width="190px" title="When a new user joins screen"/> 
 </p>
 
-<p> If credentials are not correct <br/> 
- <img src="screenshots/desktop 7.png" width="590px" title="If credentials are not correct screen"/>
- <img src="screenshots/mobile 7.png" width="190px" title="If credentials are not correct screen"/> 
+<p> When a new user joins (2nd browser) <br/> 
+ <img src="screenshots/desktop 7.png" width="590px" title="When a new user joins (2nd browser) screen"/>
+ <img src="screenshots/mobile 7.png" width="190px" title="When a new user joins (2nd browser) screen"/> 
 </p>
 
-<p> If credentials are not correct <br/> 
- <img src="screenshots/desktop 8.png" width="590px" title="If credentials are not correct screen"/>
- <img src="screenshots/mobile 8.png" width="190px" title="If credentials are not correct screen"/> 
+<p> Sender type some message <br/> 
+ <img src="screenshots/desktop 9.png" width="590px" title="Sender type some message screen"/>
+ <img src="screenshots/mobile 9.png" width="190px" title="Sender type some message screen"/> 
 </p>
 
-<p> If credentials are not correct <br/> 
- <img src="screenshots/desktop 9.png" width="590px" title="If credentials are not correct screen"/>
- <img src="screenshots/mobile 9.png" width="190px" title="If credentials are not correct screen"/> 
-</p>
-
-<p> If credentials are not correct <br/> 
- <img src="screenshots/desktop 10.png" width="590px" title="If credentials are not correct screen"/>
- <img src="screenshots/mobile 10.png" width="190px" title="If credentials are not correct screen"/> 
+<p> Receiver's room is updated <br/> 
+ <img src="screenshots/desktop 10.png" width="590px" title="Receiver's room is updated screen"/>
+ <img src="screenshots/mobile 10.png" width="190px" title="Receiver's room is updated screen"/> 
 </p>
 
 <p> Logout functionality <br/> 
