@@ -20,7 +20,8 @@ class MessagesPanel extends Component {
 
     this.state = {
       messages: [],
-      showLoading: false
+      showLoading: false,
+      disableTextArea: true
     }
 
     // instantiate the Constants
@@ -51,7 +52,7 @@ class MessagesPanel extends Component {
 
   // load the conversation of the selected friend
   loadConversation(id) {
-    this.setState({ showLoading: true })
+    this.setState({ showLoading: true, disableTextArea: true })
     let allConstants = this.allConstants
     let selectedRoomId = (id) ? id : 'anijit123-sam432' // this.props.selectedRoomId ||
 
@@ -66,7 +67,7 @@ class MessagesPanel extends Component {
         console.log('conversation is now: ', res.data)
 
         // set the messages field of the state with the data
-        this.setState({ messages: res.data, showLoading: false })
+        this.setState({ messages: res.data, showLoading: false, disableTextArea: false })
       })
   }
 
@@ -92,7 +93,7 @@ class MessagesPanel extends Component {
   }
 
   render() {
-    let { messages, showLoading } = this.state
+    let { messages, showLoading, disableTextArea } = this.state
     let { userInfo, selectedRoomId, showMessagePanel } = this.props
 
     let messageStyle = (showMessagePanel == true) ? "message-panel" : "message-panel hide-div"
@@ -109,7 +110,7 @@ class MessagesPanel extends Component {
           <div style={{ float: "left", clear: "both" }} ref={(el) => { this.messageEnd = el; }}></div>
         </div>
         <WriteMessage
-          isDisabled={showLoading}
+          isDisabled={disableTextArea}
           userInfo={userInfo}
           selectedRoomId={selectedRoomId}
           onLineRoom={this.onLineRoom}

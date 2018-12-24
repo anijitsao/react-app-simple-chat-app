@@ -427,4 +427,14 @@ textarea {
     font-size: 0.7em;
     color: #797676;
   }
+
+  .online-mark {
+    background-color: #ab14ab;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0px;
+    right: 1px;
+  }
 }
