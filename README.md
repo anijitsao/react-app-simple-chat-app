@@ -12,6 +12,8 @@ For UI creation [HTML5](https://www.w3schools.com/html/html5_intro.asp) and [CSS
 Back end is implemented using [Node JS](https://nodejs.org/docs/latest-v8.x/api/), [Express JS](https://expressjs.com/en/api.html) and [MongoDB](https://docs.mongodb.com/). [Atlas](https://www.mongodb.com/cloud/atlas), the *Cloud* version of [MongoDB](https://docs.mongodb.com/)
 is used.
 
+Real time communication is done using [Socket.io](https://www.npmjs.com/package/socket.io)
+
 This is a *responsive web application* for viewing in both Mobile and Desktop.
 
 
@@ -24,9 +26,10 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
 - All the user details, rooms and conversations are stored in the [MongoDB Atlas](https://www.mongodb.com/cloud/atlas). This is a *free/ shared* account on [Atlas](https://www.mongodb.com/cloud/atlas). **So Please use it wisely** 
 
 <ul>
- <li>Login as well as Logout feature is added in v2.0 </li>
+ <li>Login as well as Logout feature is added </li>
  <li>Error will be shown if the credentials are not correct</li>
 </ul>
+
  *for simplicity passwords are not encrypted*
 
 <ul>
@@ -34,6 +37,7 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
  <li> Rooms with users are supported </li>
  <li> Conversation of a specific rooms will be shown on clicking the corresponding room</li> 
 </ul>
+
 *for mobile screen user can go to the rooms page by clicking the `<-` icon at the end of the screen*
 
 <ul>
@@ -54,6 +58,13 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
 7. In one browser login with username `anijit` and password `anijit123`
 8. In another one login with username `jeetm` and password `jeetm76` and enjoy chatting
 
+**Test users**
+Username | Password
+--    | --
+anijit | anijit123
+--  | --
+jeetm | jeetm76
+--   | --
  
 *tested with <img src="screenshots/chrome.png" width="20px" title="Google Chrome">Google Chrome v70 and <img src="screenshots/firefox.png" width="25px" title="Firefox Developer edition">Mozilla Firefox Developer Editon*  
 
@@ -63,22 +74,22 @@ Some screens of the application is given below for better understanding.
 
 Desktop as well as Mobile version of the screenshots are given side by side.
 
-<p> Initial screen <br/> 
- <img src="screenshots/desktop 1.png" width="590px" title="initial screen"/>
- <img src="screenshots/mobile 1.png" width="190px" title="initial screen"/> 
+<p> Login Screen <br/> 
+ <img src="screenshots/desktop 1.png" width="590px" title="Login screen"/>
+ <img src="screenshots/mobile 1.png" width="190px" title="Login screen"/> 
 </p>
  
- <p> Login Screen <br/> 
- <img src="screenshots/desktop 2.png" width="590px" title="Login screen"/>
- <img src="screenshots/mobile 2.png" width="190px" title="Login screen"/> 
-</p>
-
-<p> Entering credentials <br/> 
- <img src="screenshots/desktop 3.png" width="590px" title="Entering credentials screen"/>
- <img src="screenshots/mobile 3.png" width="190px" title="Entering credentials screen"/> 
+ <p> Entering credentials <br/> 
+ <img src="screenshots/desktop 2.png" width="590px" title="Entering credentials screen"/>
+ <img src="screenshots/mobile 2.png" width="190px" title="Entering credentials screen"/> 
 </p>
 
 <p> After submitting credentials <br/> 
+ <img src="screenshots/desktop 3.png" width="590px" title="After submitting credentials screen"/>
+ <img src="screenshots/mobile 3.png" width="190px" title="After submitting credentials screen"/> 
+</p>
+
+<p>  <br/> 
  <img src="screenshots/desktop 4.png" width="590px" title="After submitting credentials screen"/>
  <img src="screenshots/mobile 4.png" width="190px" title="After submitting credentials screen"/> 
 </p>
