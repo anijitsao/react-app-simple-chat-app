@@ -9,6 +9,7 @@ const allSocketOps = (io) => {
 
   let activeUsers = []
   let users = {}
+
   io.sockets.on('connection', (socket) => {
     console.log('socket connection done successfully...', socket.id)
 
@@ -36,9 +37,10 @@ const allSocketOps = (io) => {
 
     socket.on('disconnect', () => {
       console.log('socket disconnected...', socket.id)
-      activeUsers = activeUsers.filter((activeUser)=> { return activeUser != users[socket.id]['userId']})
+      activeUsers = activeUsers.filter((activeUser) => { return activeUser != users[socket.id]['userId'] })
+      
+      // send to all except the sender
       socket.broadcast.emit('onlineUser', activeUsers)
-
     });
 
     socket.on('onlineUser', (data) => {
@@ -50,14 +52,11 @@ const allSocketOps = (io) => {
           activeUsers.push(data)
         }
       }
-      socket.broadcast.emit('onlineUser', activeUsers)
-    })
 
-    // broadcast the socket after certain interval
-    setInterval(()=> {
-      socket.broadcast.emit('onlineUser', activeUsers)
-    }, 10000)
-    
+      // send to all clients including sender most important don't forget
+      io.emit('onlineUser', activeUsers)
+    })    
+
   });
 
 }
