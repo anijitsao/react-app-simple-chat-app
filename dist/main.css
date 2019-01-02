@@ -141,6 +141,10 @@ input[type=text]:focus {
   display: block;
 }
 
+.user-greeting:hover {
+  cursor: pointer;
+}
+
 /* drop down menu */
 .user-info>.drop-down {
   display: none;
@@ -234,6 +238,7 @@ input[type=text]:focus {
 .room-info:hover,
 .room-info:focus {
   background-color: #f8bcf8;
+  cursor: pointer;
 }
 
 .room-icon-div {
@@ -436,5 +441,6 @@ textarea {
     position: absolute;
     top: 0px;
     right: 1px;
-  }
+  } 
 }
+
