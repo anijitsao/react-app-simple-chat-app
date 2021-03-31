@@ -5,7 +5,7 @@ import morgan from 'morgan'
 import helmet from 'helmet'
 
 import { createServer } from 'http'
-import ioServer from 'socket.io'
+import { Server } from 'socket.io'
 
 import { fileURLToPath } from 'url'
 import path, { dirname } from 'path'
@@ -18,7 +18,7 @@ import router from './routes.js'
 
 const app = express()
 const server = createServer(app)
-const io = ioServer(server)
+const io = new Server(server)
 
 // middlewares
 app.use(cors())
