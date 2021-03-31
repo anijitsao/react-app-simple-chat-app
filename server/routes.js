@@ -1,43 +1,33 @@
 // dependencies
-const express = require('express')
-const cors = require('cors')
-
-const morgan = require('morgan')
-const bodyParser = require('body-parser')
-
+import { Router } from 'express'
+const router = Router()
 
 // local file dependencies
-const dbOps = require('./dbOps')
-let router = express.Router()
-
-// middlewares
-router.use(cors())
-router.use(bodyParser.json({ type: 'application/json' }))
-router.use(morgan('dev'))
+import { connectDbAndRunQueries } from './dbOps.js'
 
 // most important to serve static pages don't forget
 // router.use(express.static('../dist'))
 
 router.post('/login', (req, res) => {
-	dbOps.connectDbAndRunQueries('login', req, res)
+	connectDbAndRunQueries('login', req, res)
 })
 
 
 router.post('/getrooms/:id', (req, res) => {
-	dbOps.connectDbAndRunQueries('getRooms', req, res)
+	connectDbAndRunQueries('getRooms', req, res)
 })
 
 router.get('/getconversation/:id', (req, res) => {
-	dbOps.connectDbAndRunQueries('getConversation', req, res)
+	connectDbAndRunQueries('getConversation', req, res)
 })
 
 
 router.put('/updateroom', (req, res) => {
-	dbOps.connectDbAndRunQueries('updateRoom', req, res)
+	connectDbAndRunQueries('updateRoom', req, res)
 })
 
 router.put('/updateroomreadstatus', (req, res) => {
-	dbOps.connectDbAndRunQueries('updateRoomReadStatus', req, res)
+	connectDbAndRunQueries('updateRoomReadStatus', req, res)
 })
 
-module.exports = router
+export default router

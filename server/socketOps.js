@@ -1,7 +1,5 @@
 // dependencies
-const dbOps = require('./dbOps')
-
-const TIME_TO_WAIT_BEFORE_STORE_IN_DB = 15000
+import { connectDbAndRunQueries } from './dbOps.js'
 
 const allSocketOps = (io) => {
 
@@ -24,12 +22,12 @@ const allSocketOps = (io) => {
           console.log('15 sec crossed, we have some messages.. STORE IN DB...')
           let req = { body: messagesToStoreInDb }
 
-          dbOps.connectDbAndRunQueries('updateRoom', req)
+          connectDbAndRunQueries('updateRoom', req)
 
           // reset the array
           messagesToStoreInDb = []
         }
-      }, TIME_TO_WAIT_BEFORE_STORE_IN_DB)
+      }, process.env.TIME_TO_WAIT_BEFORE_STORE_IN_DB)
       socket.broadcast.emit('message', data)
     });
 
@@ -38,7 +36,7 @@ const allSocketOps = (io) => {
     socket.on('disconnect', () => {
       console.log('socket disconnected...', socket.id)
       activeUsers = activeUsers.filter((activeUser) => { return activeUser != users[socket.id]['userId'] })
-      
+
       // send to all except the sender
       socket.broadcast.emit('onlineUser', activeUsers)
     });
@@ -55,11 +53,9 @@ const allSocketOps = (io) => {
 
       // send to all clients including sender most important don't forget
       io.emit('onlineUser', activeUsers)
-    })    
+    })
 
   });
 
 }
-module.exports = {
-  allSocketOps
-}
+export { allSocketOps }

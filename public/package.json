@@ -1,0 +1,10 @@
+{
+    "name": "react-app-simple-chat-app",
+    "version": "2.0.0",
+    "description": "This is a simple chat Application",
+    "main": "index.js",
+    "scripts": {
+        "build": "webpack --mode production",
+        "dev": "webpack --mode development"
+    }
+}

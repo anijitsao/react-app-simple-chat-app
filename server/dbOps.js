@@ -1,17 +1,16 @@
 // dependencies
-const mongodb = require('mongodb')
-const MongoClient = mongodb.MongoClient;
-const ObjectId = mongodb.ObjectID
+import mongodb from 'mongodb'
 
-const URI_TO_CONNECT_MONGODB = "mongodb+srv://root:root123@anijitsmongo-mwm6l.mongodb.net/allapps";
-const DB_NAME = "allapps"
-const COLLECTION_USERS = "users"
-const COLLECTION_ROOMS = "rooms"
+const { MongoClient, ObjectId } = mongodb;
+
+const { URI_TO_CONNECT_MONGODB, DB_NAME, COLLECTION_ROOMS, COLLECTION_USERS, SUCCESS, SERVER_ERR } = process.env
+// const URI_TO_CONNECT_MONGODB = "mongodb+srv://root:root123@anijitsmongo-mwm6l.mongodb.net/allapps";
+
 
 // this function will connect db and based on API send response
-let connectDbAndRunQueries = async (apiName, req, res) => {
+const connectDbAndRunQueries = async (apiName, req, res) => {
 	try {
-		let client = await MongoClient.connect(URI_TO_CONNECT_MONGODB, { useNewUrlParser: true })
+		const client = await MongoClient.connect(URI_TO_CONNECT_MONGODB, { useNewUrlParser: true })
 		// select the db, Collections are selected based on needs
 		const db = client.db(DB_NAME)
 
@@ -26,7 +25,7 @@ let connectDbAndRunQueries = async (apiName, req, res) => {
 }
 
 // choose the particular function for an API and process it
-let chooseApiAndSendResponse = (apiName, db, req, res, client, output) => {
+const chooseApiAndSendResponse = (apiName, db, req, res, client, output) => {
 
 	// perform db specific ops based on API names
 	switch (apiName) {
@@ -49,11 +48,11 @@ let chooseApiAndSendResponse = (apiName, db, req, res, client, output) => {
 }
 
 // handle request for /login API
-let makeLogin = async (db, req, res, client, output) => {
+const makeLogin = async (db, req, res, client, output) => {
 	try {
-		let { username, password } = req.body
+		const { username, password } = req.body
 
-		let docs = await db
+		const docs = await db
 			.collection(COLLECTION_USERS)
 			.find({ username, password }, { projection: { "password": 0 } })
 			.toArray()
@@ -68,24 +67,25 @@ let makeLogin = async (db, req, res, client, output) => {
 
 		// if the user exists or sends FAILED message
 		output = (docs.length > 0) ? { ...docs[0] } : { "message": "FAILED" }
-		sendOutputAndCloseConnection(client, output, res)
 	} catch (err) {
-		sendOutputAndCloseConnection(client)
+		console.log("Error occurred", err)
+	} finally {
+		sendResponseAndCloseConnection(client, output, res)
 	}
 }
 
 
 // /getrooms API
-let makeGetRooms = async (db, req, res, client, output) => {
+const makeGetRooms = async (db, req, res, client, output) => {
 
-	let { rooms } = req.body
+	const { rooms } = req.body
 	roomIds = rooms.map((ele) => {
 		return ObjectId(ele.roomId)
 	})
 
 	try {
 		// db call
-		let messages = await db
+		const messages = await db
 			.collection(COLLECTION_ROOMS)
 			.find({ _id: { $in: roomIds } }, { projection: { "lastMessage": 1 } })
 			.toArray()
@@ -103,25 +103,25 @@ let makeGetRooms = async (db, req, res, client, output) => {
 					"dateInfo": (ele.lastMessage) ? ele.lastMessage.timeSent : 'NA',
 					"senderId": (ele.lastMessage) ? ele.lastMessage.senderId : 'NA',
 					"partnerId": rooms[index].partnerId || 'NA',
-					"read": rooms[index].read 
+					"read": rooms[index].read
 				})
 			});
 
 		}
-		sendOutputAndCloseConnection(client, output, res)
 	} catch (err) {
 		console.log('unable to get last message for a room', err)
-		sendOutputAndCloseConnection(client, output, res)
+	} finally {
+		sendResponseAndCloseConnection(client, output, res)
 	}
 }
 
 // /getconversation API
-let makeGetConversation = async (db, req, res, client, output) => {
-	let { id } = req.params
+const makeGetConversation = async (db, req, res, client, output) => {
+	const { id } = req.params
 
 	try {
 		// db call
-		let data = await db
+		const data = await db
 			.collection(COLLECTION_ROOMS)
 			.find({ _id: ObjectId(id) }, { projection: { "messages": 1 } })
 			.toArray()
@@ -134,40 +134,39 @@ let makeGetConversation = async (db, req, res, client, output) => {
 			ele = { ...ele, ...{ "id": `${id}${index}` } }
 			return ele
 		})
-
-		sendOutputAndCloseConnection(client, output, res)
 	} catch (error) {
 		console.log('Unable to get conversation for that room', error)
-		sendOutputAndCloseConnection(client, output, res)
+	} finally {
+		sendResponseAndCloseConnection(client, output, res)
 	}
 }
 
 
-let makeUpdateRoom = async (db, req, res, client, output) => {
+const makeUpdateRoom = async (db, req, res, client, output) => {
 	console.log('params received', req.params)
 	console.log('body of the req', req.body)
-	let allMessages = sortMessagesFromSocket(req.body)
+	const allMessages = sortMessagesFromSocket(req.body)
 
-	let { roomId } = req.body
-	let message = { ...req.body }
+	const { roomId } = req.body
+	const message = { ...req.body }
 	console.log('This is for Room', roomId)
 
 	// How TO USE PUSH WITHIN UPDATE DEMO QUERY
-	// let data = await db
+	// const data = await db
 	// 	.collection(COLLECTION_ROOMS)
 	// 	.updateOne({ _id: ObjectId(roomId) }, { $set: { "lastMessage": message }, $push: { "messages": message } })
 
 	try {
 
 		// initialize the bulk
-		let bulk = await db
+		const bulk = await db
 			.collection(COLLECTION_ROOMS)
 			.initializeOrderedBulkOp()
 
-		let ops = []
+		const ops = []
 
 		// put them all in ops Promises
-		for (let i = 0; i < allMessages.length; i++) {
+		for (const i = 0; i < allMessages.length; i++) {
 			ops.push(
 				await bulk
 					.find({ _id: ObjectId(allMessages[i].roomId) })
@@ -176,48 +175,48 @@ let makeUpdateRoom = async (db, req, res, client, output) => {
 		}
 
 		// execute all of them in bulk
-		let result = await bulk.execute()
-
+		const result = await bulk.execute()
 		console.log('Modified docs: ', result.nModified)
-		sendOutputAndCloseConnection(client, output, res)
 	} catch (error) {
 		console.log('Unable to update rooms with messages', error)
+	} finally {
+		sendResponseAndCloseConnection(client, output, res)
 	}
 }
 
-let makeUpdateRoomReadStatus = async (db, req, res, client, output) => {
+const makeUpdateRoomReadStatus = async (db, req, res, client, output) => {
 	console.log('body of the req', req.body)
 
-	let { userId, roomName, read } = req.body
+	const { userId, roomName, read } = req.body
 	try {
-		let docs = await db
+		const docs = await db
 			.collection(COLLECTION_USERS)
 			.updateOne({ _id: ObjectId(userId), "rooms.roomName": roomName }, { "$set": { "rooms.$.read": read } })
 
 		console.log('read status is changed here, number of modified docs', docs.result.nModified)
-		sendOutputAndCloseConnection(client, output, res)
-
 	} catch (error) {
 		console.log('Unable to change the read status', error)
-		sendOutputAndCloseConnection(client, output, res)
-
+	} finally {
+		sendResponseAndCloseConnection(client, output, res)
 	}
 }
 
-
-function sendOutputAndCloseConnection(client, output, res) {
+// function to send the response and close the db connection
+function sendResponseAndCloseConnection(client, output, res) {
 	if (output && res) {
 		console.log(`========================\nOUTPUT AS RECEIVED AND BEFORE SENDING\n==================\n`, output)
-		res.json(output)
+		res.status(SUCCESS).json(output)
+	} else {
+		res.status(SERVER_ERR).json({ msg: "Internal Server Error" })
 	}
 
 	// close the database connection after sending the response
 	client.close()
 }
 
-let sortMessagesFromSocket = (body) => {
+const sortMessagesFromSocket = (body) => {
 
-	let allMessages = []
+	const allMessages = []
 
 	// push the message comes from the socket
 	if (body) {
@@ -229,6 +228,4 @@ let sortMessagesFromSocket = (body) => {
 	return allMessages
 }
 // exports
-module.exports = {
-	connectDbAndRunQueries
-}
+export { connectDbAndRunQueries }
