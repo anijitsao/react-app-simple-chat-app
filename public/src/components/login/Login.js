@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import axios from 'axios'
 
 // components
 import ErrorMessage from './ErrorMessage'
@@ -7,6 +6,7 @@ import Loading from '../Loading'
 
 // Constants
 import Constants from '../Constants'
+import { connectBackend } from '../../../connectBackend';
 
 const Login = (props) => {
 
@@ -65,16 +65,11 @@ const Login = (props) => {
     setLoginData({ ...loginData, password: '', username: '', showLoading: true })
 
     try {
-      const res = await axios({
-        method: allConstants.method.POST,
-        url: allConstants.login,
-        header: allConstants.header,
-        data: {
-          username,
-          password
-        }
-      })
+      const config = {
+        method: allConstants.method.POST, url: allConstants.login, header: allConstants.header, data: { username, password }
+      }
 
+      const res = await connectBackend(config)
       if (res.data.userId) {
         console.log('user authentication successful', res.data)
         setLoginData({ ...loginData, showLoading: false })

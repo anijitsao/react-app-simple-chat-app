@@ -216,7 +216,7 @@ function sendResponseAndCloseConnection(client, output, res, apiName) {
 
 const sortMessagesFromSocket = (body) => {
 
-	const allMessages = []
+	let allMessages = []
 
 	// push the message comes from the socket
 	if (body) {

@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 // components
 import RoomInfo from './RoomInfo'
@@ -7,6 +6,7 @@ import Loading from '../Loading'
 
 // Constants
 import Constants from '../Constants'
+import { connectBackend } from '../../../connectBackend';
 
 const RoomPanel = (props) => {
   // Initialize the initial state and its modifier function
@@ -51,29 +51,32 @@ const RoomPanel = (props) => {
   //   }
   // }
 
-  const loadrooms = () => {
-    // call the back end to get rooms
-    axios({
-      method: allConstants.method.POST,
-      url: allConstants.getRooms.replace('{id}', props.userInfo.userId),
-      header: allConstants.header,
-      data: { rooms: props.userInfo.rooms }
-    })
-      .then((res) => {
-        // fill the rooms array from the response
-        console.log('data', res.data)
+  // call the back end to get rooms
+  const loadrooms = async () => {
+    try {
 
-        // sort the data
-        res.data = res.data.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
+      const config = {
+        method: allConstants.method.POST,
+        url: allConstants.getRooms.replace('{id}', props.userInfo.userId),
+        header: allConstants.header,
+        data: { rooms: props.userInfo.rooms }
+      }
 
-        // set necessary state variables 
-        setRoomPanelData({ ...roomPanelData, rooms: res.data, showLoading: false })
-      })
+      const res = await connectBackend(config)
+
+      // sort the data based on dates
+      res.data = res.data.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
+
+      // set necessary state variables 
+      setRoomPanelData({ ...roomPanelData, rooms: res.data, showLoading: false })
+    } catch (err) {
+      console.log("some error occurred....", err)
+    }
   }
 
 
+  // pass the selected room id augmented with logged in userid to the parent 
   const setSelectedRoomId = (id) => {
-    // pass the selected room id augmented with logged in userid to the parent 
     props.setSelectedRoomId(id)
 
     // set active room id for highlighting purpose
@@ -97,15 +100,12 @@ const RoomPanel = (props) => {
 
   const saveReadStatusToDb = async (room, status) => {
     try {
-      await axios({
+      const config = {
         method: allConstants.method.PUT,
         url: allConstants.saveReadStatus,
-        data: {
-          userId: props.userInfo.userId,
-          roomName: room.roomName,
-          read: status
-        }
-      })
+        data: { userId: props.userInfo.userId, roomName: room.roomName, read: status }
+      }
+      await connectBackend(config)
     } catch (err) {
       console.log('unable to save room status', err)
     }

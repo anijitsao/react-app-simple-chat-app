@@ -1833,6 +1833,30 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./connectBackend.js":
+/*!***************************!*\
+  !*** ./connectBackend.js ***!
+  \***************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "connectBackend": () => (/* binding */ connectBackend)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "../node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+// dependenciees
+
+
+const connectBackend = async config => {
+  return await axios__WEBPACK_IMPORTED_MODULE_0___default()(config);
+};
+
+
+
+/***/ }),
+
 /***/ "./src/App.js":
 /*!********************!*\
   !*** ./src/App.js ***!
@@ -2660,17 +2684,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "../node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _ErrorMessage__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ErrorMessage */ "./src/components/login/ErrorMessage.js");
-/* harmony import */ var _Loading__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Loading */ "./src/components/Loading.js");
-/* harmony import */ var _Constants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Constants */ "./src/components/Constants.js");
+/* harmony import */ var _ErrorMessage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ErrorMessage */ "./src/components/login/ErrorMessage.js");
+/* harmony import */ var _Loading__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Loading */ "./src/components/Loading.js");
+/* harmony import */ var _Constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Constants */ "./src/components/Constants.js");
+/* harmony import */ var _connectBackend__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../connectBackend */ "./connectBackend.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "../node_modules/react/jsx-runtime.js");
-
  // components
 
 
  // Constants
+
 
 
 
@@ -2687,7 +2710,7 @@ const Login = props => {
     showLoading: false
   }); // instantiate the Constants
 
-  const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_4__.default)(); // handle when the username / password field is updated
+  const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_3__.default)(); // handle when the username / password field is updated
 
   const handleOnChange = e => {
     // update the corresponding state values
@@ -2739,7 +2762,7 @@ const Login = props => {
     });
 
     try {
-      const res = await axios__WEBPACK_IMPORTED_MODULE_1___default()({
+      const config = {
         method: allConstants.method.POST,
         url: allConstants.login,
         header: allConstants.header,
@@ -2747,7 +2770,8 @@ const Login = props => {
           username,
           password
         }
-      });
+      };
+      const res = await (0,_connectBackend__WEBPACK_IMPORTED_MODULE_4__.connectBackend)(config);
 
       if (res.data.userId) {
         console.log('user authentication successful', res.data);
@@ -2801,9 +2825,9 @@ const Login = props => {
       children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
         className: "login-title",
         children: "Login"
-      }), showError == true && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_ErrorMessage__WEBPACK_IMPORTED_MODULE_2__.default, {
+      }), showError == true && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_ErrorMessage__WEBPACK_IMPORTED_MODULE_1__.default, {
         message: errorMessage
-      }), showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_3__.default, {}) : showPasswordInput == false ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+      }), showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_2__.default, {}) : showPasswordInput == false ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
         type: "text",
         placeholder: "Enter username",
         onChange: handleOnChange,
@@ -2900,17 +2924,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "../node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _RoomInfo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./RoomInfo */ "./src/components/rooms/RoomInfo.js");
-/* harmony import */ var _Loading__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Loading */ "./src/components/Loading.js");
-/* harmony import */ var _Constants__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Constants */ "./src/components/Constants.js");
+/* harmony import */ var _RoomInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RoomInfo */ "./src/components/rooms/RoomInfo.js");
+/* harmony import */ var _Loading__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Loading */ "./src/components/Loading.js");
+/* harmony import */ var _Constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Constants */ "./src/components/Constants.js");
+/* harmony import */ var _connectBackend__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../connectBackend */ "./connectBackend.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "../node_modules/react/jsx-runtime.js");
-
  // components
 
 
  // Constants
+
 
 
 
@@ -2922,7 +2945,7 @@ const RoomPanel = props => {
     showLoading: true
   }); // instantiate the Constants
 
-  const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_4__.default)();
+  const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_3__.default)();
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     loadrooms();
   }, []); // componentWillReceiveProps(nextProps) {
@@ -2946,19 +2969,19 @@ const RoomPanel = props => {
   //     setState({ rooms: newRooms })
   //   }
   // }
+  // call the back end to get rooms
 
-  const loadrooms = () => {
-    // call the back end to get rooms
-    axios__WEBPACK_IMPORTED_MODULE_1___default()({
-      method: allConstants.method.POST,
-      url: allConstants.getRooms.replace('{id}', props.userInfo.userId),
-      header: allConstants.header,
-      data: {
-        rooms: props.userInfo.rooms
-      }
-    }).then(res => {
-      // fill the rooms array from the response
-      console.log('data', res.data); // sort the data
+  const loadrooms = async () => {
+    try {
+      const config = {
+        method: allConstants.method.POST,
+        url: allConstants.getRooms.replace('{id}', props.userInfo.userId),
+        header: allConstants.header,
+        data: {
+          rooms: props.userInfo.rooms
+        }
+      };
+      const res = await (0,_connectBackend__WEBPACK_IMPORTED_MODULE_4__.connectBackend)(config); // sort the data based on dates
 
       res.data = res.data.sort((a, b) => {
         return new Date(b.dateInfo) - new Date(a.dateInfo);
@@ -2968,11 +2991,13 @@ const RoomPanel = props => {
         rooms: res.data,
         showLoading: false
       });
-    });
-  };
+    } catch (err) {
+      console.log("some error occurred....", err);
+    }
+  }; // pass the selected room id augmented with logged in userid to the parent 
+
 
   const setSelectedRoomId = id => {
-    // pass the selected room id augmented with logged in userid to the parent 
     props.setSelectedRoomId(id); // set active room id for highlighting purpose
 
     setRoomPanelData({ ...roomPanelData,
@@ -2997,7 +3022,7 @@ const RoomPanel = props => {
 
   const saveReadStatusToDb = async (room, status) => {
     try {
-      await axios__WEBPACK_IMPORTED_MODULE_1___default()({
+      const config = {
         method: allConstants.method.PUT,
         url: allConstants.saveReadStatus,
         data: {
@@ -3005,7 +3030,8 @@ const RoomPanel = props => {
           roomName: room.roomName,
           read: status
         }
-      });
+      };
+      await (0,_connectBackend__WEBPACK_IMPORTED_MODULE_4__.connectBackend)(config);
     } catch (err) {
       console.log('unable to save room status', err);
     }
@@ -3024,8 +3050,8 @@ const RoomPanel = props => {
   const roomStyle = showRoomPanel == false ? "rooms-panel hide-div" : "rooms-panel";
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
     className: roomStyle,
-    children: showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_3__.default, {}) : rooms.map(room => {
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_RoomInfo__WEBPACK_IMPORTED_MODULE_2__.default, { ...room,
+    children: showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_2__.default, {}) : rooms.map(room => {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_RoomInfo__WEBPACK_IMPORTED_MODULE_1__.default, { ...room,
         userInfo: userInfo.userId,
         activeRoomId: activeRoomId,
         onlineRooms: onlineRooms,
