@@ -91,7 +91,7 @@ const makeGetRooms = async (db, req, res, client, output) => {
 			.toArray()
 
 		// if we get the data from the back end
-		// console.log('Messages are', JSON.stringify(messages, null, '\t'))
+		console.log('Messages are', JSON.stringify(messages, null, '\t'))
 		if (messages.length > 0) {
 			output = []
 
