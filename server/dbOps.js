@@ -10,7 +10,7 @@ const { URI_TO_CONNECT_MONGODB, DB_NAME, COLLECTION_ROOMS, COLLECTION_USERS, SUC
 // this function will connect db and based on API send response
 const connectDbAndRunQueries = async (apiName, req, res) => {
 	try {
-		const client = await MongoClient.connect(URI_TO_CONNECT_MONGODB, { useNewUrlParser: true })
+		const client = await new MongoClient(URI_TO_CONNECT_MONGODB, { useNewUrlParser: true, useUnifiedTopology: true }).connect()
 		// select the db, Collections are selected based on needs
 		const db = client.db(DB_NAME)
 
@@ -79,7 +79,7 @@ const makeLogin = async (db, req, res, client, output) => {
 const makeGetRooms = async (db, req, res, client, output) => {
 
 	const { rooms } = req.body
-	roomIds = rooms.map((ele) => {
+	const roomIds = rooms.map((ele) => {
 		return ObjectId(ele.roomId)
 	})
 
