@@ -1,114 +1,98 @@
-import React, { Component } from 'react';
+import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
 
+const WriteMessage = (props) => {
+  // Initialize the initial state and its modifier function
+  const [writeMessageData, setWriteMessageData] = useState({ message: '' })
 
-class WriteMessage extends Component {
-  // static propTypes = {
-  //     className: PropTypes.string,
-  // };
+  // initialize the socket
+  const socket = io();
 
-  constructor(props) {
-    super(props);
-    this.socket = io();
-    this.state = {
-      message: ''
-    }
+  useEffect(() => {
+    onConnect()
+    onUserOnline()
+    onMessageArrival()
+
+    return onDisconnect()
+
+  }, [])
+
+  const onConnect = () => {
+    socket.on('connect', () => {
+      console.log('Socket connected FROM React...')
+      // emit all the room ids where the user belongs to see him / her as active
+      socket.emit('onlineUser', props.userInfo.userId)
+    });
   }
 
-
-  componentDidMount() {
-    let { onNewMessageArrival, onLineRoom } = this.props
-    let toAlertRoomIds
-
-    this.socket.on('connect', () => {
-      console.log('Socket connected FROM React...')
-
-      toAlertRoomIds = this.props.userInfo.userId
-
-      // emit all the room ids where the user belongs to see him / her as active
-      this.socket.emit('onlineUser', toAlertRoomIds)
-    });
-
-    // when a user is online
-    this.socket.on('onlineUser', (data) => {
+  // when a user is online
+  const onUserOnline = () => {
+    socket.on('onlineUser', (data) => {
       console.log('these rooms should be shown as online', data)
-      onLineRoom(data)
+      props.onLineRoom(data)
     })
+  }
 
-
-    // when a new message arrives
-    this.socket.on('message', (data) => {
+  // when a new message arrives
+  const onMessageArrival = () => {
+    socket.on('message', (data) => {
       console.log('data value ', data)
 
       // send the newly incoming message to the parent component 
-      onNewMessageArrival(data)
+      props.onNewMessageArrival(data)
     });
+  }
 
-    this.socket.on('disconnect', () => {
+  const onDisconnect = () => {
+    socket.on('disconnect', () => {
       console.log('disconnected.. .!!')
     });
   }
 
-
   // send the chat message through socket
-  sendMessage(event) {
-    event.persist()
+  const sendMessage = (e) => {
 
     // if the ENTER key is pressed emit the message
-    if ((event.keyCode == 13 || event.which == 13) && !event.ctrlKey) {
-
+    if ((e.keyCode == 13 || e.which == 13) && !e.ctrlKey) {
 
       // define the chat message
-      let data = {
+      const data = {
         timeSent: new Date().toISOString(),
-        msgBody: this.state.message.replace(this.state.message.charAt(this.state.message.length - 1), ""),
-        senderId: this.props.userInfo.userId,
-        roomId: this.props.selectedRoomId,
+        // msgBody: state.message.replace(state.message.charAt(state.message.length - 1), ""),
+        msgBody: writeMessageData.message,
+        senderId: props.userInfo.userId,
+        roomId: props.selectedRoomId,
         id: uuidv4()
       }
 
       console.log('the message', data)
-      console.log('length of the message', data.msgBody.length)
 
       // emit the message
       if (data.msgBody.length > 0) {
-        this.socket.emit('message', data)
-        let { onNewMessageArrival } = this.props
-        onNewMessageArrival(data)
+        socket.emit('message', data)
+        props.onNewMessageArrival(data)
       }
 
       // reset the textarea value 
-      this.setState({
-        message: ''
-      })
-
-    } else if ((event.keyCode == 13 || event.which == 13) && event.ctrlKey) {
+      setWriteMessageData({ ...writeMessageData, message: '' })
+    } else if ((e.keyCode == 13 || e.which == 13) && e.ctrlKey) {
       console.log('CTRL pressed')
-      this.setState({
-        message: event.target.value + "\n"
-      })
+      setWriteMessageData({ ...writeMessageData, message: e.target.value + "\n" })
     }
   }
 
-  handleChange(event) {
-    event.persist()
-
-    this.setState({
-      message: event.target.value
-    })
+  const handleChange = (e) => {
+    setWriteMessageData({ ...writeMessageData, message: e.target.value })
   }
 
-  render() {
-
-    return (
-      <textarea rows="3" className="msg-write-div"
-        disabled={this.props.isDisabled}
-        onChange={this.handleChange.bind(this)}
-        onKeyPress={this.sendMessage.bind(this)}
-        value={this.state.message} />
-    );
-  }
+  return (
+    <textarea rows="3" className="msg-write-div"
+      disabled={props.isDisabled}
+      onChange={handleChange}
+      onKeyPress={sendMessage}
+      value={writeMessageData.message} />
+  );
 }
 
 export default WriteMessage;

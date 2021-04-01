@@ -6,7 +6,7 @@ import Loading from '../Loading'
 
 // Constants
 import Constants from '../Constants'
-import { connectBackend } from '../../../connectBackend';
+import { connectBackend } from '../connectBackend';
 
 const Login = (props) => {
 

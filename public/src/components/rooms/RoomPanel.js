@@ -6,15 +6,11 @@ import Loading from '../Loading'
 
 // Constants
 import Constants from '../Constants'
-import { connectBackend } from '../../../connectBackend';
+import { connectBackend } from '../connectBackend';
 
 const RoomPanel = (props) => {
   // Initialize the initial state and its modifier function
-  const [roomPanelData, setRoomPanelData] = useState(
-    {
-      rooms: [],
-      showLoading: true
-    })
+  const [roomPanelData, setRoomPanelData] = useState({ rooms: [], showLoading: true })
 
   // instantiate the Constants
   const allConstants = Constants()
@@ -74,7 +70,6 @@ const RoomPanel = (props) => {
     }
   }
 
-
   // pass the selected room id augmented with logged in userid to the parent 
   const setSelectedRoomId = (id) => {
     props.setSelectedRoomId(id)
@@ -124,7 +119,7 @@ const RoomPanel = (props) => {
             userInfo={userInfo.userId}
             activeRoomId={activeRoomId}
             onlineRooms={onlineRooms}
-            setSelectedRoomId={() => setSelectedRoomId(room.roomId)} />
+            setSelectedRoomId={setSelectedRoomId} />
         })
       }
     </div>

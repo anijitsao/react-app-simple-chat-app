@@ -166,7 +166,7 @@ const makeUpdateRoom = async (db, req, res, client, output, apiName) => {
 		const ops = []
 
 		// put them all in ops Promises
-		for (const i = 0; i < allMessages.length; i++) {
+		for (let i = 0; i < allMessages.length; i++) {
 			ops.push(
 				await bulk
 					.find({ _id: ObjectId(allMessages[i].roomId) })

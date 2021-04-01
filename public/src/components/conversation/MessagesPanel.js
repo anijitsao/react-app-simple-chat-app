@@ -1,124 +1,103 @@
-import React, { Component } from 'react';
-import axios from 'axios'
+import { useEffect, useRef, useState } from 'react';
 
 // component
 import Message from './Message'
 import WriteMessage from './WriteMessage'
 import Loading from '../Loading'
+import { connectBackend } from '../connectBackend'
 
 // Constants
 import Constants from '../Constants'
 
-class MessagesPanel extends Component {
-  // static propTypes = {
-  //   className: PropTypes.string,
-  // };
+const MessagesPanel = (props) => {
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
+  // Initialize the initial state and its modifier function
+  const [messagePanelData, setMessagePanelData] = useState(
+    {
       messages: [],
       showLoading: false,
       disableTextArea: true
-    }
+    })
 
-    // instantiate the Constants
-    this.allConstants = Constants()
-
-    this.onLineRoom = this.onLineRoom.bind(this)
-  }
+  // instantiate the Constants
+  const allConstants = Constants()
+  const messageEnd = useRef(null)
 
   // when the component is mounted 
-  componentDidMount() {
-    this.scrollToBottom()
-  }
+  useEffect(() => {
+    if (props.selectedRoomId) {
+      // load the messages when the nextProps is different from the present one
+      loadConversation(props.selectedRoomId)
+    }
+    scrollToBottom()
+  }, [props.selectedRoomId])
 
   // when the component is updated
-  componentDidUpdate() {
-    this.scrollToBottom()
-  }
+  // componentDidUpdate() {
+  //   scrollToBottom()
+  // }
 
-  scrollToBottom() {
-    this.messageEnd.scrollIntoView({ behavior: 'smooth' });
-  }
-  // load the messages when the nextProps is different from the present one
-  // most important don't forget it 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedRoomId !== this.props.selectedRoomId)
-      this.loadConversation(nextProps.selectedRoomId)
+  const scrollToBottom = () => {
+    messageEnd.current.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }
 
   // load the conversation of the selected friend
-  loadConversation(id) {
-    this.setState({ showLoading: true, disableTextArea: true })
-    let allConstants = this.allConstants
-    let selectedRoomId = (id) ? id : 'anijit123-sam432' // this.props.selectedRoomId ||
+  const loadConversation = async (id) => {
+    setMessagePanelData({ ...messagePanelData, showLoading: true, disableTextArea: true })
+    const selectedRoomId = (id) ? id : 'anijit123-sam432'
 
-    console.log('IN MESSAGE PANEL : selected friend id in ', selectedRoomId)
+    try {
+      const config = {
+        method: allConstants.method.GET, url: allConstants.getConversation.replace('{id}', selectedRoomId), header: allConstants.header
+      }
+      const res = await connectBackend(config)
 
-    axios({
-      method: allConstants.method.GET,
-      url: allConstants.getConversation.replace('{id}', selectedRoomId),
-      header: allConstants.header
-    })
-      .then((res) => {
-        console.log('conversation is now: ', res.data)
-
-        // set the messages field of the state with the data
-        this.setState({ messages: res.data, showLoading: false, disableTextArea: false })
-      })
+      // set the messages field of the state with the data
+      setMessagePanelData({ ...messagePanelData, messages: res.data, showLoading: false, disableTextArea: false })
+    } catch (err) {
+      console.log("Error occurred...", err)
+    }
   }
 
-  onNewMessageArrival(data) {
-
-    let newMessages = [...this.state.messages]
-    console.log('New Messages are', newMessages)
-
+  const onNewMessageArrival = (data) => {
     // if the current message is from the selected room also
-    if (data.roomId == this.props.selectedRoomId) {
-      this.setState((prevState, props) => ({
-        messages: [...this.state.messages, { ...data }]
-      }))
+    if (data.roomId == props.selectedRoomId) {
+      setMessagePanelData({ ...messagePanelData, messages: [...messagePanelData.messages, { ...data }] })
     }
 
     // fill the Room info from Socket data
-    this.props.fillRoomInfoFromSocket(data)
+    props.fillRoomInfoFromSocket(data)
   }
 
-  onLineRoom(roomsOnline) {
+  const onLineRoom = (roomsOnline) => {
     console.log('Online rooms are', roomsOnline)
-    this.props.notifyOnlineRooms(roomsOnline)
+    props.notifyOnlineRooms(roomsOnline)
   }
 
-  render() {
-    let { messages, showLoading, disableTextArea } = this.state
-    let { userInfo, selectedRoomId, showMessagePanel } = this.props
+  const { messages, showLoading, disableTextArea } = messagePanelData
+  const { userInfo, selectedRoomId, showMessagePanel } = props
+  const messageStyle = (showMessagePanel == true) ? "message-panel" : "message-panel hide-div"
 
-    let messageStyle = (showMessagePanel == true) ? "message-panel" : "message-panel hide-div"
-    return (
-
-      <div className={messageStyle}>
-        <div className="show-messages">
-          {(showLoading == true) ? <Loading />
-            :
-            messages.map((message) => {
-              return <Message key={message.id} {...message} userInfo={userInfo} />
-            })
-          }
-          <div style={{ float: "left", clear: "both" }} ref={(el) => { this.messageEnd = el; }}></div>
-        </div>
-        <WriteMessage
-          isDisabled={disableTextArea}
-          userInfo={userInfo}
-          selectedRoomId={selectedRoomId}
-          onLineRoom={this.onLineRoom}
-          onNewMessageArrival={this.onNewMessageArrival.bind(this)} />
-
+  return (
+    <div className={messageStyle}>
+      <div className="show-messages">
+        {(showLoading == true) ? <Loading />
+          :
+          messages.map((message) => {
+            return <Message key={message.id} {...message} userInfo={userInfo} />
+          })
+        }
+        <div style={{ float: "left", clear: "both" }} ref={messageEnd}></div>
       </div>
+      <WriteMessage
+        isDisabled={disableTextArea}
+        userInfo={userInfo}
+        selectedRoomId={selectedRoomId}
+        onLineRoom={onLineRoom}
+        onNewMessageArrival={onNewMessageArrival.bind(this)} />
 
-    );
-  }
+    </div>
+  );
 }
 
 export default MessagesPanel;

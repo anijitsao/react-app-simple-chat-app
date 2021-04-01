@@ -1833,30 +1833,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./connectBackend.js":
-/*!***************************!*\
-  !*** ./connectBackend.js ***!
-  \***************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "connectBackend": () => (/* binding */ connectBackend)
-/* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "../node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-// dependenciees
-
-
-const connectBackend = async config => {
-  return await axios__WEBPACK_IMPORTED_MODULE_0___default()(config);
-};
-
-
-
-/***/ }),
-
 /***/ "./src/App.js":
 /*!********************!*\
   !*** ./src/App.js ***!
@@ -2132,6 +2108,30 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/components/connectBackend.js":
+/*!******************************************!*\
+  !*** ./src/components/connectBackend.js ***!
+  \******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "connectBackend": () => (/* binding */ connectBackend)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "../node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+// dependenciees
+
+
+const connectBackend = async config => {
+  return await axios__WEBPACK_IMPORTED_MODULE_0___default()(config);
+};
+
+
+
+/***/ }),
+
 /***/ "./src/components/conversation/Message.js":
 /*!************************************************!*\
   !*** ./src/components/conversation/Message.js ***!
@@ -2182,15 +2182,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "../node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Message */ "./src/components/conversation/Message.js");
-/* harmony import */ var _WriteMessage__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./WriteMessage */ "./src/components/conversation/WriteMessage.js");
-/* harmony import */ var _Loading__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Loading */ "./src/components/Loading.js");
+/* harmony import */ var _Message__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Message */ "./src/components/conversation/Message.js");
+/* harmony import */ var _WriteMessage__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./WriteMessage */ "./src/components/conversation/WriteMessage.js");
+/* harmony import */ var _Loading__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Loading */ "./src/components/Loading.js");
+/* harmony import */ var _connectBackend__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../connectBackend */ "./src/components/connectBackend.js");
 /* harmony import */ var _Constants__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Constants */ "./src/components/Constants.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "../node_modules/react/jsx-runtime.js");
-
  // component
+
 
 
 
@@ -2200,129 +2199,123 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class MessagesPanel extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
-  // static propTypes = {
-  //   className: PropTypes.string,
-  // };
-  constructor(props) {
-    super(props);
-    this.state = {
-      messages: [],
-      showLoading: false,
-      disableTextArea: true
-    }; // instantiate the Constants
+const MessagesPanel = props => {
+  // Initialize the initial state and its modifier function
+  const [messagePanelData, setMessagePanelData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+    messages: [],
+    showLoading: false,
+    disableTextArea: true
+  }); // instantiate the Constants
 
-    this.allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_5__.default)();
-    this.onLineRoom = this.onLineRoom.bind(this);
-  } // when the component is mounted 
+  const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_5__.default)();
+  const messageEnd = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null); // when the component is mounted 
 
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    if (props.selectedRoomId) {
+      loadConversation(props.selectedRoomId);
+    }
 
-  componentDidMount() {
-    this.scrollToBottom();
-  } // when the component is updated
+    scrollToBottom();
+  }, [props.selectedRoomId]); // when the component is updated
+  // componentDidUpdate() {
+  //   scrollToBottom()
+  // }
 
-
-  componentDidUpdate() {
-    this.scrollToBottom();
-  }
-
-  scrollToBottom() {
-    this.messageEnd.scrollIntoView({
+  const scrollToBottom = () => {
+    messageEnd.current.scrollIntoView({
+      block: 'end',
       behavior: 'smooth'
     });
-  } // load the messages when the nextProps is different from the present one
+  }; // load the messages when the nextProps is different from the present one
   // most important don't forget it 
+  // componentWillReceiveProps(nextProps) {
+  //   if (nextProps.selectedRoomId !== props.selectedRoomId)
+  //     loadConversation(nextProps.selectedRoomId)
+  // }
+  // load the conversation of the selected friend
 
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.selectedRoomId !== this.props.selectedRoomId) this.loadConversation(nextProps.selectedRoomId);
-  } // load the conversation of the selected friend
-
-
-  loadConversation(id) {
-    this.setState({
+  const loadConversation = async id => {
+    setMessagePanelData({ ...messagePanelData,
       showLoading: true,
       disableTextArea: true
     });
-    let allConstants = this.allConstants;
-    let selectedRoomId = id ? id : 'anijit123-sam432'; // this.props.selectedRoomId ||
+    const selectedRoomId = id ? id : 'anijit123-sam432'; // props.selectedRoomId ||
 
     console.log('IN MESSAGE PANEL : selected friend id in ', selectedRoomId);
-    axios__WEBPACK_IMPORTED_MODULE_1___default()({
-      method: allConstants.method.GET,
-      url: allConstants.getConversation.replace('{id}', selectedRoomId),
-      header: allConstants.header
-    }).then(res => {
+
+    try {
+      const config = {
+        method: allConstants.method.GET,
+        url: allConstants.getConversation.replace('{id}', selectedRoomId),
+        header: allConstants.header
+      };
+      const res = await (0,_connectBackend__WEBPACK_IMPORTED_MODULE_4__.connectBackend)(config);
       console.log('conversation is now: ', res.data); // set the messages field of the state with the data
 
-      this.setState({
+      setMessagePanelData({ ...messagePanelData,
         messages: res.data,
         showLoading: false,
         disableTextArea: false
       });
-    });
-  }
+    } catch (err) {
+      console.log("Error occurred...", err);
+    }
+  };
 
-  onNewMessageArrival(data) {
-    let newMessages = [...this.state.messages];
-    console.log('New Messages are', newMessages); // if the current message is from the selected room also
-
-    if (data.roomId == this.props.selectedRoomId) {
-      this.setState((prevState, props) => ({
-        messages: [...this.state.messages, { ...data
+  const onNewMessageArrival = data => {
+    // if the current message is from the selected room also
+    if (data.roomId == props.selectedRoomId) {
+      setMessagePanelData({ ...messagePanelData,
+        messages: [...messagePanelData.messages, { ...data
         }]
-      }));
+      });
     } // fill the Room info from Socket data
 
 
-    this.props.fillRoomInfoFromSocket(data);
-  }
+    props.fillRoomInfoFromSocket(data);
+  };
 
-  onLineRoom(roomsOnline) {
+  const onLineRoom = roomsOnline => {
     console.log('Online rooms are', roomsOnline);
-    this.props.notifyOnlineRooms(roomsOnline);
-  }
+    props.notifyOnlineRooms(roomsOnline);
+  };
 
-  render() {
-    let {
-      messages,
-      showLoading,
-      disableTextArea
-    } = this.state;
-    let {
-      userInfo,
-      selectedRoomId,
-      showMessagePanel
-    } = this.props;
-    let messageStyle = showMessagePanel == true ? "message-panel" : "message-panel hide-div";
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-      className: messageStyle,
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
-        className: "show-messages",
-        children: [showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_4__.default, {}) : messages.map(message => {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Message__WEBPACK_IMPORTED_MODULE_2__.default, { ...message,
-            userInfo: userInfo
-          }, message.id);
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
-          style: {
-            float: "left",
-            clear: "both"
-          },
-          ref: el => {
-            this.messageEnd = el;
-          }
-        })]
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_WriteMessage__WEBPACK_IMPORTED_MODULE_3__.default, {
-        isDisabled: disableTextArea,
-        userInfo: userInfo,
-        selectedRoomId: selectedRoomId,
-        onLineRoom: this.onLineRoom,
-        onNewMessageArrival: this.onNewMessageArrival.bind(this)
+  const {
+    messages,
+    showLoading,
+    disableTextArea
+  } = messagePanelData;
+  const {
+    userInfo,
+    selectedRoomId,
+    showMessagePanel
+  } = props;
+  const messageStyle = showMessagePanel == true ? "message-panel" : "message-panel hide-div";
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+    className: messageStyle,
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+      className: "show-messages",
+      children: [showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_3__.default, {}) : messages.map(message => {
+        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Message__WEBPACK_IMPORTED_MODULE_1__.default, { ...message,
+          userInfo: userInfo
+        }, message.id);
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+        style: {
+          float: "left",
+          clear: "both"
+        },
+        ref: messageEnd
       })]
-    });
-  }
-
-}
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_WriteMessage__WEBPACK_IMPORTED_MODULE_2__.default, {
+      isDisabled: disableTextArea,
+      userInfo: userInfo,
+      selectedRoomId: selectedRoomId,
+      onLineRoom: onLineRoom,
+      onNewMessageArrival: onNewMessageArrival.bind(undefined)
+    })]
+  });
+};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (MessagesPanel);
 
@@ -2348,101 +2341,98 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class WriteMessage extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
-  // static propTypes = {
-  //     className: PropTypes.string,
-  // };
-  constructor(props) {
-    super(props);
-    this.socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_1__.io)();
-    this.state = {
-      message: ''
-    };
-  }
+const WriteMessage = props => {
+  // Initialize the initial state and its modifier function
+  const [writeMessageData, setWriteMessageData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+    message: ''
+  }); // initialize the socket
 
-  componentDidMount() {
-    let {
-      onNewMessageArrival,
-      onLineRoom
-    } = this.props;
-    let toAlertRoomIds;
-    this.socket.on('connect', () => {
-      console.log('Socket connected FROM React...');
-      toAlertRoomIds = this.props.userInfo.userId; // emit all the room ids where the user belongs to see him / her as active
+  const socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_1__.io)();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    onConnect();
+    onUserOnline();
+    onMessageArrival();
+    return onDisconnect();
+  }, []);
 
-      this.socket.emit('onlineUser', toAlertRoomIds);
-    }); // when a user is online
+  const onConnect = () => {
+    socket.on('connect', () => {
+      console.log('Socket connected FROM React...'); // emit all the room ids where the user belongs to see him / her as active
 
-    this.socket.on('onlineUser', data => {
+      socket.emit('onlineUser', props.userInfo.userId);
+    });
+  }; // when a user is online
+
+
+  const onUserOnline = () => {
+    socket.on('onlineUser', data => {
       console.log('these rooms should be shown as online', data);
-      onLineRoom(data);
-    }); // when a new message arrives
+      props.onLineRoom(data);
+    });
+  }; // when a new message arrives
 
-    this.socket.on('message', data => {
+
+  const onMessageArrival = () => {
+    socket.on('message', data => {
       console.log('data value ', data); // send the newly incoming message to the parent component 
 
-      onNewMessageArrival(data);
+      props.onNewMessageArrival(data);
     });
-    this.socket.on('disconnect', () => {
+  };
+
+  const onDisconnect = () => {
+    socket.on('disconnect', () => {
       console.log('disconnected.. .!!');
     });
-  } // send the chat message through socket
+  }; // send the chat message through socket
 
 
-  sendMessage(event) {
-    event.persist(); // if the ENTER key is pressed emit the message
-
-    if ((event.keyCode == 13 || event.which == 13) && !event.ctrlKey) {
+  const sendMessage = e => {
+    // if the ENTER key is pressed emit the message
+    if ((e.keyCode == 13 || e.which == 13) && !e.ctrlKey) {
       // define the chat message
-      let data = {
+      const data = {
         timeSent: new Date().toISOString(),
-        msgBody: this.state.message.replace(this.state.message.charAt(this.state.message.length - 1), ""),
-        senderId: this.props.userInfo.userId,
-        roomId: this.props.selectedRoomId,
+        // msgBody: state.message.replace(state.message.charAt(state.message.length - 1), ""),
+        msgBody: writeMessageData.message,
+        senderId: props.userInfo.userId,
+        roomId: props.selectedRoomId,
         id: (0,uuid__WEBPACK_IMPORTED_MODULE_3__.default)()
       };
-      console.log('the message', data);
-      console.log('length of the message', data.msgBody.length); // emit the message
+      console.log('the message', data); // emit the message
 
       if (data.msgBody.length > 0) {
-        this.socket.emit('message', data);
-        let {
-          onNewMessageArrival
-        } = this.props;
-        onNewMessageArrival(data);
+        socket.emit('message', data);
+        props.onNewMessageArrival(data);
       } // reset the textarea value 
 
 
-      this.setState({
+      setWriteMessageData({ ...writeMessageData,
         message: ''
       });
-    } else if ((event.keyCode == 13 || event.which == 13) && event.ctrlKey) {
+    } else if ((e.keyCode == 13 || e.which == 13) && e.ctrlKey) {
       console.log('CTRL pressed');
-      this.setState({
-        message: event.target.value + "\n"
+      setWriteMessageData({ ...writeMessageData,
+        message: e.target.value + "\n"
       });
     }
-  }
+  };
 
-  handleChange(event) {
-    event.persist();
-    this.setState({
-      message: event.target.value
+  const handleChange = e => {
+    setWriteMessageData({ ...writeMessageData,
+      message: e.target.value
     });
-  }
+  };
 
-  render() {
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("textarea", {
-      rows: "3",
-      className: "msg-write-div",
-      disabled: this.props.isDisabled,
-      onChange: this.handleChange.bind(this),
-      onKeyPress: this.sendMessage.bind(this),
-      value: this.state.message
-    });
-  }
-
-}
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("textarea", {
+    rows: "3",
+    className: "msg-write-div",
+    disabled: props.isDisabled,
+    onChange: handleChange,
+    onKeyPress: sendMessage,
+    value: writeMessageData.message
+  });
+};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (WriteMessage);
 
@@ -2658,7 +2648,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ErrorMessage__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ErrorMessage */ "./src/components/login/ErrorMessage.js");
 /* harmony import */ var _Loading__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Loading */ "./src/components/Loading.js");
 /* harmony import */ var _Constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Constants */ "./src/components/Constants.js");
-/* harmony import */ var _connectBackend__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../connectBackend */ "./connectBackend.js");
+/* harmony import */ var _connectBackend__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../connectBackend */ "./src/components/connectBackend.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "../node_modules/react/jsx-runtime.js");
  // components
 
@@ -2857,14 +2847,14 @@ const RoomInfo = ({
   const readStyle = read == false ? "last-message unread-msg" : "last-message";
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: activeRoomId == roomId ? "room-info active-room" : "room-info",
-    onClick: setSelectedRoomId,
+    onClick: () => setSelectedRoomId(roomId),
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "room-icon-div",
       children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "room-initials",
-        children: [roomName.substr(0, 2), onlineRooms.indexOf(partnerId) > -1 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
+        children: [roomName.substr(0, 2), onlineRooms.indexOf(partnerId) > -1 && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
           className: "online-mark"
-        }) : null]
+        })]
       })
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
       className: "room-name",
@@ -2898,7 +2888,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _RoomInfo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RoomInfo */ "./src/components/rooms/RoomInfo.js");
 /* harmony import */ var _Loading__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../Loading */ "./src/components/Loading.js");
 /* harmony import */ var _Constants__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../Constants */ "./src/components/Constants.js");
-/* harmony import */ var _connectBackend__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../connectBackend */ "./connectBackend.js");
+/* harmony import */ var _connectBackend__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../connectBackend */ "./src/components/connectBackend.js");
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "../node_modules/react/jsx-runtime.js");
  // components
 
@@ -3026,7 +3016,7 @@ const RoomPanel = props => {
         userInfo: userInfo.userId,
         activeRoomId: activeRoomId,
         onlineRooms: onlineRooms,
-        setSelectedRoomId: () => setSelectedRoomId(room.roomId)
+        setSelectedRoomId: setSelectedRoomId
       }, room.roomId);
     })
   });
