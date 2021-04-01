@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import io from 'socket.io-client';
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid';
 
 
 class WriteMessage extends Component {
@@ -10,7 +10,7 @@ class WriteMessage extends Component {
 
   constructor(props) {
     super(props);
-    this.socket = io('http://localhost:3000');
+    this.socket = io();
     this.state = {
       message: ''
     }
@@ -27,7 +27,7 @@ class WriteMessage extends Component {
       toAlertRoomIds = this.props.userInfo.userId
 
       // emit all the room ids where the user belongs to see him / her as active
-      this.socket.emit('onlineUser', toAlertRoomIds)      
+      this.socket.emit('onlineUser', toAlertRoomIds)
     });
 
     // when a user is online

@@ -1,11 +1,8 @@
-import React from 'react'
-
-const Loading = (props) => {
+// Loading component
+export default (props) => {
 	return (
 		<div className="loading-div">
-			<img src="images/loading.gif" className="loading-gif"/>
+			<img src="images/loading.gif" className="loading-gif" />
 		</div>
 	);
 }
-
-export default Loading

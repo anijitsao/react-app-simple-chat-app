@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios'
-import uuidv4 from 'uuid/v4'
 
 // component
 import Message from './Message'
@@ -102,7 +101,7 @@ class MessagesPanel extends Component {
       <div className={messageStyle}>
         <div className="show-messages">
           {(showLoading == true) ? <Loading />
-            :            
+            :
             messages.map((message) => {
               return <Message key={message.id} {...message} userInfo={userInfo} />
             })

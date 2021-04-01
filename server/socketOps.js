@@ -32,7 +32,6 @@ const allSocketOps = (io) => {
     });
 
 
-
     socket.on('disconnect', () => {
       console.log('socket disconnected...', socket.id)
       activeUsers = activeUsers.filter((activeUser) => { return activeUser != users[socket.id]['userId'] })

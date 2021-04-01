@@ -30,25 +30,25 @@ const chooseApiAndSendResponse = (apiName, db, req, res, client, output) => {
 	// perform db specific ops based on API names
 	switch (apiName) {
 		case 'login':
-			makeLogin(db, req, res, client, output)
+			makeLogin(db, req, res, client, output, apiName)
 			break;
 		case 'getRooms':
-			makeGetRooms(db, req, res, client, output)
+			makeGetRooms(db, req, res, client, output, apiName)
 			break;
 		case 'getConversation':
-			makeGetConversation(db, req, res, client, output)
+			makeGetConversation(db, req, res, client, output, apiName)
 			break;
 		case 'updateRoom':
-			makeUpdateRoom(db, req, res, client, output)
+			makeUpdateRoom(db, req, res, client, output, apiName)
 			break;
 		case 'updateRoomReadStatus':
-			makeUpdateRoomReadStatus(db, req, res, client, output)
+			makeUpdateRoomReadStatus(db, req, res, client, output, apiName)
 			break;
 	}
 }
 
 // handle request for /login API
-const makeLogin = async (db, req, res, client, output) => {
+const makeLogin = async (db, req, res, client, output, apiName) => {
 	try {
 		const { username, password } = req.body
 
@@ -70,13 +70,13 @@ const makeLogin = async (db, req, res, client, output) => {
 	} catch (err) {
 		console.log("Error occurred", err)
 	} finally {
-		sendResponseAndCloseConnection(client, output, res)
+		sendResponseAndCloseConnection(client, output, res, apiName)
 	}
 }
 
 
 // /getrooms API
-const makeGetRooms = async (db, req, res, client, output) => {
+const makeGetRooms = async (db, req, res, client, output, apiName) => {
 
 	const { rooms } = req.body
 	const roomIds = rooms.map((ele) => {
@@ -111,12 +111,12 @@ const makeGetRooms = async (db, req, res, client, output) => {
 	} catch (err) {
 		console.log('unable to get last message for a room', err)
 	} finally {
-		sendResponseAndCloseConnection(client, output, res)
+		sendResponseAndCloseConnection(client, output, res, apiName)
 	}
 }
 
 // /getconversation API
-const makeGetConversation = async (db, req, res, client, output) => {
+const makeGetConversation = async (db, req, res, client, output, apiName) => {
 	const { id } = req.params
 
 	try {
@@ -137,12 +137,12 @@ const makeGetConversation = async (db, req, res, client, output) => {
 	} catch (error) {
 		console.log('Unable to get conversation for that room', error)
 	} finally {
-		sendResponseAndCloseConnection(client, output, res)
+		sendResponseAndCloseConnection(client, output, res, apiName)
 	}
 }
 
 
-const makeUpdateRoom = async (db, req, res, client, output) => {
+const makeUpdateRoom = async (db, req, res, client, output, apiName) => {
 	console.log('params received', req.params)
 	console.log('body of the req', req.body)
 	const allMessages = sortMessagesFromSocket(req.body)
@@ -180,11 +180,11 @@ const makeUpdateRoom = async (db, req, res, client, output) => {
 	} catch (error) {
 		console.log('Unable to update rooms with messages', error)
 	} finally {
-		sendResponseAndCloseConnection(client, output, res)
+		sendResponseAndCloseConnection(client, output, res, apiName)
 	}
 }
 
-const makeUpdateRoomReadStatus = async (db, req, res, client, output) => {
+const makeUpdateRoomReadStatus = async (db, req, res, client, output, apiName) => {
 	console.log('body of the req', req.body)
 
 	const { userId, roomName, read } = req.body
@@ -193,18 +193,18 @@ const makeUpdateRoomReadStatus = async (db, req, res, client, output) => {
 			.collection(COLLECTION_USERS)
 			.updateOne({ _id: ObjectId(userId), "rooms.roomName": roomName }, { "$set": { "rooms.$.read": read } })
 
-		console.log('read status is changed here, number of modified docs', docs.result.nModified)
+		output = { ...output, nModified: docs.result.nModified }
 	} catch (error) {
 		console.log('Unable to change the read status', error)
 	} finally {
-		sendResponseAndCloseConnection(client, output, res)
+		sendResponseAndCloseConnection(client, output, res, apiName)
 	}
 }
 
 // function to send the response and close the db connection
-function sendResponseAndCloseConnection(client, output, res) {
+function sendResponseAndCloseConnection(client, output, res, apiName) {
 	if (output && res) {
-		console.log(`========================\nOUTPUT AS RECEIVED AND BEFORE SENDING\n==================\n`, output)
+		console.log(`========================\nOUTPUT AS RECEIVED AND BEFORE SENDING (${apiName})\n==================\n`, output)
 		res.status(SUCCESS).json(output)
 	} else {
 		res.status(SERVER_ERR).json({ msg: "Internal Server Error" })

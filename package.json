@@ -30,6 +30,7 @@
     "react-router-dom": "^5.2.0",
     "socket.io-client": "^4.0.0",
     "style-loader": "^2.0.0",
+    "uuid": "^8.3.2",
     "webpack": "^5.26.3",
     "webpack-cli": "^4.5.0"
   },

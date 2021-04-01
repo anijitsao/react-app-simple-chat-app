@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 
 // components 
 import Header from './components/layout/Header';
@@ -9,53 +9,35 @@ import Login from './components/login/Login';
 // css
 import './css/style.css'
 
+const App = () => {
 
-class App extends Component {
-  // static propTypes = {
-  //   className: PropTypes.string,
-  // };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
+  // Initialize the initial state and its modifier function
+  const [appData, setAppData] = useState(
+    {
       showContent: false,
       showBackButton: false
-    }
-
-    // define not to create the functions every time
-    this.onSuccessLogin = this.onSuccessLogin.bind(this)
-  }
+    })
 
   // toggle the message panel 
-  toggleBackButton(showBackButton) {
-    console.log('Status of back button', showBackButton)
-    this.setState({ showBackButton })
+  const toggleBackButton = (showBackButton) => {
+    setAppData({ ...appData, showBackButton })
   }
 
-  onSuccessLogin(userInfo) {
-    this.setState({ userInfo, showContent: true }, () => {
-      console.log('State is now', this.state)
-    })
+  const onSuccessLogin = (userInfo) => {
+    setAppData({ ...appData, userInfo, showContent: true })
   }
 
-  // when error occurred in some lower components
-  componentDidCatch() {
-    alert('Some Error occurred...!!')
-  }
-  render() {
-    let { showContent, userInfo, showBackButton } = this.state
-    return (
-      <div className="container">
-        { /* including the Title and other components */}
-        <Header userInfo={userInfo} />
-        {(showContent == false) ? <Login onSuccessLogin={this.onSuccessLogin} /> : <Content userInfo={userInfo} toggleBackButton={this.toggleBackButton.bind(this)} showBackButton={showBackButton} />}
-        <Footer
-          showBackButton={showBackButton}
-          toggleBackButton={this.toggleBackButton.bind(this, false)} />
-      </div>
-    );
-  }
+  const { showContent, userInfo, showBackButton } = appData
+  return (
+    <div className="container">
+      { /* including the Title and other components */}
+      <Header userInfo={userInfo} />
+      {(showContent == false) ? <Login onSuccessLogin={onSuccessLogin} /> : <Content userInfo={userInfo} toggleBackButton={toggleBackButton.bind(this)} showBackButton={showBackButton} />}
+      <Footer
+        showBackButton={showBackButton}
+        toggleBackButton={toggleBackButton.bind(this, false)} />
+    </div>
+  );
 }
 
 export default App;
