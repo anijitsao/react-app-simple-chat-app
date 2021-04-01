@@ -1,53 +1,49 @@
-// import React, { Component } from 'react';
+// list of all the constants
+const Constants = () => {
 
-class Constants {
-
-  constructor() {
-
-    // list of all the constants
+  const url = 'http://localhost:3000/services'
+  return {
 
     // all the URLs
-    this.url = 'http://localhost:3000/services'
-    this.login = `${this.url}/login`
+    url,
+    login: `${url}/login`,
 
-    this.getConversation = `${this.url}/getconversation/{id}`
-    this.getRooms = `${this.url}/getrooms/{id}`
-    this.saveReadStatus = `${this.url}/updateroomreadstatus`
+    getConversation: `${url}/getconversation/{id}`,
+    getRooms: `${url}/getrooms/{id}`,
+    saveReadStatus: `${url}/updateroomreadstatus`,
 
     // the Content-Type
-    this.header = { 'Content-Type': 'application/json' }
+    header: { 'Content-Type': 'application/json' },
 
     // HTTP verbs
-    this.method = {
+    method: {
       "POST": "POST",
       "GET": "GET",
       "PUT": "PUT"
-    }
+    },
 
 
     // initialize
-    this.theWeek = makeFormattedWeek()
+    // theWeek: makeFormattedWeek(),
 
-    this.formatDates = (dateReceived) => {
-
-      if (this.theWeek[dateReceived.substring(0, dateReceived.indexOf('T'))]) {
-        let formattedDate = this.theWeek[dateReceived.substring(0, dateReceived.indexOf('T'))]
+    formatDates: (dateReceived) => {
+      const theWeek = makeFormattedWeek()
+      if (theWeek[dateReceived.substring(0, dateReceived.indexOf('T'))]) {
+        let formattedDate = theWeek[dateReceived.substring(0, dateReceived.indexOf('T'))]
         return (formattedDate == 'Today') ? dateReceived.substr(dateReceived.indexOf('T') + 1, 5) : formattedDate
       } else {
         return `${new Date(dateReceived).getDate()}/${new Date(dateReceived).getMonth() + 1}/${new Date(dateReceived).getFullYear()}`
       }
-
     }
   }
 }
 
-
 function makeFormattedWeek() {
-  let theWeek = {}
-  
+  const theWeek = {}
+
   // list of day names
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-  
+
   for (let i = 0; i < 7; i++) {
     // reset today
     let today = new Date()
@@ -64,6 +60,5 @@ function makeFormattedWeek() {
   }
   return theWeek
 }
-
 
 export default Constants;

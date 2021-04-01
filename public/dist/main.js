@@ -1919,43 +1919,43 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-// import React, { Component } from 'react';
-class Constants {
-  constructor() {
-    // list of all the constants
+// list of all the constants
+const Constants = () => {
+  const url = 'http://localhost:3000/services';
+  return {
     // all the URLs
-    this.url = 'http://localhost:3000/services';
-    this.login = `${this.url}/login`;
-    this.getConversation = `${this.url}/getconversation/{id}`;
-    this.getRooms = `${this.url}/getrooms/{id}`;
-    this.saveReadStatus = `${this.url}/updateroomreadstatus`; // the Content-Type
-
-    this.header = {
+    url,
+    login: `${url}/login`,
+    getConversation: `${url}/getconversation/{id}`,
+    getRooms: `${url}/getrooms/{id}`,
+    saveReadStatus: `${url}/updateroomreadstatus`,
+    // the Content-Type
+    header: {
       'Content-Type': 'application/json'
-    }; // HTTP verbs
-
-    this.method = {
+    },
+    // HTTP verbs
+    method: {
       "POST": "POST",
       "GET": "GET",
       "PUT": "PUT"
-    }; // initialize
+    },
+    // initialize
+    // theWeek: makeFormattedWeek(),
+    formatDates: dateReceived => {
+      const theWeek = makeFormattedWeek();
 
-    this.theWeek = makeFormattedWeek();
-
-    this.formatDates = dateReceived => {
-      if (this.theWeek[dateReceived.substring(0, dateReceived.indexOf('T'))]) {
-        let formattedDate = this.theWeek[dateReceived.substring(0, dateReceived.indexOf('T'))];
+      if (theWeek[dateReceived.substring(0, dateReceived.indexOf('T'))]) {
+        let formattedDate = theWeek[dateReceived.substring(0, dateReceived.indexOf('T'))];
         return formattedDate == 'Today' ? dateReceived.substr(dateReceived.indexOf('T') + 1, 5) : formattedDate;
       } else {
         return `${new Date(dateReceived).getDate()}/${new Date(dateReceived).getMonth() + 1}/${new Date(dateReceived).getFullYear()}`;
       }
-    };
-  }
-
-}
+    }
+  };
+};
 
 function makeFormattedWeek() {
-  let theWeek = {}; // list of day names
+  const theWeek = {}; // list of day names
 
   const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -2025,7 +2025,6 @@ const Content = props => {
   };
 
   const setSelectedRoomId = id => {
-    console.log('id here in Content', id);
     toggleMessagePanel(true, false); // set in the corresponding variable
 
     setContentData({ ...contentData,
@@ -2133,7 +2132,7 @@ const Message = ({
   senderId,
   userInfo
 }) => {
-  const allConstants = new _Constants__WEBPACK_IMPORTED_MODULE_0__.default();
+  const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_0__.default)();
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: senderId == userInfo.userId ? "msg my-msg" : "msg room-msg",
     children: [msgBody, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("span", {
@@ -2189,7 +2188,7 @@ class MessagesPanel extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
       disableTextArea: true
     }; // instantiate the Constants
 
-    this.allConstants = new _Constants__WEBPACK_IMPORTED_MODULE_5__.default();
+    this.allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_5__.default)();
     this.onLineRoom = this.onLineRoom.bind(this);
   } // when the component is mounted 
 
@@ -2331,7 +2330,7 @@ class WriteMessage extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
   // };
   constructor(props) {
     super(props);
-    this.socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_1__.default)();
+    this.socket = (0,socket_io_client__WEBPACK_IMPORTED_MODULE_1__.io)();
     this.state = {
       message: ''
     };
@@ -2677,157 +2676,151 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class Login extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
-  // static propTypes = {
-  //     className: PropTypes.string,
-  // };
-  constructor(props) {
-    super(props);
-    this.state = {
-      showPasswordInput: false,
-      showError: false,
-      username: '',
-      password: '',
-      errorMessage: 'Username / Password cannot be empty',
-      showLoading: false
-    }; // instantiate the Constants
+const Login = props => {
+  // Initialize the initial state and its modifier function
+  const [loginData, setLoginData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+    showPasswordInput: false,
+    showError: false,
+    username: '',
+    password: '',
+    errorMessage: 'Username / Password cannot be empty',
+    showLoading: false
+  }); // instantiate the Constants
 
-    this.allConstants = new _Constants__WEBPACK_IMPORTED_MODULE_4__.default();
-  } // handle when the username / password field is updated
+  const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_4__.default)(); // handle when the username / password field is updated
 
-
-  handleOnChange(type, event) {
-    event.persist(); // update the corresponding state values
-
-    if (type == 'username') {
-      this.setState({
-        username: event.target.value
-      });
-    } else {
-      this.setState({
-        password: event.target.value
-      });
-    }
-  } // handle when the ENTER key is pressed
-
-
-  handleKeyPress(type, event) {
-    event.persist();
-
-    if (event.keyCode == 13 || event.which == 13) {
-      if (type == 'username') {
-        if (this.state.username != '') {
-          this.setState({
-            showPasswordInput: true
-          });
-        } else {
-          this.showErrorComponent();
-        }
-      } else if (type == 'password') {
-        if (this.state.password != '') {
-          console.log('Everything is correct Go for verify...', this.state);
-          this.verifyUser();
-        } else {
-          this.showErrorComponent();
-        }
+  const handleOnChange = e => {
+    // update the corresponding state values
+    if (e) {
+      if (e.target.name == 'username') {
+        setLoginData({ ...loginData,
+          username: e.target.value
+        });
+      } else {
+        setLoginData({ ...loginData,
+          password: e.target.value
+        });
       }
     }
-  } // verify the logged in user
+  }; // handle when the ENTER key is pressed
 
 
-  verifyUser() {
-    let {
+  const handleKeyPress = e => {
+    const type = e.target.name;
+
+    if (e) {
+      if (e.keyCode == 13 || e.which == 13) {
+        // if username is entered enter the password
+        if (type == 'username' && loginData.username != '') {
+          setLoginData({ ...loginData,
+            showPasswordInput: true
+          });
+        } else if (type == 'password' && loginData.password != '') {
+          console.log('Everything is correct Go for verify...', loginData);
+          verifyUser();
+        }
+      } // showErrorComponent()
+
+    }
+  }; // verify the logged in user
+
+
+  const verifyUser = async () => {
+    const {
       username,
       password,
       showLoading
-    } = this.state; // reset the username / password field
+    } = loginData; // reset the username / password field
 
-    this.setState({
+    setLoginData({ ...loginData,
       password: '',
       username: '',
       showLoading: true
     });
-    let allConstants = this.allConstants;
-    axios__WEBPACK_IMPORTED_MODULE_1___default()({
-      method: allConstants.method.POST,
-      url: allConstants.login,
-      header: allConstants.header,
-      data: {
-        username,
-        password
-      }
-    }).then(res => {
+
+    try {
+      const res = await axios__WEBPACK_IMPORTED_MODULE_1___default()({
+        method: allConstants.method.POST,
+        url: allConstants.login,
+        header: allConstants.header,
+        data: {
+          username,
+          password
+        }
+      });
+
       if (res.data.userId) {
         console.log('user authentication successful', res.data);
-        this.setState({
+        setLoginData({ ...loginData,
           showLoading: false
         }); // send the logged in user's data to parent
 
-        this.props.onSuccessLogin(res.data);
+        props.onSuccessLogin(res.data);
       } else {
         // show the error message
-        this.setState({
-          'errorMessage': 'Authentication faliure ! Auto reload the page',
+        setLoginData({ ...loginData,
+          errorMessage: 'Authentication faliure ! Auto reload the page',
           showLoading: false
         });
-        this.showErrorComponent(); // reload the page
+        showErrorComponent(); // reload the page
 
         setTimeout(() => {
           location.reload();
         }, 2000);
       }
-    });
-  }
+    } catch (err) {
+      console.log('some error occurred...', err);
+    }
+  };
 
-  showErrorComponent() {
+  const showErrorComponent = () => {
     // show the error message component
-    this.setState({
+    setLoginData({ ...loginData,
       showError: true
     }); // hide the error message component after 3sec
 
     setTimeout(() => {
-      this.setState({
+      setLoginData({ ...loginData,
         showError: false
       });
     }, 2000);
-  }
+  };
 
-  render() {
-    let {
-      showError,
-      showPasswordInput,
-      showLoading,
-      errorMessage,
-      username,
-      password
-    } = this.state;
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-      className: "login",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-        className: "login-form",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-          className: "login-title",
-          children: "Login"
-        }), showError == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_ErrorMessage__WEBPACK_IMPORTED_MODULE_2__.default, {
-          message: errorMessage
-        }) : '', showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_3__.default, {}) : showPasswordInput == false ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
-          type: "text",
-          placeholder: "Enter username",
-          onChange: this.handleOnChange.bind(this, 'username'),
-          onKeyPress: this.handleKeyPress.bind(this, 'username'),
-          value: username
-        }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
-          type: "password",
-          placeholder: "Enter password",
-          onChange: this.handleOnChange.bind(this, 'password'),
-          onKeyPress: this.handleKeyPress.bind(this, 'password'),
-          value: password
-        })]
-      })
-    });
-  }
-
-}
+  const {
+    showError,
+    showPasswordInput,
+    showLoading,
+    errorMessage,
+    username,
+    password
+  } = loginData;
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+    className: "login",
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+      className: "login-form",
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+        className: "login-title",
+        children: "Login"
+      }), showError == true && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_ErrorMessage__WEBPACK_IMPORTED_MODULE_2__.default, {
+        message: errorMessage
+      }), showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_3__.default, {}) : showPasswordInput == false ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+        type: "text",
+        placeholder: "Enter username",
+        onChange: handleOnChange,
+        onKeyPress: handleKeyPress,
+        name: "username",
+        value: username
+      }) : /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("input", {
+        type: "password",
+        placeholder: "Enter password",
+        onChange: handleOnChange,
+        onKeyPress: handleKeyPress,
+        name: "password",
+        value: password
+      })]
+    })
+  });
+};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Login);
 
@@ -2844,11 +2837,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "../node_modules/react/index.js");
-/* harmony import */ var _Constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Constants */ "./src/components/Constants.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "../node_modules/react/jsx-runtime.js");
- // Constants
-
+/* harmony import */ var _Constants__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../Constants */ "./src/components/Constants.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "../node_modules/react/jsx-runtime.js");
+// Constants
 
 
 
@@ -2867,26 +2858,26 @@ const RoomInfo = ({
   read
 }) => {
   // instantiate the Constants
-  const allConstants = new _Constants__WEBPACK_IMPORTED_MODULE_1__.default();
-  let readStyle = read == false ? "last-message unread-msg" : "last-message";
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+  const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_0__.default)();
+  const readStyle = read == false ? "last-message unread-msg" : "last-message";
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
     className: activeRoomId == roomId ? "room-info active-room" : "room-info",
     onClick: setSelectedRoomId,
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "room-icon-div",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
         className: "room-initials",
-        children: [roomName.substr(0, 2), onlineRooms.indexOf(partnerId) > -1 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+        children: [roomName.substr(0, 2), onlineRooms.indexOf(partnerId) > -1 ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
           className: "online-mark"
         }) : null]
       })
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsxs)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsxs)("div", {
       className: "room-name",
-      children: [roomName, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+      children: [roomName, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
         className: readStyle,
         children: userInfo == senderId ? `You: ${lastMessage.substr(0, 96)}` : lastMessage.substr(0, 100)
       })]
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)("div", {
       className: "date-info",
       children: allConstants.formatDates(dateInfo)
     })]
@@ -2924,60 +2915,46 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class RoomPanel extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
-  // static propTypes = {
-  //     className: PropTypes.string,
-  // };
-  constructor(props) {
-    super(props);
-    this.state = {
-      rooms: [],
-      showLoading: true
-    }; // instantiate the Constants
+const RoomPanel = props => {
+  // Initialize the initial state and its modifier function
+  const [roomPanelData, setRoomPanelData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
+    rooms: [],
+    showLoading: true
+  }); // instantiate the Constants
 
-    this.allConstants = new _Constants__WEBPACK_IMPORTED_MODULE_4__.default();
-  }
+  const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_4__.default)();
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    loadrooms();
+  }, []); // componentWillReceiveProps(nextProps) {
+  //   // console.log('nextProps from RoomPanel', nextProps, ' and old props', props)
+  //   if (nextProps.newMessageFromSocket && (!props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== props.newMessageFromSocket.id)) {
+  //     let newRooms = [...state.rooms]
+  //     newRooms.forEach((room) => {
+  //       if (room.roomId == nextProps.newMessageFromSocket.roomId) {
+  //         // adjust the necessary field if the roomId matches
+  //         room.lastMessage = nextProps.newMessageFromSocket.msgBody
+  //         room.dateInfo = nextProps.newMessageFromSocket.timeSent
+  //         room.senderId = nextProps.newMessageFromSocket.senderId
+  //         // if the message is from other non active room
+  //         if (room.read == true) {
+  //           room.read = false
+  //           saveReadStatusToDb(room, false)
+  //         }
+  //       }
+  //     })
+  //     newRooms = newRooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
+  //     setState({ rooms: newRooms })
+  //   }
+  // }
 
-  componentDidMount() {
-    this.loadrooms();
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // console.log('nextProps from RoomPanel', nextProps, ' and old props', this.props)
-    if (nextProps.newMessageFromSocket && (!this.props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== this.props.newMessageFromSocket.id)) {
-      let newRooms = [...this.state.rooms];
-      newRooms.forEach(room => {
-        if (room.roomId == nextProps.newMessageFromSocket.roomId) {
-          // adjust the necessary field if the roomId matches
-          room.lastMessage = nextProps.newMessageFromSocket.msgBody;
-          room.dateInfo = nextProps.newMessageFromSocket.timeSent;
-          room.senderId = nextProps.newMessageFromSocket.senderId; // if the message is from other non active room
-
-          if (room.read == true) {
-            room.read = false;
-            this.saveReadStatusToDb(room, false);
-          }
-        }
-      });
-      newRooms = newRooms.sort((a, b) => {
-        return new Date(b.dateInfo) - new Date(a.dateInfo);
-      });
-      this.setState({
-        rooms: newRooms
-      });
-    }
-  }
-
-  loadrooms() {
-    let allConstants = this.allConstants; // console.log('All Constants', allConstants)
+  const loadrooms = () => {
     // call the back end to get rooms
-
     axios__WEBPACK_IMPORTED_MODULE_1___default()({
       method: allConstants.method.POST,
-      url: allConstants.getRooms.replace('{id}', this.props.userInfo.userId),
+      url: allConstants.getRooms.replace('{id}', props.userInfo.userId),
       header: allConstants.header,
       data: {
-        rooms: this.props.userInfo.rooms
+        rooms: props.userInfo.rooms
       }
     }).then(res => {
       // fill the rooms array from the response
@@ -2985,83 +2962,78 @@ class RoomPanel extends react__WEBPACK_IMPORTED_MODULE_0__.Component {
 
       res.data = res.data.sort((a, b) => {
         return new Date(b.dateInfo) - new Date(a.dateInfo);
-      }); // let selectRoomIdFromResponse = res.data[0]['roomId']
-      // set necessary state variables 
+      }); // set necessary state variables 
 
-      this.setState({
+      setRoomPanelData({ ...roomPanelData,
         rooms: res.data,
         showLoading: false
-      }); // this.setSelectedRoomId(selectRoomIdFromResponse)
+      });
     });
-  }
+  };
 
-  setSelectedRoomId(id) {
+  const setSelectedRoomId = id => {
     // pass the selected room id augmented with logged in userid to the parent 
-    this.props.setSelectedRoomId(id); // set active room id for highlighting purpose
+    props.setSelectedRoomId(id); // set active room id for highlighting purpose
 
-    this.setState({
+    setRoomPanelData({ ...roomPanelData,
       activeRoomId: id
     });
-    this.changeReadStatus(id);
-  } // function to change the room status from read / unread
+    changeReadStatus(id);
+  }; // function to change the room status from read / unread
 
 
-  changeReadStatus(id) {
-    let allRooms = [...this.state.rooms];
-    console.log('change status reached');
+  const changeReadStatus = id => {
+    const allRooms = [...roomPanelData.rooms];
     allRooms.forEach((room, index, roomArray) => {
       if (room.roomId == id && room.read == false) {
         roomArray[index].read = true;
-        this.saveReadStatusToDb(room, true);
+        saveReadStatusToDb(room, true);
       }
     });
-    console.log('All rooms are now', allRooms);
-    this.setState({
+    setRoomPanelData({ ...roomPanelData,
       rooms: allRooms
     });
-  }
+  };
 
-  saveReadStatusToDb(room, status) {
-    axios__WEBPACK_IMPORTED_MODULE_1___default()({
-      method: this.allConstants.method.PUT,
-      url: this.allConstants.saveReadStatus,
-      data: {
-        userId: this.props.userInfo.userId,
-        roomName: room.roomName,
-        read: status
-      }
-    }).then(response => {
-      console.log('room status saved');
-    }).catch(err => {
+  const saveReadStatusToDb = async (room, status) => {
+    try {
+      await axios__WEBPACK_IMPORTED_MODULE_1___default()({
+        method: allConstants.method.PUT,
+        url: allConstants.saveReadStatus,
+        data: {
+          userId: props.userInfo.userId,
+          roomName: room.roomName,
+          read: status
+        }
+      });
+    } catch (err) {
       console.log('unable to save room status', err);
-    });
-  }
+    }
+  };
 
-  render() {
-    let {
-      userInfo,
-      showRoomPanel,
-      onlineRooms
-    } = this.props;
-    let {
-      activeRoomId,
-      showLoading
-    } = this.state;
-    let roomStyle = showRoomPanel == false ? "rooms-panel hide-div" : "rooms-panel";
-    return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
-      className: roomStyle,
-      children: showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_3__.default, {}) : this.state.rooms.map(room => {
-        return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_RoomInfo__WEBPACK_IMPORTED_MODULE_2__.default, { ...room,
-          userInfo: userInfo.userId,
-          activeRoomId: activeRoomId,
-          onlineRooms: onlineRooms,
-          setSelectedRoomId: this.setSelectedRoomId.bind(this, room.roomId)
-        }, room.roomId);
-      })
-    });
-  }
-
-}
+  const {
+    userInfo,
+    showRoomPanel,
+    onlineRooms
+  } = props;
+  const {
+    activeRoomId,
+    showLoading,
+    rooms
+  } = roomPanelData;
+  const roomStyle = showRoomPanel == false ? "rooms-panel hide-div" : "rooms-panel";
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+    className: roomStyle,
+    children: showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_3__.default, {}) : rooms.map(room => {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_RoomInfo__WEBPACK_IMPORTED_MODULE_2__.default, { ...room,
+        userInfo: userInfo.userId,
+        activeRoomId: activeRoomId,
+        onlineRooms: onlineRooms,
+        setSelectedRoomId: () => setSelectedRoomId(room.roomId)
+      }, room.roomId);
+    })
+  });
+};
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (RoomPanel);
 

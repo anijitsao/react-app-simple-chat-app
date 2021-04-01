@@ -1,14 +1,12 @@
-import React from 'react';
-
 // Constants
 import Constants from '../Constants'
 
 const RoomInfo = ({ roomName, lastMessage, dateInfo, senderId, userInfo, setSelectedRoomId, activeRoomId, roomId, onlineRooms, partnerId, read }) => {
   // instantiate the Constants
-  const allConstants = new Constants()
-  
-  let readStyle = (read == false) ? "last-message unread-msg" : "last-message"
-  
+  const allConstants = Constants()
+
+  const readStyle = (read == false) ? "last-message unread-msg" : "last-message"
+
   return (
     <div className={(activeRoomId == roomId) ? "room-info active-room" : "room-info"} onClick={setSelectedRoomId}>
       <div className="room-icon-div">
@@ -24,7 +22,5 @@ const RoomInfo = ({ roomName, lastMessage, dateInfo, senderId, userInfo, setSele
     </div>
   );
 };
-
-
 
 export default RoomInfo;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 // components
@@ -8,64 +8,56 @@ import Loading from '../Loading'
 // Constants
 import Constants from '../Constants'
 
-class RoomPanel extends Component {
-  // static propTypes = {
-  //     className: PropTypes.string,
-  // };
-
-  constructor(props) {
-    super(props);
-    this.state = {
+const RoomPanel = (props) => {
+  // Initialize the initial state and its modifier function
+  const [roomPanelData, setRoomPanelData] = useState(
+    {
       rooms: [],
       showLoading: true
-    }
+    })
 
-    // instantiate the Constants
-    this.allConstants = new Constants()
-  }
+  // instantiate the Constants
+  const allConstants = Constants()
 
-  componentDidMount() {
-    this.loadrooms()
-  }
+  useEffect(() => {
+    loadrooms()
+  }, [])
 
-  componentWillReceiveProps(nextProps) {
-    // console.log('nextProps from RoomPanel', nextProps, ' and old props', this.props)
+  // componentWillReceiveProps(nextProps) {
+  //   // console.log('nextProps from RoomPanel', nextProps, ' and old props', props)
 
-    if (nextProps.newMessageFromSocket && (!this.props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== this.props.newMessageFromSocket.id)) {
+  //   if (nextProps.newMessageFromSocket && (!props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== props.newMessageFromSocket.id)) {
 
-      let newRooms = [...this.state.rooms]
+  //     let newRooms = [...state.rooms]
 
-      newRooms.forEach((room) => {
-        if (room.roomId == nextProps.newMessageFromSocket.roomId) {
+  //     newRooms.forEach((room) => {
+  //       if (room.roomId == nextProps.newMessageFromSocket.roomId) {
 
-          // adjust the necessary field if the roomId matches
-          room.lastMessage = nextProps.newMessageFromSocket.msgBody
-          room.dateInfo = nextProps.newMessageFromSocket.timeSent
-          room.senderId = nextProps.newMessageFromSocket.senderId
-          
-          // if the message is from other non active room
-          if(room.read == true) {
-            room.read = false
-            this.saveReadStatusToDb(room, false)
-          }
-        }
-      })
+  //         // adjust the necessary field if the roomId matches
+  //         room.lastMessage = nextProps.newMessageFromSocket.msgBody
+  //         room.dateInfo = nextProps.newMessageFromSocket.timeSent
+  //         room.senderId = nextProps.newMessageFromSocket.senderId
 
-      newRooms = newRooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
-      this.setState({ rooms: newRooms })
-    }
-  }
+  //         // if the message is from other non active room
+  //         if (room.read == true) {
+  //           room.read = false
+  //           saveReadStatusToDb(room, false)
+  //         }
+  //       }
+  //     })
 
-  loadrooms() {
-    let allConstants = this.allConstants
-    // console.log('All Constants', allConstants)
+  //     newRooms = newRooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
+  //     setState({ rooms: newRooms })
+  //   }
+  // }
 
+  const loadrooms = () => {
     // call the back end to get rooms
     axios({
       method: allConstants.method.POST,
-      url: allConstants.getRooms.replace('{id}', this.props.userInfo.userId),
+      url: allConstants.getRooms.replace('{id}', props.userInfo.userId),
       header: allConstants.header,
-      data: { rooms: this.props.userInfo.rooms }
+      data: { rooms: props.userInfo.rooms }
     })
       .then((res) => {
         // fill the rooms array from the response
@@ -74,80 +66,69 @@ class RoomPanel extends Component {
         // sort the data
         res.data = res.data.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
 
-        // let selectRoomIdFromResponse = res.data[0]['roomId']
-
         // set necessary state variables 
-        this.setState({ rooms: res.data, showLoading: false })
-
-        // this.setSelectedRoomId(selectRoomIdFromResponse)
+        setRoomPanelData({ ...roomPanelData, rooms: res.data, showLoading: false })
       })
   }
 
 
-  setSelectedRoomId(id) {
+  const setSelectedRoomId = (id) => {
     // pass the selected room id augmented with logged in userid to the parent 
-    this.props.setSelectedRoomId(id)
+    props.setSelectedRoomId(id)
 
     // set active room id for highlighting purpose
-    this.setState({ activeRoomId: id })
-    this.changeReadStatus(id)
+    setRoomPanelData({ ...roomPanelData, activeRoomId: id })
+    changeReadStatus(id)
   }
 
   // function to change the room status from read / unread
-  changeReadStatus(id) {
-    let allRooms = [...this.state.rooms]
-    console.log('change status reached')
-    
+  const changeReadStatus = (id) => {
+    const allRooms = [...roomPanelData.rooms]
+
     allRooms.forEach((room, index, roomArray) => {
       if (room.roomId == id && room.read == false) {
-        roomArray[index].read = true      
-        this.saveReadStatusToDb(room, true)
+        roomArray[index].read = true
+        saveReadStatusToDb(room, true)
       }
     })
 
-    console.log('All rooms are now', allRooms)
-    this.setState({ rooms: allRooms })
+    setRoomPanelData({ ...roomPanelData, rooms: allRooms })
   }
 
-  saveReadStatusToDb(room, status) {
-    axios({
-      method: this.allConstants.method.PUT,
-      url: this.allConstants.saveReadStatus,
-      data: {
-        userId: this.props.userInfo.userId,
-        roomName: room.roomName,
-        read: status
-      }
-    })
-    .then((response)=> {
-      console.log('room status saved')
-    })
-    .catch((err)=>{
-      console.log('unable to save room status', err)
-    })
-  }
-
-  render() {
-    let { userInfo, showRoomPanel, onlineRooms } = this.props
-    let { activeRoomId, showLoading } = this.state
-
-    let roomStyle = (showRoomPanel == false) ? "rooms-panel hide-div" : "rooms-panel"
-    return (
-      <div className={roomStyle}>
-        {(showLoading == true) ? <Loading />
-          :
-          this.state.rooms.map((room) => {
-            return <RoomInfo key={room.roomId} {...room}
-              userInfo={userInfo.userId}
-              activeRoomId={activeRoomId}
-              onlineRooms={onlineRooms}
-              setSelectedRoomId={this.setSelectedRoomId.bind(this, room.roomId)} />
-          })
+  const saveReadStatusToDb = async (room, status) => {
+    try {
+      await axios({
+        method: allConstants.method.PUT,
+        url: allConstants.saveReadStatus,
+        data: {
+          userId: props.userInfo.userId,
+          roomName: room.roomName,
+          read: status
         }
-      </div>
-    );
+      })
+    } catch (err) {
+      console.log('unable to save room status', err)
+    }
   }
-}
 
+  const { userInfo, showRoomPanel, onlineRooms } = props
+  const { activeRoomId, showLoading, rooms } = roomPanelData
+
+  const roomStyle = (showRoomPanel == false) ? "rooms-panel hide-div" : "rooms-panel"
+  return (
+    <div className={roomStyle}>
+      {(showLoading == true) ? <Loading />
+        :
+        rooms.map((room) => {
+          return <RoomInfo key={room.roomId} {...room}
+            userInfo={userInfo.userId}
+            activeRoomId={activeRoomId}
+            onlineRooms={onlineRooms}
+            setSelectedRoomId={() => setSelectedRoomId(room.roomId)} />
+        })
+      }
+    </div>
+  );
+}
 
 export default RoomPanel;

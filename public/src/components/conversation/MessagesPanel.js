@@ -24,7 +24,7 @@ class MessagesPanel extends Component {
     }
 
     // instantiate the Constants
-    this.allConstants = new Constants()
+    this.allConstants = Constants()
 
     this.onLineRoom = this.onLineRoom.bind(this)
   }

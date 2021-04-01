@@ -18,7 +18,6 @@ const Content = (props) => {
     toggleMessagePanel(false, true)
   }, [])
 
-
   const toggleMessagePanel = (showMessagePanel, showRoomPanel) => {
     if (window.innerWidth < 500) {
       setContentData({ ...contentData, showMessagePanel, showRoomPanel })
@@ -29,7 +28,6 @@ const Content = (props) => {
   }
 
   const setSelectedRoomId = (id) => {
-    console.log('id here in Content', id)
     toggleMessagePanel(true, false)
     // set in the corresponding variable
     setContentData({ ...contentData, selectedRoomId: id })
