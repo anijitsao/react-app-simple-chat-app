@@ -1,20 +1,12 @@
-import React from 'react';
-
 // components
 import Title from './Title'
 import UserGreeting from './UserGreeting'
 
-
-const Header = ({ userInfo }) => {
+export default ({ userInfo }) => {
   return (
     <div className="header">
       <Title />
-      { (userInfo)? <UserGreeting username={userInfo.name}/>: '' }
+      { (userInfo) && <UserGreeting username={userInfo.name} />}
     </div>
   );
 };
-
-
-
-
-export default Header;

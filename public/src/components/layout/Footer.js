@@ -1,19 +1,10 @@
-import React from 'react';
-
-const Footer = (props) => {
-  let { toggleBackButton, showBackButton } = props
+// Footer component
+export default ({ toggleBackButton, showBackButton }) => {
   return (
     <div className="footer">
       {
-        (showBackButton == true) ?
-          <i className="fa fa-arrow-left left-arrow" onClick={toggleBackButton}></i>
-          :
-          null
+        (showBackButton == true) && <i className="fa fa-arrow-left left-arrow" onClick={toggleBackButton}></i>
       }
     </div>
   );
 };
-
-
-
-export default Footer;

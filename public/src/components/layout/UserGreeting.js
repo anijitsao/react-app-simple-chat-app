@@ -1,42 +1,26 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 
 // components
 import Logout from './Logout'
 
-class UserGreeting extends Component {
+const UserGreeting = (props) => {
 
-  constructor(props) {
-    super(props)
+  // Initialize initial state and its modifier function
+  const [logoutData, setLogoutData] = useState({ showLogout: false })
 
-    this.state = {
-      showLogout: false
-    }
-
-    this.showHideLogout = this.showHideLogout.bind(this);
+  const showHideLogout = () => {
+    setLogoutData({ ...logoutData, showLogout: !logoutData.showLogout })
   }
 
-  showHideLogout() {
-    this.setState((prevState, props) => ({
-      showLogout: !prevState.showLogout
-    }))
-  }
+  const { username } = props
+  const { showLogout } = logoutData
 
-
-  render() {
-
-    let { username } = this.props
-    let { showLogout } = this.state
-
-    return (
-		  <div className="user-info" onClick={this.showHideLogout}>
-		    <span className="user-greeting">Hi {username}</span>
-      { 
-      	(showLogout == true)? <Logout />: '' 
-      }
-		  </div>
-      
-    );
-  }
+  return (
+    <div className="user-info" onClick={showHideLogout}>
+      <span className="user-greeting">Hi {username}</span>
+      { (showLogout == true) && <Logout />}
+    </div>
+  );
 };
 
 export default UserGreeting;

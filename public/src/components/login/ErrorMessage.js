@@ -1,10 +1,6 @@
-import React from 'react';
-
-const ErrorMessage = ({ message }) => {
+// ErrorMessage component
+export default ({ message }) => {
   return (
     <div className="error-message">{message}</div>
   );
 };
-
-
-export default ErrorMessage;
