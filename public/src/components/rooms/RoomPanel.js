@@ -10,65 +10,74 @@ import { connectBackend } from '../connectBackend';
 
 const RoomPanel = (props) => {
   // Initialize the initial state and its modifier function
-  const [roomPanelData, setRoomPanelData] = useState({ rooms: [], showLoading: true })
-
+  const [roomPanelData, setRoomPanelData] = useState({ rooms: [], showLoading: true, shouldLoadrooms: true })
+  const [lastMsgFromSocketId, setLastMsgFromSocketId] = useState('')
+  const [shouldLoadrooms, setShouldLoadRooms] = useState(true)
   // instantiate the Constants
   const allConstants = Constants()
 
   useEffect(() => {
     loadrooms()
     onMessageArrival()
-  }, [])
+  })
 
   const onMessageArrival = () => {
-    console.log("props is here", props)
-    // if (nextProps.newMessageFromSocket && (!props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== props.newMessageFromSocket.id)) {
-    // if (props.newMessageFromSocket.id !== roomPanelData.id) {
-    //   const newRooms = [...state.rooms]
 
-    //   newRooms.forEach((room) => {
-    //     if (room.roomId == props.newMessageFromSocket.roomId) {
+    if (props.newMessageFromSocket && (props.newMessageFromSocket.id !== lastMsgFromSocketId)) {
+      const { roomId, msgBody, timeSent, senderId, id } = props.newMessageFromSocket
+      console.log("props is here", id, " and roomPanelData", lastMsgFromSocketId)
 
-    //       // adjust the necessary field if the roomId matches
-    //       room.lastMessage = nextProps.newMessageFromSocket.msgBody
-    //       room.dateInfo = nextProps.newMessageFromSocket.timeSent
-    //       room.senderId = nextProps.newMessageFromSocket.senderId
+      // avoid repeated loading of rooms and save the last message id from socket
+      setShouldLoadRooms(false)
+      setLastMsgFromSocketId(id)
 
-    //       // if the message is from other non active room
-    //       if (room.read == true) {
-    //         room.read = false
-    //         saveReadStatusToDb(room, false)
-    //       }
-    //     }
-    //   })
 
-    //   newRooms = newRooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
-    //   setRoomPanelData({ ...roomPanelData, rooms: newRooms })
-    // }
-  }
-  // call the back end to get rooms
-  const loadrooms = async () => {
-    try {
+      roomPanelData.rooms.map((room) => {
+        if (room.roomId == roomId) {
 
-      const config = {
-        method: allConstants.method.POST,
-        url: allConstants.getRooms.replace('{id}', props.userInfo.userId),
-        header: allConstants.header,
-        data: { rooms: props.userInfo.rooms }
-      }
+          // adjust the necessary field if the roomId matches
+          room.lastMessage = msgBody
+          room.dateInfo = timeSent
+          room.senderId = senderId
 
-      const res = await connectBackend(config)
+          // if the message is from other non active room
+          if (room.read == true) {
+            room.read = false
+            saveReadStatusToDb(room, false)
+          }
+        }
+      })
 
-      // sort the data based on dates
-      res.data = res.data.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
-
-      // set necessary state variables 
-      setRoomPanelData({ ...roomPanelData, rooms: res.data, showLoading: false })
-    } catch (err) {
-      console.log("some error occurred....", err)
+      roomPanelData.rooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
+      // setRoomPanelData({ ...roomPanelData, rooms: newRooms })
+      console.log("ROompanel data ", roomPanelData.rooms)
     }
   }
 
+  // call the back end to get rooms
+  const loadrooms = async () => {
+    if (shouldLoadrooms == true) {
+      try {
+        const config = {
+          method: allConstants.method.POST,
+          url: allConstants.getRooms.replace('{id}', props.userInfo.userId),
+          header: allConstants.header,
+          data: { rooms: props.userInfo.rooms }
+        }
+
+        const res = await connectBackend(config)
+
+        // sort the data based on dates
+        res.data = res.data.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
+
+        // set necessary state variables 
+        setRoomPanelData({ ...roomPanelData, rooms: res.data, showLoading: false })
+        setShouldLoadRooms(false)
+      } catch (err) {
+        console.log("some error occurred....", err)
+      }
+    }
+  }
   // pass the selected room id augmented with logged in userid to the parent 
   const setSelectedRoomId = (id) => {
     props.setSelectedRoomId(id)
@@ -77,6 +86,7 @@ const RoomPanel = (props) => {
     setRoomPanelData({ ...roomPanelData, activeRoomId: id })
     changeReadStatus(id)
   }
+
 
   // function to change the room status from read / unread
   const changeReadStatus = (id) => {

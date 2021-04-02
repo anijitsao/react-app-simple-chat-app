@@ -2343,8 +2343,7 @@ const WriteMessage = props => {
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     onConnect();
     onUserOnline();
-    onMessageArrival();
-    return () => onDisconnect();
+    onMessageArrival(); // return () => onDisconnect()
   }, []);
 
   const onConnect = () => {
@@ -2366,18 +2365,17 @@ const WriteMessage = props => {
 
   const onMessageArrival = () => {
     socket.on('message', data => {
-      console.log('data value ', data); // send the newly incoming message to the parent component 
+      console.log('data value arrives from socket', data); // send the newly incoming message to the parent component 
 
       props.onNewMessageArrival(data);
     });
-  };
+  }; // const onDisconnect = () => {
 
-  const onDisconnect = () => {
-    socket.on('disconnect', () => {
-      console.log('disconnected.. .!!');
-    });
-  }; // send the chat message through socket
 
+  socket.on('disconnect', () => {
+    console.log('SOCKET is disconnected.. .!!');
+  }); // }
+  // send the chat message through socket
 
   const sendMessage = e => {
     // if the ENTER key is pressed emit the message
@@ -2895,60 +2893,78 @@ const RoomPanel = props => {
   // Initialize the initial state and its modifier function
   const [roomPanelData, setRoomPanelData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
     rooms: [],
-    showLoading: true
-  }); // instantiate the Constants
+    showLoading: true,
+    shouldLoadrooms: true
+  });
+  const [lastMsgFromSocketId, setLastMsgFromSocketId] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)('');
+  const [shouldLoadrooms, setShouldLoadRooms] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(true); // instantiate the Constants
 
   const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_3__.default)();
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     loadrooms();
     onMessageArrival();
-  }, []);
+  });
 
   const onMessageArrival = () => {
-    console.log("props is here", props); // if (nextProps.newMessageFromSocket && (!props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== props.newMessageFromSocket.id)) {
-    // if (props.newMessageFromSocket.id !== roomPanelData.id) {
-    //   const newRooms = [...state.rooms]
-    //   newRooms.forEach((room) => {
-    //     if (room.roomId == props.newMessageFromSocket.roomId) {
-    //       // adjust the necessary field if the roomId matches
-    //       room.lastMessage = nextProps.newMessageFromSocket.msgBody
-    //       room.dateInfo = nextProps.newMessageFromSocket.timeSent
-    //       room.senderId = nextProps.newMessageFromSocket.senderId
-    //       // if the message is from other non active room
-    //       if (room.read == true) {
-    //         room.read = false
-    //         saveReadStatusToDb(room, false)
-    //       }
-    //     }
-    //   })
-    //   newRooms = newRooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
-    //   setRoomPanelData({ ...roomPanelData, rooms: newRooms })
-    // }
+    if (props.newMessageFromSocket && props.newMessageFromSocket.id !== lastMsgFromSocketId) {
+      const {
+        roomId,
+        msgBody,
+        timeSent,
+        senderId,
+        id
+      } = props.newMessageFromSocket;
+      console.log("props is here", id, " and roomPanelData", lastMsgFromSocketId); // avoid repeated loading of rooms and save the last message id from socket
+
+      setShouldLoadRooms(false);
+      setLastMsgFromSocketId(id);
+      roomPanelData.rooms.map(room => {
+        if (room.roomId == roomId) {
+          // adjust the necessary field if the roomId matches
+          room.lastMessage = msgBody;
+          room.dateInfo = timeSent;
+          room.senderId = senderId; // if the message is from other non active room
+
+          if (room.read == true) {
+            room.read = false;
+            saveReadStatusToDb(room, false);
+          }
+        }
+      });
+      roomPanelData.rooms.sort((a, b) => {
+        return new Date(b.dateInfo) - new Date(a.dateInfo);
+      }); // setRoomPanelData({ ...roomPanelData, rooms: newRooms })
+
+      console.log("ROompanel data ", roomPanelData.rooms);
+    }
   }; // call the back end to get rooms
 
 
   const loadrooms = async () => {
-    try {
-      const config = {
-        method: allConstants.method.POST,
-        url: allConstants.getRooms.replace('{id}', props.userInfo.userId),
-        header: allConstants.header,
-        data: {
-          rooms: props.userInfo.rooms
-        }
-      };
-      const res = await (0,_connectBackend__WEBPACK_IMPORTED_MODULE_4__.connectBackend)(config); // sort the data based on dates
+    if (shouldLoadrooms == true) {
+      try {
+        const config = {
+          method: allConstants.method.POST,
+          url: allConstants.getRooms.replace('{id}', props.userInfo.userId),
+          header: allConstants.header,
+          data: {
+            rooms: props.userInfo.rooms
+          }
+        };
+        const res = await (0,_connectBackend__WEBPACK_IMPORTED_MODULE_4__.connectBackend)(config); // sort the data based on dates
 
-      res.data = res.data.sort((a, b) => {
-        return new Date(b.dateInfo) - new Date(a.dateInfo);
-      }); // set necessary state variables 
+        res.data = res.data.sort((a, b) => {
+          return new Date(b.dateInfo) - new Date(a.dateInfo);
+        }); // set necessary state variables 
 
-      setRoomPanelData({ ...roomPanelData,
-        rooms: res.data,
-        showLoading: false
-      });
-    } catch (err) {
-      console.log("some error occurred....", err);
+        setRoomPanelData({ ...roomPanelData,
+          rooms: res.data,
+          showLoading: false
+        });
+        setShouldLoadRooms(false);
+      } catch (err) {
+        console.log("some error occurred....", err);
+      }
     }
   }; // pass the selected room id augmented with logged in userid to the parent 
 

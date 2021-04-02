@@ -14,7 +14,7 @@ const WriteMessage = (props) => {
     onUserOnline()
     onMessageArrival()
 
-    return () => onDisconnect()
+    // return () => onDisconnect()
 
   }, [])
 
@@ -37,18 +37,18 @@ const WriteMessage = (props) => {
   // when a new message arrives
   const onMessageArrival = () => {
     socket.on('message', (data) => {
-      console.log('data value ', data)
+      console.log('data value arrives from socket', data)
 
       // send the newly incoming message to the parent component 
       props.onNewMessageArrival(data)
     });
   }
 
-  const onDisconnect = () => {
-    socket.on('disconnect', () => {
-      console.log('disconnected.. .!!')
-    });
-  }
+  // const onDisconnect = () => {
+  socket.on('disconnect', () => {
+    console.log('SOCKET is disconnected.. .!!')
+  });
+  // }
 
   // send the chat message through socket
   const sendMessage = (e) => {
