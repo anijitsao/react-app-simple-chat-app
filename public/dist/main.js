@@ -2212,6 +2212,7 @@ const MessagesPanel = props => {
 
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     if (props.selectedRoomId) {
+      // load the messages when the nextProps is different from the present one
       loadConversation(props.selectedRoomId);
     }
 
@@ -2226,13 +2227,7 @@ const MessagesPanel = props => {
       block: 'end',
       behavior: 'smooth'
     });
-  }; // load the messages when the nextProps is different from the present one
-  // most important don't forget it 
-  // componentWillReceiveProps(nextProps) {
-  //   if (nextProps.selectedRoomId !== props.selectedRoomId)
-  //     loadConversation(nextProps.selectedRoomId)
-  // }
-  // load the conversation of the selected friend
+  }; // load the conversation of the selected friend
 
 
   const loadConversation = async id => {
@@ -2240,9 +2235,7 @@ const MessagesPanel = props => {
       showLoading: true,
       disableTextArea: true
     });
-    const selectedRoomId = id ? id : 'anijit123-sam432'; // props.selectedRoomId ||
-
-    console.log('IN MESSAGE PANEL : selected friend id in ', selectedRoomId);
+    const selectedRoomId = id ? id : 'anijit123-sam432';
 
     try {
       const config = {
@@ -2250,8 +2243,7 @@ const MessagesPanel = props => {
         url: allConstants.getConversation.replace('{id}', selectedRoomId),
         header: allConstants.header
       };
-      const res = await (0,_connectBackend__WEBPACK_IMPORTED_MODULE_4__.connectBackend)(config);
-      console.log('conversation is now: ', res.data); // set the messages field of the state with the data
+      const res = await (0,_connectBackend__WEBPACK_IMPORTED_MODULE_4__.connectBackend)(config); // set the messages field of the state with the data
 
       setMessagePanelData({ ...messagePanelData,
         messages: res.data,
@@ -2352,7 +2344,7 @@ const WriteMessage = props => {
     onConnect();
     onUserOnline();
     onMessageArrival();
-    return onDisconnect();
+    return () => onDisconnect();
   }, []);
 
   const onConnect = () => {
@@ -2909,28 +2901,31 @@ const RoomPanel = props => {
   const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_3__.default)();
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
     loadrooms();
-  }, []); // componentWillReceiveProps(nextProps) {
-  //   // console.log('nextProps from RoomPanel', nextProps, ' and old props', props)
-  //   if (nextProps.newMessageFromSocket && (!props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== props.newMessageFromSocket.id)) {
-  //     let newRooms = [...state.rooms]
-  //     newRooms.forEach((room) => {
-  //       if (room.roomId == nextProps.newMessageFromSocket.roomId) {
-  //         // adjust the necessary field if the roomId matches
-  //         room.lastMessage = nextProps.newMessageFromSocket.msgBody
-  //         room.dateInfo = nextProps.newMessageFromSocket.timeSent
-  //         room.senderId = nextProps.newMessageFromSocket.senderId
-  //         // if the message is from other non active room
-  //         if (room.read == true) {
-  //           room.read = false
-  //           saveReadStatusToDb(room, false)
-  //         }
-  //       }
-  //     })
-  //     newRooms = newRooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
-  //     setState({ rooms: newRooms })
-  //   }
-  // }
-  // call the back end to get rooms
+    onMessageArrival();
+  }, []);
+
+  const onMessageArrival = () => {
+    console.log("props is here", props); // if (nextProps.newMessageFromSocket && (!props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== props.newMessageFromSocket.id)) {
+    // if (props.newMessageFromSocket.id !== roomPanelData.id) {
+    //   const newRooms = [...state.rooms]
+    //   newRooms.forEach((room) => {
+    //     if (room.roomId == props.newMessageFromSocket.roomId) {
+    //       // adjust the necessary field if the roomId matches
+    //       room.lastMessage = nextProps.newMessageFromSocket.msgBody
+    //       room.dateInfo = nextProps.newMessageFromSocket.timeSent
+    //       room.senderId = nextProps.newMessageFromSocket.senderId
+    //       // if the message is from other non active room
+    //       if (room.read == true) {
+    //         room.read = false
+    //         saveReadStatusToDb(room, false)
+    //       }
+    //     }
+    //   })
+    //   newRooms = newRooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
+    //   setRoomPanelData({ ...roomPanelData, rooms: newRooms })
+    // }
+  }; // call the back end to get rooms
+
 
   const loadrooms = async () => {
     try {

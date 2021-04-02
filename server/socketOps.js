@@ -34,7 +34,7 @@ const allSocketOps = (io) => {
 
     socket.on('disconnect', () => {
       console.log('socket disconnected...', socket.id)
-      activeUsers = activeUsers.filter((activeUser) => { return activeUser != users[socket.id]['userId'] })
+      activeUsers = activeUsers.filter((activeUser) => { return users[socket.id] && activeUser != users[socket.id]['userId'] })
 
       // send to all except the sender
       socket.broadcast.emit('onlineUser', activeUsers)

@@ -14,7 +14,7 @@ const WriteMessage = (props) => {
     onUserOnline()
     onMessageArrival()
 
-    return onDisconnect()
+    return () => onDisconnect()
 
   }, [])
 

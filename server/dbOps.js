@@ -106,7 +106,6 @@ const makeGetRooms = async (db, req, res, client, output, apiName) => {
 					"read": rooms[index].read
 				})
 			});
-
 		}
 	} catch (err) {
 		console.log('unable to get last message for a room', err)
@@ -148,8 +147,8 @@ const makeUpdateRoom = async (db, req, res, client, output, apiName) => {
 	const allMessages = sortMessagesFromSocket(req.body)
 
 	const { roomId } = req.body
-	const message = { ...req.body }
-	console.log('This is for Room', roomId)
+	// const message = { ...req.body }
+	// console.log('This is for Room', roomId)
 
 	// How TO USE PUSH WITHIN UPDATE DEMO QUERY
 	// const data = await db
@@ -180,7 +179,7 @@ const makeUpdateRoom = async (db, req, res, client, output, apiName) => {
 	} catch (error) {
 		console.log('Unable to update rooms with messages', error)
 	} finally {
-		sendResponseAndCloseConnection(client, output, res, apiName)
+		res && sendResponseAndCloseConnection(client, output, res, apiName)
 	}
 }
 

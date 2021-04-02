@@ -17,36 +17,35 @@ const RoomPanel = (props) => {
 
   useEffect(() => {
     loadrooms()
+    onMessageArrival()
   }, [])
 
-  // componentWillReceiveProps(nextProps) {
-  //   // console.log('nextProps from RoomPanel', nextProps, ' and old props', props)
+  const onMessageArrival = () => {
+    console.log("props is here", props)
+    // if (nextProps.newMessageFromSocket && (!props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== props.newMessageFromSocket.id)) {
+    // if (props.newMessageFromSocket.id !== roomPanelData.id) {
+    //   const newRooms = [...state.rooms]
 
-  //   if (nextProps.newMessageFromSocket && (!props.newMessageFromSocket || nextProps.newMessageFromSocket.id !== props.newMessageFromSocket.id)) {
+    //   newRooms.forEach((room) => {
+    //     if (room.roomId == props.newMessageFromSocket.roomId) {
 
-  //     let newRooms = [...state.rooms]
+    //       // adjust the necessary field if the roomId matches
+    //       room.lastMessage = nextProps.newMessageFromSocket.msgBody
+    //       room.dateInfo = nextProps.newMessageFromSocket.timeSent
+    //       room.senderId = nextProps.newMessageFromSocket.senderId
 
-  //     newRooms.forEach((room) => {
-  //       if (room.roomId == nextProps.newMessageFromSocket.roomId) {
+    //       // if the message is from other non active room
+    //       if (room.read == true) {
+    //         room.read = false
+    //         saveReadStatusToDb(room, false)
+    //       }
+    //     }
+    //   })
 
-  //         // adjust the necessary field if the roomId matches
-  //         room.lastMessage = nextProps.newMessageFromSocket.msgBody
-  //         room.dateInfo = nextProps.newMessageFromSocket.timeSent
-  //         room.senderId = nextProps.newMessageFromSocket.senderId
-
-  //         // if the message is from other non active room
-  //         if (room.read == true) {
-  //           room.read = false
-  //           saveReadStatusToDb(room, false)
-  //         }
-  //       }
-  //     })
-
-  //     newRooms = newRooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
-  //     setState({ rooms: newRooms })
-  //   }
-  // }
-
+    //   newRooms = newRooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
+    //   setRoomPanelData({ ...roomPanelData, rooms: newRooms })
+    // }
+  }
   // call the back end to get rooms
   const loadrooms = async () => {
     try {
