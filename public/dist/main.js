@@ -2202,10 +2202,11 @@ __webpack_require__.r(__webpack_exports__);
 const MessagesPanel = props => {
   // Initialize the initial state and its modifier function
   const [messagePanelData, setMessagePanelData] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)({
-    messages: [],
     showLoading: false,
     disableTextArea: true
-  }); // instantiate the Constants
+  });
+  const [allMessages, setAllMessages] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+  const [selectedRoomId, setSelectedRoomId] = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(''); // instantiate the Constants
 
   const allConstants = (0,_Constants__WEBPACK_IMPORTED_MODULE_5__.default)();
   const messageEnd = (0,react__WEBPACK_IMPORTED_MODULE_0__.useRef)(null); // when the component is mounted 
@@ -2214,13 +2215,11 @@ const MessagesPanel = props => {
     if (props.selectedRoomId) {
       // load the messages when the nextProps is different from the present one
       loadConversation(props.selectedRoomId);
+      setSelectedRoomId(props.selectedRoomId);
     }
 
     scrollToBottom();
-  }, [props.selectedRoomId]); // when the component is updated
-  // componentDidUpdate() {
-  //   scrollToBottom()
-  // }
+  }, [props.selectedRoomId]);
 
   const scrollToBottom = () => {
     messageEnd.current.scrollIntoView({
@@ -2235,33 +2234,34 @@ const MessagesPanel = props => {
       showLoading: true,
       disableTextArea: true
     });
-    const selectedRoomId = id ? id : 'anijit123-sam432';
+    setSelectedRoomId((prev, curr) => {
+      console.log("prev is", prev, " and curr ", curr);
+    });
 
     try {
       const config = {
         method: allConstants.method.GET,
-        url: allConstants.getConversation.replace('{id}', selectedRoomId),
+        url: allConstants.getConversation.replace('{id}', id),
         header: allConstants.header
       };
       const res = await (0,_connectBackend__WEBPACK_IMPORTED_MODULE_4__.connectBackend)(config); // set the messages field of the state with the data
 
       setMessagePanelData({ ...messagePanelData,
-        messages: res.data,
         showLoading: false,
         disableTextArea: false
       });
+      setAllMessages([...res.data]);
     } catch (err) {
       console.log("Error occurred...", err);
     }
   };
 
-  const onNewMessageArrival = data => {
-    // if the current message is from the selected room also
-    if (data.roomId == props.selectedRoomId) {
-      setMessagePanelData({ ...messagePanelData,
-        messages: [...messagePanelData.messages, { ...data
-        }]
-      });
+  const onNewMessageArrival = (data, id, messages) => {
+    console.log("message panel data", messagePanelData, " selectedRoomId ", selectedRoomId, " and messages ", allMessages); // if the current message is from the selected room also
+
+    if (data.roomId == selectedRoomId) {
+      setAllMessages([...allMessages, { ...data
+      }]);
     } // fill the Room info from Socket data
 
 
@@ -2274,13 +2274,11 @@ const MessagesPanel = props => {
   };
 
   const {
-    messages,
     showLoading,
     disableTextArea
   } = messagePanelData;
   const {
     userInfo,
-    selectedRoomId,
     showMessagePanel
   } = props;
   const messageStyle = showMessagePanel == true ? "message-panel" : "message-panel hide-div";
@@ -2288,7 +2286,7 @@ const MessagesPanel = props => {
     className: messageStyle,
     children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
       className: "show-messages",
-      children: [showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_3__.default, {}) : messages.map(message => {
+      children: [showLoading == true ? /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Loading__WEBPACK_IMPORTED_MODULE_3__.default, {}) : allMessages.map(message => {
         return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_Message__WEBPACK_IMPORTED_MODULE_1__.default, { ...message,
           userInfo: userInfo
         }, message.id);
@@ -2302,9 +2300,10 @@ const MessagesPanel = props => {
     }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_WriteMessage__WEBPACK_IMPORTED_MODULE_2__.default, {
       isDisabled: disableTextArea,
       userInfo: userInfo,
-      selectedRoomId: selectedRoomId,
+      selectedRoomId: selectedRoomId || props.selectedRoomId,
       onLineRoom: onLineRoom,
-      onNewMessageArrival: onNewMessageArrival.bind(undefined)
+      onNewMessageArrival: onNewMessageArrival,
+      allMessages: allMessages
     })]
   });
 };
@@ -2367,7 +2366,7 @@ const WriteMessage = props => {
     socket.on('message', data => {
       console.log('data value arrives from socket', data); // send the newly incoming message to the parent component 
 
-      props.onNewMessageArrival(data);
+      props.onNewMessageArrival(data, props.selectedRoomId, props.allMessages);
     });
   }; // const onDisconnect = () => {
 
@@ -2383,17 +2382,14 @@ const WriteMessage = props => {
       // define the chat message
       const data = {
         timeSent: new Date().toISOString(),
-        // msgBody: state.message.replace(state.message.charAt(state.message.length - 1), ""),
         msgBody: writeMessageData.message,
         senderId: props.userInfo.userId,
         roomId: props.selectedRoomId,
         id: (0,uuid__WEBPACK_IMPORTED_MODULE_3__.default)()
-      };
-      console.log('the message', data); // emit the message
+      }; // emit the message
 
       if (data.msgBody.length > 0) {
         socket.emit('message', data);
-        props.onNewMessageArrival(data);
       } // reset the textarea value 
 
 
@@ -2924,11 +2920,10 @@ const RoomPanel = props => {
           room.lastMessage = msgBody;
           room.dateInfo = timeSent;
           room.senderId = senderId; // if the message is from other non active room
-
-          if (room.read == true) {
-            room.read = false;
-            saveReadStatusToDb(room, false);
-          }
+          // if (room.read == true) {
+          //   room.read = false
+          //   saveReadStatusToDb(room, false)
+          // }
         }
       });
       roomPanelData.rooms.sort((a, b) => {

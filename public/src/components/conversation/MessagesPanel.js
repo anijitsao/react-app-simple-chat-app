@@ -14,10 +14,12 @@ const MessagesPanel = (props) => {
   // Initialize the initial state and its modifier function
   const [messagePanelData, setMessagePanelData] = useState(
     {
-      messages: [],
       showLoading: false,
       disableTextArea: true
     })
+
+  const [allMessages, setAllMessages] = useState([])
+  const [selectedRoomId, setSelectedRoomId] = useState('')
 
   // instantiate the Constants
   const allConstants = Constants()
@@ -28,14 +30,10 @@ const MessagesPanel = (props) => {
     if (props.selectedRoomId) {
       // load the messages when the nextProps is different from the present one
       loadConversation(props.selectedRoomId)
+      setSelectedRoomId(props.selectedRoomId)
     }
     scrollToBottom()
   }, [props.selectedRoomId])
-
-  // when the component is updated
-  // componentDidUpdate() {
-  //   scrollToBottom()
-  // }
 
   const scrollToBottom = () => {
     messageEnd.current.scrollIntoView({ block: 'end', behavior: 'smooth' });
@@ -44,25 +42,25 @@ const MessagesPanel = (props) => {
   // load the conversation of the selected friend
   const loadConversation = async (id) => {
     setMessagePanelData({ ...messagePanelData, showLoading: true, disableTextArea: true })
-    const selectedRoomId = (id) ? id : 'anijit123-sam432'
-
     try {
       const config = {
-        method: allConstants.method.GET, url: allConstants.getConversation.replace('{id}', selectedRoomId), header: allConstants.header
+        method: allConstants.method.GET, url: allConstants.getConversation.replace('{id}', id), header: allConstants.header
       }
       const res = await connectBackend(config)
 
       // set the messages field of the state with the data
-      setMessagePanelData({ ...messagePanelData, messages: res.data, showLoading: false, disableTextArea: false })
+      setMessagePanelData({ ...messagePanelData, showLoading: false, disableTextArea: false })
+      setAllMessages([...res.data])
     } catch (err) {
       console.log("Error occurred...", err)
     }
   }
 
   const onNewMessageArrival = (data) => {
+    console.log("message panel data", messagePanelData, " selectedRoomId ", selectedRoomId, " and messages ", allMessages)
     // if the current message is from the selected room also
-    if (data.roomId == props.selectedRoomId) {
-      setMessagePanelData({ ...messagePanelData, messages: [...messagePanelData.messages, { ...data }] })
+    if (data.roomId == selectedRoomId) {
+      setAllMessages([...allMessages, { ...data }])
     }
 
     // fill the Room info from Socket data
@@ -74,8 +72,8 @@ const MessagesPanel = (props) => {
     props.notifyOnlineRooms(roomsOnline)
   }
 
-  const { messages, showLoading, disableTextArea } = messagePanelData
-  const { userInfo, selectedRoomId, showMessagePanel } = props
+  const { showLoading, disableTextArea } = messagePanelData
+  const { userInfo, showMessagePanel } = props
   const messageStyle = (showMessagePanel == true) ? "message-panel" : "message-panel hide-div"
 
   return (
@@ -83,7 +81,7 @@ const MessagesPanel = (props) => {
       <div className="show-messages">
         {(showLoading == true) ? <Loading />
           :
-          messages.map((message) => {
+          allMessages.map((message) => {
             return <Message key={message.id} {...message} userInfo={userInfo} />
           })
         }
@@ -92,9 +90,10 @@ const MessagesPanel = (props) => {
       <WriteMessage
         isDisabled={disableTextArea}
         userInfo={userInfo}
-        selectedRoomId={selectedRoomId}
+        selectedRoomId={selectedRoomId || props.selectedRoomId}
         onLineRoom={onLineRoom}
-        onNewMessageArrival={onNewMessageArrival.bind(this)} />
+        onNewMessageArrival={onNewMessageArrival}
+        allMessages={allMessages} />
 
     </div>
   );

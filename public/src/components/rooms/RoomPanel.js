@@ -41,10 +41,10 @@ const RoomPanel = (props) => {
           room.senderId = senderId
 
           // if the message is from other non active room
-          if (room.read == true) {
-            room.read = false
-            saveReadStatusToDb(room, false)
-          }
+          // if (room.read == true) {
+          //   room.read = false
+          //   saveReadStatusToDb(room, false)
+          // }
         }
       })
 
