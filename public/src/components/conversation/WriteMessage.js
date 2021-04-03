@@ -1,38 +1,19 @@
 import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
 import { v4 as uuidv4 } from 'uuid';
 
 const WriteMessage = (props) => {
+
   // Initialize the initial state and its modifier function
   const [writeMessageData, setWriteMessageData] = useState({ message: '' })
 
   // initialize the socket
-  const socket = io();
+  const socket = props.socket;
 
   useEffect(() => {
-    onConnect()
-    onUserOnline()
     onMessageArrival()
-
     // return () => onDisconnect()
-
   }, [])
 
-  const onConnect = () => {
-    socket.on('connect', () => {
-      console.log('Socket connected FROM React...')
-      // emit all the room ids where the user belongs to see him / her as active
-      socket.emit('onlineUser', props.userInfo.userId)
-    });
-  }
-
-  // when a user is online
-  const onUserOnline = () => {
-    socket.on('onlineUser', (data) => {
-      console.log('these rooms should be shown as online', data)
-      props.onLineRoom(data)
-    })
-  }
 
   // when a new message arrives
   const onMessageArrival = () => {
@@ -43,12 +24,6 @@ const WriteMessage = (props) => {
       props.onNewMessageArrival(data)
     });
   }
-
-  // const onDisconnect = () => {
-  socket.on('disconnect', () => {
-    console.log('SOCKET is disconnected.. .!!')
-  });
-  // }
 
   // send the chat message through socket
   const sendMessage = (e) => {
@@ -65,8 +40,6 @@ const WriteMessage = (props) => {
         roomId: props.selectedRoomId,
         id: uuidv4()
       }
-
-      console.log('the message', data)
 
       // emit the message
       if (data.msgBody.length > 0) {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { io } from 'socket.io-client'
 
 // components
 import RoomPanel from './rooms/RoomPanel'
@@ -14,9 +15,33 @@ const Content = (props) => {
       onlineRooms: []
     })
 
+  const socket = io()
   useEffect(() => {
     toggleMessagePanel(false, true)
+    onConnect()
+    onUserOnline()
   }, [])
+  // connect to the socket
+  const onConnect = () => {
+    socket.on('connect', () => {
+      console.log('Socket connected FROM React...')
+      // emit all the room ids where the user belongs to see him / her as active
+      socket.emit('onlineUser', props.userInfo.userId)
+    });
+  }
+
+  // when a user is online
+  const onUserOnline = () => {
+    socket.on('onlineUser', (data) => {
+      console.log('these rooms should be shown as online', data)
+      notifyOnlineRooms(data)
+    })
+  }
+
+  // when the socket disconnects
+  socket.on('disconnect', () => {
+    console.log('SOCKET is disconnected.. .!!')
+  });
 
   const toggleMessagePanel = (showMessagePanel, showRoomPanel) => {
     if (window.innerWidth < 500) {
@@ -63,6 +88,7 @@ const Content = (props) => {
         selectedRoomId={selectedRoomId}
         fillRoomInfoFromSocket={fillRoomInfoFromSocket}
         notifyOnlineRooms={notifyOnlineRooms}
+        socket={socket}
         userInfo={userInfo} />
     </div>
   );
