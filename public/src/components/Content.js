@@ -67,7 +67,7 @@ const Content = (props) => {
   }
 
   const { userInfo } = props
-  const { showMessagePanel, showRoomPanel, selectedRoomId, newMessageFromSocket, onlineRooms } = contentData
+  let { showMessagePanel, showRoomPanel, selectedRoomId, newMessageFromSocket, onlineRooms } = contentData
 
   if (window.innerWidth < 500 && props.showBackButton == false) {
     showMessagePanel = false
