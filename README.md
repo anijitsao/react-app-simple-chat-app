@@ -56,14 +56,28 @@ This is a *responsive web application* for viewing in both Mobile and Desktop.
 
 ## Installation
 
-1. Clone the repository using `git clone https://github.com/anijitsahu/react-app-simple-chat-app.git` from `Git Bash / Command Prompt`
-2. Navigate inside the directory by `cd react-app-simple-chat-app`
-3. Install all the necessary dependecies by using `npm install` 
-4. Navigate to the directory `cd server`
-5. Run the server by `node server.js`
-6. Open the `2` web browser and type`http://localhost:3000` in the address bar to load the application in each of them
-7. In one browser login with username `anijit` and password `anijit123`
-8. In another one login with username `jeetm` and password `jeetm76` and enjoy chatting
+Clone the repository:
+```
+git clone https://github.com/anijitsahu/react-app-simple-chat-app.git
+```
+Navigate inside the directory:
+```
+cd react-app-simple-chat-app
+```
+Install all the necessary dependecies
+```
+npm install
+``` 
+Now run the server:
+```
+npm run server
+```
+### Login to chat
+---
+
+1. Open `2` web browser and type`http://localhost:3000` in the address bar to load the application in each of them
+2. In one browser login with username `anijit` and password `anijit123`
+3. In another one login with username `jeetm` and password `jeetm76` and enjoy chatting
 
 **Test users**
 
@@ -74,7 +88,7 @@ Username | Password
 `jeetm` | `jeetm76 `
 
  
-*tested with <img src="screenshots/chrome.png" width="20px" title="Google Chrome">Google Chrome v70 and <img src="screenshots/firefox.png" width="25px" title="Firefox Developer edition">Mozilla Firefox Developer Editon*  
+*tested with <img src="screenshots/chrome.png" width="20px" title="Google Chrome">[Google Chrome 89](https://www.google.com/chrome/) and <img src="screenshots/firefox.png" width="25px" title="Firefox Developer edition">[Mozilla Firefox 86](https://www.mozilla.org/en-US/firefox/new/)*  
 
 ## Screenshots
 
