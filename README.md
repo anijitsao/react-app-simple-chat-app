@@ -84,8 +84,8 @@ npm run server
 
 Username | Password
 ---    | ---
-` anijit ` | ` anijit123`
-`jeetm` | `jeetm76 `
+ anijit  |  anijit123
+jeetm | jeetm76 
 
  
 *tested with <img src="screenshots/chrome.png" width="20px" title="Google Chrome">[Google Chrome 89](https://www.google.com/chrome/) and <img src="screenshots/firefox.png" width="25px" title="Firefox Developer edition">[Mozilla Firefox 86](https://www.mozilla.org/en-US/firefox/new/)*  
