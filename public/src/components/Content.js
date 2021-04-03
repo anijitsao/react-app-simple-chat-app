@@ -33,8 +33,10 @@ const Content = (props) => {
   // when a user is online
   const onUserOnline = () => {
     socket.on('onlineUser', (data) => {
-      console.log('these rooms should be shown as online', data)
-      notifyOnlineRooms(data)
+      if (data && data.length > 0) {
+        console.log('these rooms should be shown as online', data)
+        notifyOnlineRooms(data)
+      }
     })
   }
 
@@ -81,6 +83,7 @@ const Content = (props) => {
         userInfo={userInfo}
         onlineRooms={onlineRooms}
         newMessageFromSocket={newMessageFromSocket}
+        selectedRoomId={selectedRoomId}
         setSelectedRoomId={setSelectedRoomId} />
 
       <MessagesPanel

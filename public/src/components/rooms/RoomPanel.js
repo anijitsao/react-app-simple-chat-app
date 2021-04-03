@@ -10,9 +10,10 @@ import { connectBackend } from '../connectBackend';
 
 const RoomPanel = (props) => {
   // Initialize the initial state and its modifier function
-  const [roomPanelData, setRoomPanelData] = useState({ rooms: [], showLoading: true, shouldLoadrooms: true })
+  const [roomPanelData, setRoomPanelData] = useState({ rooms: [], showLoading: true })
   const [lastMsgFromSocketId, setLastMsgFromSocketId] = useState('')
   const [shouldLoadrooms, setShouldLoadRooms] = useState(true)
+  const [activeRoomId, setActiveRoomId] = useState(props.selectedRoomId)
   // instantiate the Constants
   const allConstants = Constants()
 
@@ -41,16 +42,14 @@ const RoomPanel = (props) => {
           room.senderId = senderId
 
           // if the message is from other non active room
-          // if (room.read == true) {
-          //   room.read = false
-          //   saveReadStatusToDb(room, false)
-          // }
+          if (room.read == true && room.roomId !== activeRoomId) {
+            room.read = false
+            saveReadStatusToDb(room, false)
+          }
         }
       })
 
       roomPanelData.rooms.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
-      // setRoomPanelData({ ...roomPanelData, rooms: newRooms })
-      console.log("ROompanel data ", roomPanelData.rooms)
     }
   }
 
@@ -71,7 +70,7 @@ const RoomPanel = (props) => {
         res.data = res.data.sort((a, b) => { return new Date(b.dateInfo) - new Date(a.dateInfo) })
 
         // set necessary state variables 
-        setRoomPanelData({ ...roomPanelData, rooms: res.data, showLoading: false })
+        setRoomPanelData((prevState) => { return { ...prevState, rooms: res.data, showLoading: false } })
         setShouldLoadRooms(false)
       } catch (err) {
         console.log("some error occurred....", err)
@@ -81,12 +80,12 @@ const RoomPanel = (props) => {
   // pass the selected room id augmented with logged in userid to the parent 
   const setSelectedRoomId = (id) => {
     props.setSelectedRoomId(id)
-
+    console.log("Active room", activeRoomId)
     // set active room id for highlighting purpose
-    setRoomPanelData({ ...roomPanelData, activeRoomId: id })
+    // setRoomPanelData((prevState) => { return { ...prevState, activeRoomId: id } })
+    setActiveRoomId(id)
     changeReadStatus(id)
   }
-
 
   // function to change the room status from read / unread
   const changeReadStatus = (id) => {
@@ -116,7 +115,7 @@ const RoomPanel = (props) => {
   }
 
   const { userInfo, showRoomPanel, onlineRooms } = props
-  const { activeRoomId, showLoading, rooms } = roomPanelData
+  const { showLoading, rooms } = roomPanelData
 
   const roomStyle = (showRoomPanel == false) ? "rooms-panel hide-div" : "rooms-panel"
   return (
