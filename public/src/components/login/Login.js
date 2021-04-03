@@ -17,7 +17,7 @@ const Login = (props) => {
       showError: false,
       username: '',
       password: '',
-      errorMessage: 'Username / Password cannot be empty',
+      errorMessage: 'Incorrect Credentials',
       showLoading: false
     })
 
@@ -28,34 +28,23 @@ const Login = (props) => {
   // handle when the username / password field is updated
   const handleOnChange = (e) => {
     // update the corresponding state values
-    if (e) {
-      if (e.target.name == 'username') {
-        setLoginData({ ...loginData, username: e.target.value })
-      } else {
-        setLoginData({ ...loginData, password: e.target.value })
-      }
-    }
+    setLoginData({ ...loginData, [e.target.name]: e.target.value })
   }
 
   // handle when the ENTER key is pressed
   const handleKeyPress = (e) => {
-    const type = e.target.name
-    if (e) {
-
-      if (e.keyCode == 13 || e.which == 13) {
-        // if username is entered enter the password
-        if (type == 'username' && loginData.username != '') {
-          setLoginData({ ...loginData, showPasswordInput: true })
-        } else if (type == 'password' && loginData.password != '') {
-          console.log('Everything is correct Go for verify...', loginData)
-          verifyUser()
-        }
+    if (e.keyCode == 13 || e.which == 13) {
+      // if username is entered enter the password
+      if (loginData.username && loginData.password) {
+        console.log('Everything is correct Go for verify...', loginData)
+        verifyUser()
+      } else if (loginData.username) {
+        setLoginData({ ...loginData, showPasswordInput: true })
+      } else {
+        showErrorComponent()
       }
-      // showErrorComponent()
-
     }
   }
-
 
   // verify the logged in user
   const verifyUser = async () => {
@@ -77,7 +66,6 @@ const Login = (props) => {
         props.onSuccessLogin(res.data)
       } else {
         // show the error message
-        setLoginData({ ...loginData, errorMessage: 'Authentication faliure ! Auto reload the page', showLoading: false })
         showErrorComponent()
 
         // reload the page
@@ -88,7 +76,6 @@ const Login = (props) => {
     } catch (err) {
       console.log('some error occurred...', err)
     }
-
   }
 
   const showErrorComponent = () => {
