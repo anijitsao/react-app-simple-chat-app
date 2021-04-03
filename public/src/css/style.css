@@ -328,6 +328,7 @@ input[type=text]:focus {
 
 .room-msg {
   background-color: var(--lightest-white);
+  justify-self: start;
 }
 
 
