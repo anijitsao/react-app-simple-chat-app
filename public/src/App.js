@@ -32,10 +32,10 @@ const App = () => {
     <div className="container">
       { /* including the Title and other components */}
       <Header userInfo={userInfo} />
-      {(showContent == false) ? <Login onSuccessLogin={onSuccessLogin} /> : <Content userInfo={userInfo} toggleBackButton={toggleBackButton.bind(this)} showBackButton={showBackButton} />}
+      {(showContent == false) ? <Login onSuccessLogin={onSuccessLogin} /> : <Content userInfo={userInfo} showBackButton={showBackButton} toggleBackButton={toggleBackButton} />}
       <Footer
         showBackButton={showBackButton}
-        toggleBackButton={toggleBackButton.bind(this, false)} />
+        toggleBackButton={toggleBackButton} />
     </div>
   );
 }

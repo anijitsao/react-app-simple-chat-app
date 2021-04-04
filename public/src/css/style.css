@@ -42,7 +42,7 @@ body {
 
 .container {
   display: grid;
-  grid-template-columns: 1;
+  /* grid-template-columns: 1; */
   grid-template-rows: 50px auto 20px;
 }
 
@@ -89,6 +89,7 @@ body {
 .login {
   height: calc(100vh - 70px);
   display: grid;
+  place-items: center;
 }
 
 .login-title {
@@ -101,8 +102,6 @@ body {
   box-shadow: 0 0 10px var(--light-shadow);
   justify-self: center;
   padding: 4em;
-  margin: 2em;
-  height: 50vh;
 }
 
 input[type=password],

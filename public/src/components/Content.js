@@ -20,7 +20,9 @@ const Content = (props) => {
     toggleMessagePanel(false, true)
     onConnect()
     onUserOnline()
+    onMessageArrival()
   }, [])
+
   // connect to the socket
   const onConnect = () => {
     socket.on('connect', () => {
@@ -38,6 +40,14 @@ const Content = (props) => {
         notifyOnlineRooms(data)
       }
     })
+  }
+
+  // when a new message arrives through socket
+  const onMessageArrival = () => {
+    socket.on('message', (data) => {
+      console.log('data value arrives from socket', data)
+      fillRoomInfoFromSocket(data)
+    });
   }
 
   // when the socket disconnects
@@ -89,7 +99,7 @@ const Content = (props) => {
       <MessagesPanel
         showMessagePanel={showMessagePanel}
         selectedRoomId={selectedRoomId}
-        fillRoomInfoFromSocket={fillRoomInfoFromSocket}
+        newMessageFromSocket={newMessageFromSocket}
         notifyOnlineRooms={notifyOnlineRooms}
         socket={socket}
         userInfo={userInfo} />
