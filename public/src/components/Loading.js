@@ -4,5 +4,5 @@ export default (props) => {
 		<div className="loading-div">
 			<img src="images/loading.gif" className="loading-gif" />
 		</div>
-	);
+	)
 }

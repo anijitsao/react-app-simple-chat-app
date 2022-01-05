@@ -1,19 +1,17 @@
-import { useEffect, useState } from 'react';
-import { io } from 'socket.io-client'
+import { useEffect, useState } from "react"
+import { io } from "socket.io-client"
 
 // components
-import RoomPanel from './rooms/RoomPanel'
-import MessagesPanel from './conversation/MessagesPanel'
+import RoomPanel from "./rooms/RoomPanel"
+import MessagesPanel from "./conversation/MessagesPanel"
 
 const Content = (props) => {
-
   // Initialize the initial data and its modifier
-  const [contentData, setContentData] = useState(
-    {
-      showMessagePanel: true,
-      showRoomPanel: true,
-      onlineRooms: []
-    })
+  const [contentData, setContentData] = useState({
+    showMessagePanel: true,
+    showRoomPanel: true,
+    onlineRooms: [],
+  })
 
   const socket = io()
   useEffect(() => {
@@ -25,18 +23,18 @@ const Content = (props) => {
 
   // connect to the socket
   const onConnect = () => {
-    socket.on('connect', () => {
-      console.log('Socket connected FROM React...')
+    socket.on("connect", () => {
+      console.log("Socket connected FROM React...")
       // emit all the room ids where the user belongs to see him / her as active
-      socket.emit('onlineUser', props.userInfo.userId)
-    });
+      socket.emit("onlineUser", props.userInfo.userId)
+    })
   }
 
   // when a user is online
   const onUserOnline = () => {
-    socket.on('onlineUser', (data) => {
+    socket.on("onlineUser", (data) => {
       if (data && data.length > 0) {
-        console.log('these rooms should be shown as online', data)
+        console.log("these rooms should be shown as online", data)
         notifyOnlineRooms(data)
       }
     })
@@ -44,16 +42,16 @@ const Content = (props) => {
 
   // when a new message arrives through socket
   const onMessageArrival = () => {
-    socket.on('message', (data) => {
-      console.log('data value arrives from socket', data)
+    socket.on("message", (data) => {
+      console.log("data value arrives from socket", data)
       fillRoomInfoFromSocket(data)
-    });
+    })
   }
 
   // when the socket disconnects
-  socket.on('disconnect', () => {
-    console.log('SOCKET is disconnected.. .!!')
-  });
+  socket.on("disconnect", () => {
+    console.log("SOCKET is disconnected.. .!!")
+  })
 
   const toggleMessagePanel = (showMessagePanel, showRoomPanel) => {
     if (window.innerWidth < 500) {
@@ -79,7 +77,13 @@ const Content = (props) => {
   }
 
   const { userInfo } = props
-  let { showMessagePanel, showRoomPanel, selectedRoomId, newMessageFromSocket, onlineRooms } = contentData
+  let {
+    showMessagePanel,
+    showRoomPanel,
+    selectedRoomId,
+    newMessageFromSocket,
+    onlineRooms,
+  } = contentData
 
   if (window.innerWidth < 500 && props.showBackButton == false) {
     showMessagePanel = false
@@ -94,7 +98,8 @@ const Content = (props) => {
         onlineRooms={onlineRooms}
         newMessageFromSocket={newMessageFromSocket}
         selectedRoomId={selectedRoomId}
-        setSelectedRoomId={setSelectedRoomId} />
+        setSelectedRoomId={setSelectedRoomId}
+      />
 
       <MessagesPanel
         showMessagePanel={showMessagePanel}
@@ -102,9 +107,10 @@ const Content = (props) => {
         newMessageFromSocket={newMessageFromSocket}
         notifyOnlineRooms={notifyOnlineRooms}
         socket={socket}
-        userInfo={userInfo} />
+        userInfo={userInfo}
+      />
     </div>
-  );
-};
+  )
+}
 
-export default Content;
+export default Content

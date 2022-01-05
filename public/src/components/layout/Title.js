@@ -4,5 +4,5 @@ export default () => {
     <div className="title">
       Simple <span className="bold-title">Chat</span>
     </div>
-  );
-};
+  )
+}

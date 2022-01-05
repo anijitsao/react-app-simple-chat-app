@@ -1,5 +1,5 @@
 // dependenciees
-import axios from 'axios'
+import axios from "axios"
 
 const connectBackend = async (config) => {
     return await axios(config)

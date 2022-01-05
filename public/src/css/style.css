@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,700');
+@import url("https://fonts.googleapis.com/css?family=Roboto:300,400,700");
 
 * {
   margin: 0;
@@ -9,11 +9,11 @@
 :root {
   --font-small: 10px;
   --font-regular: 16px;
-  --font-family: 'Roboto', sans-serif;
+  --font-family: "Roboto", sans-serif;
 
   --font-weight-regular: 300;
   --font-weight-bold: 700;
- 
+
   --darker-grey: #282828;
   --dark-grey: #ddd;
   --light-grey: #eee;
@@ -104,8 +104,8 @@ body {
   padding: 4em;
 }
 
-input[type=password],
-input[type=text] {
+input[type="password"],
+input[type="text"] {
   width: 100%;
   border: 0;
   outline: 0;
@@ -115,10 +115,10 @@ input[type=text] {
   letter-spacing: 1px;
 }
 
-input[type=password]:hover,
-input[type=text]:hover,
-input[type=password]:focus,
-input[type=text]:focus {
+input[type="password"]:hover,
+input[type="text"]:hover,
+input[type="password"]:focus,
+input[type="text"]:focus {
   border-bottom: solid 2px var(--light-purple);
 }
 
@@ -163,11 +163,11 @@ input[type=text]:focus {
 }
 
 /* drop down menu */
-.user-info>.drop-down {
+.user-info > .drop-down {
   display: none;
 }
 
-.user-info:hover>.drop-down {
+.user-info:hover > .drop-down {
   display: block;
 }
 
@@ -190,7 +190,7 @@ input[type=text]:focus {
 }
 
 .logout::after {
-  content: '';
+  content: "";
   border-right: solid 5px transparent;
   border-bottom: solid 5px var(--lightest-grey);
   border-left: solid 5px transparent;
@@ -295,7 +295,6 @@ input[type=text]:focus {
   text-align: right;
 }
 
-
 /* message panel related */
 .message-panel {
   background-color: var(--lighter-grey);
@@ -330,9 +329,8 @@ input[type=text]:focus {
   justify-self: start;
 }
 
-
 .room-msg::before {
-  content: '';
+  content: "";
   /* border-top: solid -4px transparent; */
   border-right: solid 20px var(--lightest-white);
   border-bottom: solid 28px transparent;
@@ -344,12 +342,12 @@ input[type=text]:focus {
 }
 
 .my-msg {
-  background-color: var(--lighter-purple); 
+  background-color: var(--lighter-purple);
   justify-self: end;
 }
 
 .my-msg::after {
-  content: '';
+  content: "";
   /* border-top: solid -4px transparent; */
   border-left: solid 20px var(--lighter-purple);
   border-bottom: solid 28px transparent;
@@ -444,5 +442,5 @@ textarea {
   .online-mark {
     top: 0px;
     right: 1px;
-  } 
+  }
 }
