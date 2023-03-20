@@ -58,7 +58,7 @@ This is a _responsive web application_ for viewing in both Mobile and Desktop.
 Clone the repository:
 
 ```
-git clone https://github.com/anijitsahu/react-app-simple-chat-app.git
+git clone https://github.com/anijitsao/react-app-simple-chat-app.git
 ```
 
 Navigate inside the directory:
