@@ -1,5 +1,5 @@
 // Constants
-import Constants from "../Constants"
+import Constants from "../../utils/constants.utils";
 
 const RoomInfo = ({
   roomName,
@@ -15,8 +15,8 @@ const RoomInfo = ({
   read,
 }) => {
   // instantiate the Constants
-  const allConstants = Constants()
-  const readStyle = read == false ? "last-message unread-msg" : "last-message"
+  const allConstants = Constants();
+  const readStyle = read == false ? "last-message unread-msg" : "last-message";
   return (
     <div
       className={activeRoomId == roomId ? "room-info active-room" : "room-info"}
@@ -42,7 +42,7 @@ const RoomInfo = ({
       </div>
       <div className="date-info">{allConstants.formatDates(dateInfo)}</div>
     </div>
-  )
-}
+  );
+};
 
-export default RoomInfo
+export default RoomInfo;

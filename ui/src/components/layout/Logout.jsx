@@ -6,11 +6,11 @@ export default () => {
         href="#"
         className="logout-link"
         onClick={() => {
-          location.reload()
+          location.reload();
         }}
       >
         Logout
       </a>
     </div>
-  )
-}
+  );
+};

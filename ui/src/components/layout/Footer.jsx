@@ -9,5 +9,5 @@ export default ({ toggleBackButton, showBackButton }) => {
         ></i>
       )}
     </div>
-  )
-}
+  );
+};

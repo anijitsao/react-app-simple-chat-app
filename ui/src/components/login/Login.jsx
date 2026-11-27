@@ -1,12 +1,12 @@
-import { useState } from "react"
+import { useState } from "react";
 
 // components
-import ErrorMessage from "./ErrorMessage"
-import Loading from "../Loading"
+import ErrorMessage from "./ErrorMessage";
+import Loading from "../Loading";
 
 // Constants
-import Constants from "../Constants"
-import { connectBackend } from "../connectBackend"
+import Constants from "../../utils/constants.utils";
+import { connectBackend } from "../../utils/request.utils";
 
 const Login = (props) => {
   // Initialize the initial state and its modifier function
@@ -17,35 +17,35 @@ const Login = (props) => {
     password: "",
     errorMessage: "Incorrect Credentials",
     showLoading: false,
-  })
+  });
 
   // instantiate the Constants
-  const allConstants = Constants()
+  const allConstants = Constants();
 
   // handle when the username / password field is updated
   const handleOnChange = (e) => {
     // update the corresponding state values
-    setLoginData({ ...loginData, [e.target.name]: e.target.value })
-  }
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+  };
 
   // handle when the ENTER key is pressed
   const handleKeyPress = (e) => {
     if (e.keyCode == 13 || e.which == 13) {
       // if username is entered enter the password
       if (loginData.username && loginData.password) {
-        console.log("Everything is correct Go for verify...", loginData)
-        verifyUser()
+        console.log("Everything is correct Go for verify...", loginData);
+        verifyUser();
       } else if (loginData.username) {
-        setLoginData({ ...loginData, showPasswordInput: true })
+        setLoginData({ ...loginData, showPasswordInput: true });
       } else {
-        showErrorComponent()
+        showErrorComponent();
       }
     }
-  }
+  };
 
   // verify the logged in user
   const verifyUser = async () => {
-    const { username, password, showLoading } = loginData
+    const { username, password, showLoading } = loginData;
 
     // reset the username / password field
     setLoginData({
@@ -53,7 +53,7 @@ const Login = (props) => {
       password: "",
       username: "",
       showLoading: true,
-    })
+    });
 
     try {
       const config = {
@@ -61,37 +61,37 @@ const Login = (props) => {
         url: allConstants.login,
         header: allConstants.header,
         data: { username, password },
-      }
+      };
 
-      const res = await connectBackend(config)
+      const res = await connectBackend(config);
       if (res.data.userId) {
-        console.log("user authentication successful", res.data)
-        setLoginData({ ...loginData, showLoading: false })
+        console.log("user authentication successful", res.data);
+        setLoginData({ ...loginData, showLoading: false });
         // send the logged in user's data to parent
-        props.onSuccessLogin(res.data)
+        props.onSuccessLogin(res.data);
       } else {
         // show the error message
-        showErrorComponent()
+        showErrorComponent();
 
         // reload the page
         setTimeout(() => {
-          location.reload()
-        }, 2000)
+          location.reload();
+        }, 2000);
       }
     } catch (err) {
-      console.log("some error occurred...", err)
+      console.log("some error occurred...", err);
     }
-  }
+  };
 
   const showErrorComponent = () => {
     // show the error message component
-    setLoginData({ ...loginData, showError: true })
+    setLoginData({ ...loginData, showError: true });
 
     // hide the error message component after 3sec
     setTimeout(() => {
-      setLoginData({ ...loginData, showError: false })
-    }, 2000)
-  }
+      setLoginData({ ...loginData, showError: false });
+    }, 2000);
+  };
 
   const {
     showError,
@@ -100,7 +100,7 @@ const Login = (props) => {
     errorMessage,
     username,
     password,
-  } = loginData
+  } = loginData;
   return (
     <div className="login">
       <div className="login-form">
@@ -130,7 +130,7 @@ const Login = (props) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

@@ -1,29 +1,29 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 
 // components
-import RoomInfo from "./RoomInfo"
-import Loading from "../Loading"
+import RoomInfo from "./RoomInfo";
+import Loading from "../Loading";
 
 // Constants
-import Constants from "../Constants"
-import { connectBackend } from "../connectBackend"
+import Constants from "../../utils/constants.utils";
+import { connectBackend } from "../../utils/request.utils";
 
 const RoomPanel = (props) => {
   // Initialize the initial state and its modifier function
   const [roomPanelData, setRoomPanelData] = useState({
     rooms: [],
     showLoading: true,
-  })
-  const [lastMsgFromSocketId, setLastMsgFromSocketId] = useState("")
-  const [shouldLoadrooms, setShouldLoadRooms] = useState(true)
-  const [activeRoomId, setActiveRoomId] = useState(props.selectedRoomId)
+  });
+  const [lastMsgFromSocketId, setLastMsgFromSocketId] = useState("");
+  const [shouldLoadrooms, setShouldLoadRooms] = useState(true);
+  const [activeRoomId, setActiveRoomId] = useState(props.selectedRoomId);
   // instantiate the Constants
-  const allConstants = Constants()
+  const allConstants = Constants();
 
   useEffect(() => {
-    loadrooms()
-    onMessageArrival()
-  })
+    loadrooms();
+    onMessageArrival();
+  });
 
   const onMessageArrival = () => {
     if (
@@ -31,38 +31,38 @@ const RoomPanel = (props) => {
       props.newMessageFromSocket.id !== lastMsgFromSocketId
     ) {
       const { roomId, msgBody, timeSent, senderId, id } =
-        props.newMessageFromSocket
+        props.newMessageFromSocket;
       console.log(
         "props is here",
         id,
         " and roomPanelData",
-        lastMsgFromSocketId
-      )
+        lastMsgFromSocketId,
+      );
 
       // avoid repeated loading of rooms and save the last message id from socket
-      setShouldLoadRooms(false)
-      setLastMsgFromSocketId(id)
+      setShouldLoadRooms(false);
+      setLastMsgFromSocketId(id);
 
       roomPanelData.rooms.map((room) => {
         if (room.roomId == roomId) {
           // adjust the necessary field if the roomId matches
-          room.lastMessage = msgBody
-          room.dateInfo = timeSent
-          room.senderId = senderId
+          room.lastMessage = msgBody;
+          room.dateInfo = timeSent;
+          room.senderId = senderId;
 
           // if the message is from other non active room
           if (room.read == true && room.roomId !== activeRoomId) {
-            room.read = false
-            saveReadStatusToDb(room, false)
+            room.read = false;
+            saveReadStatusToDb(room, false);
           }
         }
-      })
+      });
 
       roomPanelData.rooms.sort((a, b) => {
-        return new Date(b.dateInfo) - new Date(a.dateInfo)
-      })
+        return new Date(b.dateInfo) - new Date(a.dateInfo);
+      });
     }
-  }
+  };
 
   // call the back end to get rooms
   const loadrooms = async () => {
@@ -73,46 +73,46 @@ const RoomPanel = (props) => {
           url: allConstants.getRooms.replace("{id}", props.userInfo.userId),
           header: allConstants.header,
           data: { rooms: props.userInfo.rooms },
-        }
+        };
 
-        const res = await connectBackend(config)
+        const res = await connectBackend(config);
 
         // sort the data based on dates
         res.data = res.data.sort((a, b) => {
-          return new Date(b.dateInfo) - new Date(a.dateInfo)
-        })
+          return new Date(b.dateInfo) - new Date(a.dateInfo);
+        });
 
         // set necessary state variables
         setRoomPanelData((prevState) => {
-          return { ...prevState, rooms: res.data, showLoading: false }
-        })
-        setShouldLoadRooms(false)
+          return { ...prevState, rooms: res.data, showLoading: false };
+        });
+        setShouldLoadRooms(false);
       } catch (err) {
-        console.log("some error occurred....", err)
+        console.log("some error occurred....", err);
       }
     }
-  }
+  };
   // pass the selected room id augmented with logged in userid to the parent
   const setSelectedRoomId = (id) => {
-    props.setSelectedRoomId(id)
+    props.setSelectedRoomId(id);
     // set active room id for highlighting purpose
-    setActiveRoomId(id)
-    changeReadStatus(id)
-  }
+    setActiveRoomId(id);
+    changeReadStatus(id);
+  };
 
   // function to change the room status from read / unread
   const changeReadStatus = (id) => {
-    const allRooms = [...roomPanelData.rooms]
+    const allRooms = [...roomPanelData.rooms];
 
     allRooms.forEach((room, index, roomArray) => {
       if (room.roomId == id && room.read == false) {
-        roomArray[index].read = true
-        saveReadStatusToDb(room, true)
+        roomArray[index].read = true;
+        saveReadStatusToDb(room, true);
       }
-    })
+    });
 
-    setRoomPanelData({ ...roomPanelData, rooms: allRooms })
-  }
+    setRoomPanelData({ ...roomPanelData, rooms: allRooms });
+  };
 
   const saveReadStatusToDb = async (room, status) => {
     try {
@@ -124,18 +124,18 @@ const RoomPanel = (props) => {
           roomName: room.roomName,
           read: status,
         },
-      }
-      await connectBackend(config)
+      };
+      await connectBackend(config);
     } catch (err) {
-      console.log("unable to save room status", err)
+      console.log("unable to save room status", err);
     }
-  }
+  };
 
-  const { userInfo, showRoomPanel, onlineRooms } = props
-  const { showLoading, rooms } = roomPanelData
+  const { userInfo, showRoomPanel, onlineRooms } = props;
+  const { showLoading, rooms } = roomPanelData;
 
   const roomStyle =
-    showRoomPanel == false ? "rooms-panel hide-div" : "rooms-panel"
+    showRoomPanel == false ? "rooms-panel hide-div" : "rooms-panel";
   return (
     <div className={roomStyle}>
       {showLoading == true ? (
@@ -151,11 +151,11 @@ const RoomPanel = (props) => {
               onlineRooms={onlineRooms}
               setSelectedRoomId={setSelectedRoomId}
             />
-          )
+          );
         })
       )}
     </div>
-  )
-}
+  );
+};
 
-export default RoomPanel
+export default RoomPanel;

@@ -1,12 +1,11 @@
-import { useState } from "react"
-import { v4 as uuidv4 } from "uuid"
+import { useState } from "react";
 
 const WriteMessage = (props) => {
   // Initialize the initial state and its modifier function
-  const [writeMessageData, setWriteMessageData] = useState({ message: "" })
+  const [writeMessageData, setWriteMessageData] = useState({ message: "" });
 
   // initialize the socket
-  const socket = props.socket
+  const socket = props.socket;
 
   // if the ENTER key is pressed emit the message
   const sendMessage = (e) => {
@@ -18,28 +17,28 @@ const WriteMessage = (props) => {
         msgBody: writeMessageData.message,
         senderId: props.userInfo.userId,
         roomId: props.selectedRoomId,
-        id: uuidv4(),
-      }
+        id: crypto.randomUUID(),
+      };
 
       // emit the message
       if (data.msgBody.length > 0) {
-        socket.emit("message", data)
+        socket.emit("message", data);
       }
 
       // reset the textarea value
-      setWriteMessageData({ ...writeMessageData, message: "" })
+      setWriteMessageData({ ...writeMessageData, message: "" });
     } else if ((e.keyCode == 13 || e.which == 13) && e.ctrlKey) {
-      console.log("CTRL pressed")
+      console.log("CTRL pressed");
       setWriteMessageData({
         ...writeMessageData,
         message: e.target.value + "\n",
-      })
+      });
     }
-  }
+  };
 
   const handleChange = (e) => {
-    setWriteMessageData({ ...writeMessageData, message: e.target.value })
-  }
+    setWriteMessageData({ ...writeMessageData, message: e.target.value });
+  };
 
   return (
     <textarea
@@ -50,7 +49,7 @@ const WriteMessage = (props) => {
       onKeyPress={sendMessage}
       value={writeMessageData.message}
     />
-  )
-}
+  );
+};
 
-export default WriteMessage
+export default WriteMessage;
