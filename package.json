@@ -5,41 +5,39 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "server": "node -r dotenv/config server/server.js dotenv_config_path=server/.env"
+    "server:preview": "node --env-file=.env server/index.js",
+    "ui:dev": "vite",
+    "ui:build": "vite build",
+    "ui:preview": "vite preview",
+    "start": "npm run ui:build && npm run server:preview"
   },
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anijitsahu/react-app-simple-chat-app.git"
+    "url": "git+https://github.com/anijitsao/react-app-simple-chat-app.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/anijitsahu/react-app-simple-chat-app/issues"
+    "url": "https://github.com/anijitsao/react-app-simple-chat-app/issues"
   },
-  "homepage": "https://github.com/anijitsahu/react-app-simple-chat-app#readme",
-  "devDependencies": {
-    "@babel/core": "^7.16.5",
-    "@babel/preset-react": "^7.16.5",
-    "axios": "^0.24.0",
-    "babel-loader": "^8.2.3",
-    "css-loader": "^6.5.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "socket.io-client": "^4.4.0",
-    "style-loader": "^3.3.1",
-    "uuid": "^8.3.2",
-    "webpack": "^5.65.0",
-    "webpack-cli": "^4.9.1"
-  },
+  "homepage": "https://github.com/anijitsao/react-app-simple-chat-app#readme",
   "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.2",
-    "helmet": "^4.6.0",
-    "mongodb": "^4.2.2",
-    "morgan": "^1.10.0",
-    "socket.io": "^4.4.0"
+    "axios": "^1.21.1",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "helmet": "^8.3.0",
+    "mongodb": "^7.9.1",
+    "morgan": "^1.12.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "socket.io": "^4.8.4",
+    "socket.io-client": "^4.8.4",
+    "uuid": "^14.0.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.3.0",
+    "vite": "^8.4.0"
   }
 }

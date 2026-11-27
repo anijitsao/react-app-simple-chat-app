@@ -26,7 +26,7 @@ app.use(morgan("dev"))
 app.use(helmet({ contentSecurityPolicy: false }))
 
 // serve the static pages
-app.use(express.static(path.join(__dirname, "../public/dist")))
+app.use(express.static(path.join(__dirname, "../dist")))
 
 // different routes
 app.use("/services", router)
