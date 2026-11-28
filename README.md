@@ -2,16 +2,16 @@
 
 A Simple Chat Application using [React JS](https://react.dev/learn), a JavaScript library to make awesome UI by Facebook, [Node JS](https://nodejs.org/en/docs), [Express JS](https://expressjs.com/en/api.html) and [MongoDB](https://docs.mongodb.com/).
 
-This application uses **component oriented UI** creation paradigm. All components are written in [JSX](https://react.dev/learn/writing-markup-with-jsx) and ES6 style and are combined to get a single build for production purpose using [Webpack 5](https://webpack.js.org/concepts/).
+This application uses **component oriented UI** creation paradigm. All components are written in [JSX](https://react.dev/learn/writing-markup-with-jsx) and ES6 style and are combined to get a single build for production purpose using [Vite](https://vite.dev/guide/).
 
-[Babel](https://babeljs.io/docs/) is used to _transpile_ all [JSX](https://react.dev/learn/writing-markup-with-jsx) code to vanilla JavaScript. For UI creation [HTML5](https://www.w3schools.com/html/html5_intro.asp) and [CSS3](https://www.w3schools.com/css/) are used.
+[Oxc Transformer](https://vite.dev/guide/features#jsx) is used to _transpile_ all [JSX](https://react.dev/learn/writing-markup-with-jsx) code to vanilla JavaScript. For UI creation [HTML5](https://www.w3schools.com/html/html5_intro.asp) and [CSS3](https://www.w3schools.com/css/) are used.
 
 This is a _responsive web application_ for viewing in both Mobile and Desktop.
 
-Back end is implemented using [Node JS](https://nodejs.org/en/docs), [Express JS](https://expressjs.com/en/api.html) and [MongoDB Atlas](https://www.mongodb.com/cloud/atlas). Real time communication is done using [Socket.io](https://www.npmjs.com/package/socket.io)
+Back end is implemented using [Node JS](https://nodejs.org/en/docs), [Express JS](https://expressjs.com/en/api.html) and [MongoDB Atlas](https://www.mongodb.com/cloud/atlas). Real time communication is done using [Socket.io](https://socket.io/docs/)
 
 
-![Node JS](https://img.shields.io/badge/Node_JS-22.1.3-FFCD11?logo=nodedotjs&logoColor=FFCD11) ![Express JS](https://img.shields.io/badge/Express_JS-4.17.2-006D41?logo=express) ![npm](https://img.shields.io/badge/npm-10.1.3-00CA8E?logo=npm) ![MongoDB](https://img.shields.io/badge/Mongo_DB-4.2.2-green?logo=mongodb)  ![Socket IO](https://img.shields.io/badge/Socket_IO-4.4.2-C93CD7?logo=socketdotio) ![React JS](https://img.shields.io/badge/React_JS-17.2.0-61DAFB?logo=react) ![Babel](https://img.shields.io/badge/Babel-7.16.5-F9DC3E?logo=babel) ![Webpack](https://img.shields.io/badge/Webpack-5.65.0-8DD6F9?logo=webpack) ![HTML5](https://img.shields.io/badge/HTML-5.0.0-E34826?logo=html5) ![CSS3](https://img.shields.io/badge/CSS-3.0.0-663399?logo=css&logoColor=00B265) ![Google Fonts](https://img.shields.io/badge/Google_Fonts-2.138.1-02B785?logo=googlefonts&logoColor=02B785) ![Font Awesome](https://img.shields.io/badge/Font_Awesome-5.15.0-538DD7?logo=fontawesome)
+![Node JS](https://img.shields.io/badge/Node_JS-26.4.0-FFCD11?logo=nodedotjs&logoColor=FFCD11) ![Express JS](https://img.shields.io/badge/Express_JS-5.3.0-006D41?logo=express) ![npm](https://img.shields.io/badge/npm-12.2.2-00CA8E?logo=npm) ![MongoDB](https://img.shields.io/badge/Mongo_DB-7.9.1-green?logo=mongodb)  ![Socket IO](https://img.shields.io/badge/Socket_IO-4.8.4-C93CD7?logo=socketdotio) ![React JS](https://img.shields.io/badge/React_JS-19.3.1-61DAFB?logo=react) ![Vite](https://img.shields.io/badge/Vite-8.3.8-9135FF?logo=vite) ![HTML5](https://img.shields.io/badge/HTML-5.0.0-E34826?logo=html5) ![CSS3](https://img.shields.io/badge/CSS-3.0.0-663399?logo=css&logoColor=00B265) ![Google Fonts](https://img.shields.io/badge/Google_Fonts-2.138.1-02B785?logo=googlefonts&logoColor=02B785) ![Font Awesome](https://img.shields.io/badge/Font_Awesome-7.3.1-538DD7?logo=fontawesome)
 
 
 ## Features
@@ -26,7 +26,7 @@ Back end is implemented using [Node JS](https://nodejs.org/en/docs), [Express JS
 
 </ul>
 
-- All the user details, rooms and conversations are stored in the [MongoDB Atlas](https://www.mongodb.com/cloud/atlas). This example uses a _free/ shared_ account. **So Please use it wisely**.
+- All the user details, rooms and conversations are stored in the [MongoDB Atlas](https://www.mongodb.com/cloud/atlas). You can either have one account or use local installation of the same.
 
 <ul>
  <li>Login as well as Logout feature is added. </li>
@@ -74,7 +74,7 @@ npm install
 Now run the server:
 
 ```
-npm run server
+npm run start
 ```
 
 ### Login to chat

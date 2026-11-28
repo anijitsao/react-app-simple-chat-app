@@ -6,7 +6,6 @@ const connectBackend = async (config) => {
     throw new Error("Unable to fetch results from backend");
   }
   const data = await response.json();
-  console.log("data to send", data);
   return { data };
 };
 
