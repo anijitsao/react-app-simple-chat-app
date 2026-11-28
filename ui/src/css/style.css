@@ -220,6 +220,7 @@ input[type="text"]:focus {
 .rooms-panel {
   overflow-x: hidden;
   overflow-y: auto;
+  border-right: solid 1px #eee;
 }
 
 .room-info {

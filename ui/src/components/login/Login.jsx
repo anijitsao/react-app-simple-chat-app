@@ -38,7 +38,7 @@ const Login = (props) => {
       } else if (loginData.username) {
         setLoginData({ ...loginData, showPasswordInput: true });
       } else {
-        showErrorComponent();
+        showErrorComponent("Incorrect Credentials");
       }
     }
   };
@@ -83,7 +83,7 @@ const Login = (props) => {
       showErrorComponent(err.message);
       // reload the page
       setTimeout(() => {
-        // location.reload();
+        location.reload();
       }, 2000);
     } finally {
       setLoginData((prevState) => {

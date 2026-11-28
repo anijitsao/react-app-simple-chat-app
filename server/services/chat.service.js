@@ -54,11 +54,11 @@ const getRooms = async (req, res) => {
 
   try {
     connection = connectDB(MongoClient, URI_TO_CONNECT_MONGODB);
-    let db = selectDB(connection, DB_NAME);
+    let db = await selectDB(connection, DB_NAME);
 
     const { rooms } = req.body;
     const roomIds = rooms.map((ele) => {
-      return ObjectId(ele.roomId);
+      return new ObjectId(ele.roomId);
     });
 
     // db call
@@ -84,22 +84,30 @@ const getRooms = async (req, res) => {
         });
       });
     }
+    sendResponse(res, SUCCESS, output);
   } catch (err) {
     console.log("unable to get last message for a room", err);
+    output = { error: { message: err.message } };
+    sendResponse(res, SERVER_ERR, output);
   } finally {
-    sendResponseAndCloseConnection(client, output, res, apiName);
+    await closeConnection(connection);
   }
 };
 
-// /getconversation API
-const getConversation = async (db, req, res, client, output, apiName) => {
-  const { id } = req.params;
+// /get-conversation API
+const getConversation = async (req, res) => {
+  let connection;
+  let output;
 
   try {
+    connection = connectDB(MongoClient, URI_TO_CONNECT_MONGODB);
+    const db = await selectDB(connection, DB_NAME);
+    const { id } = req.params;
+
     // db call
     const data = await db
       .collection(COLLECTION_ROOMS)
-      .find({ _id: ObjectId(id) }, { projection: { messages: 1 } })
+      .find({ _id: new ObjectId(id) }, { projection: { messages: 1 } })
       .toArray();
 
     // copy the messages to the resulting output
@@ -110,28 +118,32 @@ const getConversation = async (db, req, res, client, output, apiName) => {
       ele = { ...ele, ...{ id: `${id}${index}` } };
       return ele;
     });
+    sendResponse(res, SUCCESS, output);
   } catch (error) {
     console.log("Unable to get conversation for that room", error);
+    output = { error: { message: error.message } };
+    sendResponse(res, SERVER_ERR, output);
   } finally {
-    sendResponseAndCloseConnection(client, output, res, apiName);
+    await closeConnection(connection);
   }
 };
 
-const updateRoom = async (db, req, res, client, output, apiName) => {
-  console.log("params received", req.params);
-  console.log("body of the req", req.body);
-  const allMessages = sortMessagesFromSocket(req.body);
-
-  const { roomId } = req.body;
-  // const message = { ...req.body }
-  // console.log('This is for Room', roomId)
-
+const updateRoom = async (req, res) => {
   // How TO USE PUSH WITHIN UPDATE DEMO QUERY
   // const data = await db
   // 	.collection(COLLECTION_ROOMS)
   // 	.updateOne({ _id: ObjectId(roomId) }, { $set: { "lastMessage": message }, $push: { "messages": message } })
+  let connection;
+  let output;
 
   try {
+    connection = connectDB(MongoClient, URI_TO_CONNECT_MONGODB);
+    const db = await selectDB(connection, DB_NAME);
+    console.log("params received", req.params);
+    console.log("body of the req", req.body);
+    const allMessages = sortMessagesFromSocket(req.body);
+
+    const { roomId } = req.body;
     // initialize the bulk
     const bulk = await db
       .collection(COLLECTION_ROOMS)
@@ -152,18 +164,25 @@ const updateRoom = async (db, req, res, client, output, apiName) => {
     // execute all of them in bulk
     const result = await bulk.execute();
     console.log("Modified docs: ", result.nModified);
+    sendResponse(res, SUCCESS, { nModified: result.nModified });
   } catch (error) {
     console.log("Unable to update rooms with messages", error);
+    output = { error: { message: error.message } };
+    sendResponse(res, SERVER_ERR, output);
   } finally {
-    res && sendResponseAndCloseConnection(client, output, res, apiName);
+    await closeConnection(connection);
   }
 };
 
 const updateRoomReadStatus = async (req, res) => {
-  console.log("body of the req", req.body);
+  let connection;
+  let output;
 
-  const { userId, roomName, read } = req.body;
   try {
+    connection = connectDB(MongoClient, URI_TO_CONNECT_MONGODB);
+    const db = await selectDB(connection, DB_NAME);
+    console.log("body of the req", req.body);
+    const { userId, roomName, read } = req.body;
     const docs = await db
       .collection(COLLECTION_USERS)
       .updateOne(
@@ -175,7 +194,8 @@ const updateRoomReadStatus = async (req, res) => {
     sendResponse(res, SUCCESS, output);
   } catch (error) {
     console.log("Unable to change the read status", error);
-    sendResponse(res, SERVER_ERR, { error: { message: error.message } });
+    output = { error: { message: error.message } };
+    sendResponse(res, SERVER_ERR, output);
   } finally {
     closeConnection(connection);
   }

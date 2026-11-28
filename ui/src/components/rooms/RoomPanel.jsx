@@ -71,8 +71,8 @@ const RoomPanel = (props) => {
         const config = {
           method: allConstants.method.POST,
           url: allConstants.getRooms.replace("{id}", props.userInfo.userId),
-          header: allConstants.header,
-          data: { rooms: props.userInfo.rooms },
+          headers: allConstants.header,
+          body: JSON.stringify({ rooms: props.userInfo.rooms }),
         };
 
         const res = await connectBackend(config);
@@ -84,11 +84,15 @@ const RoomPanel = (props) => {
 
         // set necessary state variables
         setRoomPanelData((prevState) => {
-          return { ...prevState, rooms: res.data, showLoading: false };
+          return { ...prevState, rooms: res.data };
         });
         setShouldLoadRooms(false);
       } catch (err) {
         console.log("some error occurred....", err);
+      } finally {
+        setRoomPanelData((prevState) => {
+          return { ...prevState, showLoading: false };
+        });
       }
     }
   };
