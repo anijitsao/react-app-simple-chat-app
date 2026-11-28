@@ -15,7 +15,7 @@ const Login = (props) => {
     showError: false,
     username: "",
     password: "",
-    errorMessage: "Incorrect Credentials",
+    errorMessage: "",
     showLoading: false,
   });
 
@@ -71,7 +71,7 @@ const Login = (props) => {
         props.onSuccessLogin(res.data);
       } else {
         // show the error message
-        showErrorComponent();
+        showErrorComponent("Incorrect Credentials");
 
         // reload the page
         setTimeout(() => {
@@ -79,17 +79,39 @@ const Login = (props) => {
         }, 2000);
       }
     } catch (err) {
-      console.log("some error occurred...", err);
+      console.log("some error occurred...", err.message);
+      showErrorComponent(err.message);
+      // reload the page
+      setTimeout(() => {
+        location.reload();
+      }, 2000);
+    } finally {
+      setLoginData((prevState) => {
+        return {
+          ...prevState,
+          username: "",
+          password: "",
+          showLoading: false,
+        };
+      });
     }
   };
 
-  const showErrorComponent = () => {
+  const showErrorComponent = (msg) => {
     // show the error message component
-    setLoginData({ ...loginData, showError: true });
+    setLoginData((prevState) => ({
+      ...prevState,
+      showError: true,
+      errorMessage: msg || prevState.errorMessage,
+    }));
 
-    // hide the error message component after 3sec
+    // hide the error message component after 2sec
     setTimeout(() => {
-      setLoginData({ ...loginData, showError: false });
+      setLoginData((prevState) => ({
+        ...prevState,
+        showError: false,
+        errorMessage: "",
+      }));
     }, 2000);
   };
 
@@ -114,7 +136,7 @@ const Login = (props) => {
             type="text"
             placeholder="Enter username"
             onChange={handleOnChange}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             name="username"
             value={username}
           />
@@ -123,7 +145,7 @@ const Login = (props) => {
             type="password"
             placeholder="Enter password"
             onChange={handleOnChange}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyPress}
             name="password"
             value={password}
           />

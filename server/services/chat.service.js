@@ -1,5 +1,6 @@
 // dependencies
 import mongodb from "mongodb";
+import { sendResponse } from "../utils/response.util.js";
 
 const { MongoClient, ObjectId } = mongodb;
 
@@ -27,6 +28,7 @@ const connectDbAndRunQueries = async (apiName, req, res) => {
     chooseApiAndSendResponse(apiName, db, req, res, client, output);
   } catch (err) {
     console.log("Some Error occurred ...", err);
+    sendResponse(res, SERVER_ERR, err);
   }
 };
 
