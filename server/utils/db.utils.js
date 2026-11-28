@@ -1,12 +1,12 @@
-export async function connectDB(client, url) {
+export function connectDB(client, url) {
   const connection = new client(url);
   return connection;
 }
 
-export function selectDB(connection, dbName) {
-  return connection.db(dbName);
+export async function selectDB(connection, dbName) {
+  return await connection.db(dbName);
 }
 
-export function closeConnection(connection) {
-  connection.close();
+export async function closeConnection(connection) {
+  await connection.close();
 }

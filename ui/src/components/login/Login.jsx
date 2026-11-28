@@ -59,8 +59,8 @@ const Login = (props) => {
       const config = {
         method: allConstants.method.POST,
         url: allConstants.login,
-        header: allConstants.header,
-        data: { username, password },
+        headers: allConstants.header,
+        body: JSON.stringify({ username, password }),
       };
 
       const res = await connectBackend(config);
@@ -83,7 +83,7 @@ const Login = (props) => {
       showErrorComponent(err.message);
       // reload the page
       setTimeout(() => {
-        location.reload();
+        // location.reload();
       }, 2000);
     } finally {
       setLoginData((prevState) => {

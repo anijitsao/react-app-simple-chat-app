@@ -1,4 +1,3 @@
-
 const connectBackend = async (config) => {
   const url = config.url;
   delete config["url"];
@@ -7,7 +6,8 @@ const connectBackend = async (config) => {
     throw new Error("Unable to fetch results from backend");
   }
   const data = await response.json();
-  return data;
+  console.log("data to send", data);
+  return { data };
 };
 
 export { connectBackend };

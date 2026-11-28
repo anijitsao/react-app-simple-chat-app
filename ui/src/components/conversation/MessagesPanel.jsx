@@ -55,7 +55,7 @@ const MessagesPanel = (props) => {
       const config = {
         method: allConstants.method.GET,
         url: allConstants.getConversation.replace("{id}", id),
-        header: allConstants.header,
+        headers: allConstants.header,
       };
       const res = await connectBackend(config);
 

@@ -1,5 +1,5 @@
 // dependencies
-import { connectDbAndRunQueries } from "../services/chat.service.js";
+import { updateRoom } from "../services/chat.service.js";
 
 const allSocketOps = (io) => {
   let messagesToStoreInDb = [];
@@ -20,7 +20,7 @@ const allSocketOps = (io) => {
           console.log("15 sec crossed, we have some messages.. STORE IN DB...");
           let req = { body: messagesToStoreInDb };
 
-          connectDbAndRunQueries("updateRoom", req);
+          updateRoom(req);
 
           // reset the array
           messagesToStoreInDb = [];

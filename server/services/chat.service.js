@@ -1,8 +1,8 @@
 // dependencies
-import mongodb from "mongodb";
 import { sendResponse } from "../utils/response.util.js";
 
-const { MongoClient, ObjectId } = mongodb;
+import { MongoClient, ObjectId } from "../lib/mongo.client.js";
+import { closeConnection, connectDB, selectDB } from "../utils/db.utils.js";
 
 const {
   URI_TO_CONNECT_MONGODB,
@@ -12,51 +12,14 @@ const {
   SUCCESS,
   SERVER_ERR,
 } = process.env;
-// const URI_TO_CONNECT_MONGODB = "mongodb+srv://root:root123@anijitsmongo-mwm6l.mongodb.net/allapps";
-
-// this function will connect db and based on API send response
-const connectDbAndRunQueries = async (apiName, req, res) => {
-  try {
-    const client = await new MongoClient(URI_TO_CONNECT_MONGODB).connect();
-    // select the db, Collections are selected based on needs
-    const db = client.db(DB_NAME);
-
-    // default output
-    const output = { message: "SUCCESS" };
-
-    // perform several db actions based on API names
-    chooseApiAndSendResponse(apiName, db, req, res, client, output);
-  } catch (err) {
-    console.log("Some Error occurred ...", err);
-    sendResponse(res, SERVER_ERR, err);
-  }
-};
-
-// choose the particular function for an API and process it
-const chooseApiAndSendResponse = (apiName, db, req, res, client, output) => {
-  // perform db specific ops based on API names
-  switch (apiName) {
-    case "login":
-      makeLogin(db, req, res, client, output, apiName);
-      break;
-    case "getRooms":
-      makeGetRooms(db, req, res, client, output, apiName);
-      break;
-    case "getConversation":
-      makeGetConversation(db, req, res, client, output, apiName);
-      break;
-    case "updateRoom":
-      makeUpdateRoom(db, req, res, client, output, apiName);
-      break;
-    case "updateRoomReadStatus":
-      makeUpdateRoomReadStatus(db, req, res, client, output, apiName);
-      break;
-  }
-};
 
 // handle request for /login API
-const makeLogin = async (db, req, res, client, output, apiName) => {
+const getUserDetails = async (req, res) => {
+  let connection;
+  let output;
   try {
+    connection = connectDB(MongoClient, URI_TO_CONNECT_MONGODB);
+    let db = await selectDB(connection, DB_NAME);
     const { username, password } = req.body;
 
     const docs = await db
@@ -74,21 +37,30 @@ const makeLogin = async (db, req, res, client, output, apiName) => {
 
     // if the user exists or sends FAILED message
     output = docs.length > 0 ? { ...docs[0] } : { message: "FAILED" };
+    sendResponse(res, SUCCESS, output);
   } catch (err) {
+    output = { error: { message: err.message } };
     console.log("Error occurred", err);
+    sendResponse(res, SERVER_ERR, output);
   } finally {
-    sendResponseAndCloseConnection(client, output, res, apiName);
+    await closeConnection(connection);
   }
 };
 
 // /getrooms API
-const makeGetRooms = async (db, req, res, client, output, apiName) => {
-  const { rooms } = req.body;
-  const roomIds = rooms.map((ele) => {
-    return ObjectId(ele.roomId);
-  });
+const getRooms = async (req, res) => {
+  let connection;
+  let output;
 
   try {
+    connection = connectDB(MongoClient, URI_TO_CONNECT_MONGODB);
+    let db = selectDB(connection, DB_NAME);
+
+    const { rooms } = req.body;
+    const roomIds = rooms.map((ele) => {
+      return ObjectId(ele.roomId);
+    });
+
     // db call
     const messages = await db
       .collection(COLLECTION_ROOMS)
@@ -120,7 +92,7 @@ const makeGetRooms = async (db, req, res, client, output, apiName) => {
 };
 
 // /getconversation API
-const makeGetConversation = async (db, req, res, client, output, apiName) => {
+const getConversation = async (db, req, res, client, output, apiName) => {
   const { id } = req.params;
 
   try {
@@ -145,7 +117,7 @@ const makeGetConversation = async (db, req, res, client, output, apiName) => {
   }
 };
 
-const makeUpdateRoom = async (db, req, res, client, output, apiName) => {
+const updateRoom = async (db, req, res, client, output, apiName) => {
   console.log("params received", req.params);
   console.log("body of the req", req.body);
   const allMessages = sortMessagesFromSocket(req.body);
@@ -187,14 +159,7 @@ const makeUpdateRoom = async (db, req, res, client, output, apiName) => {
   }
 };
 
-const makeUpdateRoomReadStatus = async (
-  db,
-  req,
-  res,
-  client,
-  output,
-  apiName,
-) => {
+const updateRoomReadStatus = async (req, res) => {
   console.log("body of the req", req.body);
 
   const { userId, roomName, read } = req.body;
@@ -207,28 +172,14 @@ const makeUpdateRoomReadStatus = async (
       );
 
     output = { ...output, nModified: docs.result.nModified };
+    sendResponse(res, SUCCESS, output);
   } catch (error) {
     console.log("Unable to change the read status", error);
+    sendResponse(res, SERVER_ERR, { error: { message: error.message } });
   } finally {
-    sendResponseAndCloseConnection(client, output, res, apiName);
+    closeConnection(connection);
   }
 };
-
-// function to send the response and close the db connection
-function sendResponseAndCloseConnection(client, output, res, apiName) {
-  if (output && res) {
-    console.log(
-      `========================\nOUTPUT AS RECEIVED AND BEFORE SENDING (${apiName})\n==================\n`,
-      output,
-    );
-    res.status(SUCCESS).json(output);
-  } else {
-    res.status(SERVER_ERR).json({ msg: "Internal Server Error" });
-  }
-
-  // close the database connection after sending the response
-  client.close();
-}
 
 const sortMessagesFromSocket = (body) => {
   let allMessages = [];
@@ -245,4 +196,10 @@ const sortMessagesFromSocket = (body) => {
   return allMessages;
 };
 // exports
-export { connectDbAndRunQueries };
+export {
+  getConversation,
+  getRooms,
+  getUserDetails,
+  updateRoom,
+  updateRoomReadStatus,
+};

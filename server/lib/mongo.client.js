@@ -1,5 +1,4 @@
 // dependencies
-import mongodb from "mongodb";
-const { MongoClient, ObjectID } = mongodb;
+import { MongoClient, ObjectId } from "mongodb";
 
-export { MongoClient };
+export { MongoClient, ObjectId };
